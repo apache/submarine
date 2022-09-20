@@ -14,6 +14,10 @@
  specific language governing permissions and limitations
  under the License.
 """
+# References
+# https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras
+# https://reurl.cc/no9Zk8
+
 import json
 import os
 
@@ -98,9 +102,3 @@ if __name__ == "__main__":
     for i in range(EPOCHS):
         submarine.log_metric("val_loss", hist.history["loss"][i], i)
         submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
-
-
-"""Reference
-https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras
-https://reurl.cc/no9Zk8
-"""

@@ -124,9 +124,7 @@ class SqlRegisteredModel(Base):
 class SqlRegisteredModelTag(Base):
     __tablename__ = "registered_model_tag"
 
-    name = Column(
-        String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
-    )
+    name = Column(String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade"))
     """
     Name of registered model: Part of *Primary Key* for ``registered_model_tag`` table.
                               Refer to name of ``registered_model`` table.
@@ -235,9 +233,7 @@ class SqlModelVersion(Base):
     """
 
     # linked entities
-    registered_model: SqlRegisteredModel = relationship(
-        "SqlRegisteredModel", back_populates="model_versions"
-    )
+    registered_model: SqlRegisteredModel = relationship("SqlRegisteredModel", back_populates="model_versions")
 
     __table_args__ = (
         PrimaryKeyConstraint("name", "version", name="model_version_pk"),
@@ -368,13 +364,9 @@ class SqlExperiment(Base):
     __table_args__ = (PrimaryKeyConstraint("id"),)
 
     def __repr__(self):
-        return "<SqlMetric({}, {}, {}, {}, {}, {})>".format(
-            self.id,
-            self.experiment_spec,
-            self.create_by,
-            self.create_time,
-            self.update_by,
-            self.update_time,
+        return (
+            f"<SqlMetric({self.id}, {self.experiment_spec}, {self.create_by}, {self.create_time},"
+            f" {self.update_by}, {self.update_time})>"
         )
 
     def to_submarine_entity(self):
@@ -436,14 +428,10 @@ class SqlMetric(Base):
     True if the value is in fact NaN.
     """
 
-    __table_args__ = (
-        PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),
-    )
+    __table_args__ = (PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),)
 
     def __repr__(self):
-        return "<SqlMetric({}, {}, {}, {}, {})>".format(
-            self.key, self.value, self.worker_index, self.timestamp, self.step
-        )
+        return f"<SqlMetric({self.key}, {self.value}, {self.worker_index}, {self.timestamp}, {self.step})>"
 
     def to_submarine_entity(self):
         """
@@ -493,7 +481,7 @@ class SqlParam(Base):
     __table_args__ = (PrimaryKeyConstraint("id", "key", "worker_index", name="param_pk"),)
 
     def __repr__(self):
-        return "<SqlParam({}, {}, {})>".format(self.key, self.value, self.worker_index)
+        return f"<SqlParam({self.key}, {self.value}, {self.worker_index})>"
 
     def to_submarine_entity(self):
         """

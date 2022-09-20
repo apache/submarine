@@ -14,8 +14,7 @@
 # limitations under the License.
 
 import os
-
-import mock
+from unittest import mock
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.utils import get_db_uri, set_db_uri

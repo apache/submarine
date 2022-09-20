@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
-from fs_prehandler.hdfs_prehandler import HDFSPreHandler 
+
+from fs_prehandler.hdfs_prehandler import HDFSPreHandler
+
 
 def get_file_system_prehandler():
     if os.environ['FILE_SYSTEM_TYPE'] == 'HDFS':
         return HDFSPreHandler()
 
+
 if __name__ == "__main__":
     fsPrehandler = get_file_system_prehandler()
     fsPrehandler.process()
-
-    

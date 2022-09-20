@@ -21,7 +21,7 @@ import submarine
 
 class LinearNNModel(torch.nn.Module):
     def __init__(self):
-        super(LinearNNModel, self).__init__()
+        super().__init__()
         self.linear = torch.nn.Linear(2, 1)  # One in and one out
 
     def forward(self, x):

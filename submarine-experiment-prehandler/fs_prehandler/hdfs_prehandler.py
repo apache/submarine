@@ -19,13 +19,14 @@ import os
 from fs_prehandler import FsPreHandler
 from fsspec.implementations.arrow import HadoopFileSystem
 
+
 class HDFSPreHandler(FsPreHandler):
     def __init__(self):
-        self.hdfs_host=os.environ['HDFS_HOST']
-        self.hdfs_port=int(os.environ['HDFS_PORT'])
-        self.hdfs_source=os.environ['HDFS_SOURCE']
-        self.dest_path=os.environ['DEST_PATH']
-        self.enable_kerberos=os.environ['ENABLE_KERBEROS']
+        self.hdfs_host = os.environ['HDFS_HOST']
+        self.hdfs_port = int(os.environ['HDFS_PORT'])
+        self.hdfs_source = os.environ['HDFS_SOURCE']
+        self.dest_path = os.environ['DEST_PATH']
+        self.enable_kerberos = os.environ['ENABLE_KERBEROS']
 
         logging.info('HDFS_HOST:%s' % self.hdfs_host)
         logging.info('HDFS_PORT:%d' % self.hdfs_port)
@@ -37,4 +38,7 @@ class HDFSPreHandler(FsPreHandler):
 
     def process(self):
         self.fs.get(self.hdfs_source, self.dest_path, recursive=True)
-        logging.info('fetch data from hdfs://%s:%d/%s to %s complete' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, self.dest_path))
+        logging.info(
+            'fetch data from hdfs://%s:%d/%s to %s complete'
+            % (self.hdfs_host, self.hdfs_port, self.hdfs_source, self.dest_path)
+        )

@@ -66,8 +66,11 @@ under the License.
 | 1.17 (or later) | To be verified |
 
 ## Python
+
 | Python Version   | Support?  |
 | ------------- |:-------------:|
-| 3.5 (or earlier) | X |
-| 3.6, 3.7 | √ |
-| 3.8 (or later) | To be verified |
+| 3.6 (or earlier) | X |
+| 3.7  | √ |
+| 3.8  | √ |
+| 3.9  | √ |
+| 3.10 | √ |

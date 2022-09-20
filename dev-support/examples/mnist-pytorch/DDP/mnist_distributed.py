@@ -14,8 +14,8 @@
  specific language governing permissions and limitations
  under the License.
 """
+# Reference: https://github.com/kubeflow/pytorch-operator/blob/master/examples/mnist/mnist.py
 
-from __future__ import print_function
 
 import argparse
 import os
@@ -33,12 +33,12 @@ import submarine
 WORLD_SIZE = int(os.environ.get("WORLD_SIZE", 1))
 rank = int(os.environ.get("RANK", 0))
 
-print("WORLD={} , RANK={}".format(WORLD_SIZE, rank))
+print(f"WORLD={WORLD_SIZE} , RANK={rank}")
 
 
 class Net(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)
         self.conv2 = nn.Conv2d(20, 50, 5, 1)
         self.fc1 = nn.Linear(4 * 4 * 50, 500)
@@ -92,7 +92,7 @@ def test(args, model, device, test_loader, writer, epoch):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
-    print("\naccuracy={:.4f}\n".format(float(correct) / len(test_loader.dataset)))
+    print(f"\naccuracy={float(correct) / len(test_loader.dataset):.4f}\n")
     writer.add_scalar("accuracy", float(correct) / len(test_loader.dataset), epoch)
     submarine.log_metric("accuracy", float(correct) / len(test_loader.dataset), epoch)
 
@@ -125,15 +125,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--epochs", type=int, default=5, metavar="N", help="number of epochs to train (default: 5)"
     )
-    parser.add_argument(
-        "--lr", type=float, default=0.01, metavar="LR", help="learning rate (default: 0.01)"
-    )
+    parser.add_argument("--lr", type=float, default=0.01, metavar="LR", help="learning rate (default: 0.01)")
     parser.add_argument(
         "--momentum", type=float, default=0.5, metavar="M", help="SGD momentum (default: 0.5)"
     )
-    parser.add_argument(
-        "--no-cuda", action="store_true", default=False, help="disables CUDA training"
-    )
+    parser.add_argument("--no-cuda", action="store_true", default=False, help="disables CUDA training")
     parser.add_argument("--seed", type=int, default=1, metavar="S", help="random seed (default: 1)")
     parser.add_argument(
         "--log-interval",
@@ -145,9 +141,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save-model", action="store_true", default=False, help="For Saving the current Model"
     )
-    parser.add_argument(
-        "--dir", default="logs", metavar="L", help="directory where summary logs are stored"
-    )
+    parser.add_argument("--dir", default="logs", metavar="L", help="directory where summary logs are stored")
     if dist.is_available():
         parser.add_argument(
             "--backend",
@@ -170,7 +164,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if use_cuda else "cpu")
 
     if should_distribute():
-        print("Using distributed PyTorch with {} backend".format(args.backend))
+        print(f"Using distributed PyTorch with {args.backend} backend")
         dist.init_process_group(backend=args.backend, world_size=WORLD_SIZE, rank=rank)
 
     kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
@@ -179,9 +173,7 @@ if __name__ == "__main__":
         "../data",
         train=True,
         download=True,
-        transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-        ),
+        transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]),
     )
     train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_dataset, num_replicas=WORLD_SIZE, rank=rank
@@ -192,29 +184,25 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         shuffle=False,
         sampler=train_sampler,
-        **kwargs
+        **kwargs,
     )
 
     test_loader = torch.utils.data.DataLoader(
         datasets.FashionMNIST(
             "../data",
             train=False,
-            transform=transforms.Compose(
-                [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-            ),
+            transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]),
         ),
         batch_size=args.test_batch_size,
         shuffle=False,
-        **kwargs
+        **kwargs,
     )
 
     model = Net().to(device)
 
     if is_distributed():
         Distributor = (
-            nn.parallel.DistributedDataParallel
-            if use_cuda
-            else nn.parallel.DistributedDataParallelCPU
+            nn.parallel.DistributedDataParallel if use_cuda else nn.parallel.DistributedDataParallelCPU
         )
         model = Distributor(model)
 
@@ -226,8 +214,3 @@ if __name__ == "__main__":
         test(args, model, device, test_loader, writer, epoch)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
-
-"""
-Reference:
-https://github.com/kubeflow/pytorch-operator/blob/master/examples/mnist/mnist.py
-"""

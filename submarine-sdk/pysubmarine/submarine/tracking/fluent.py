@@ -16,7 +16,6 @@
 Internal module implementing the fluent API, allowing management of an active
 Submarine run. This module is exposed to users at the top-level :py:mod:`submarine` module.
 """
-from __future__ import print_function
 
 import logging
 from datetime import datetime

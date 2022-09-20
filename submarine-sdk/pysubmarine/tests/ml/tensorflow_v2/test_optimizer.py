@@ -19,7 +19,6 @@ import tensorflow as tf
 
 @pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
 def test_get_optimizer():
-
     from submarine.ml.tensorflow_v2.optimizer import get_optimizer
 
     optimizer_keys = ["adam", "adagrad", "momentum", "ftrl"]

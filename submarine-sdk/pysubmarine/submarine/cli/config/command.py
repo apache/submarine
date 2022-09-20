@@ -23,7 +23,13 @@ from rich.console import Console
 from rich.json import JSON as richJSON
 from rich.panel import Panel
 
-from submarine.cli.config.config import initConfig, loadConfig, rgetattr, rsetattr, saveConfig
+from submarine.cli.config.config import (
+    initConfig,
+    loadConfig,
+    rgetattr,
+    rsetattr,
+    saveConfig,
+)
 
 
 @click.command("list")
@@ -41,7 +47,7 @@ def get_config(param):
     """Get Submarine CLI Config"""
     _config = loadConfig()
     try:
-        click.echo("{}={}".format(param, rgetattr(_config, param)))
+        click.echo(f"{param}={rgetattr(_config, param)}")
     except AttributeError as err:
         click.echo(err)
 

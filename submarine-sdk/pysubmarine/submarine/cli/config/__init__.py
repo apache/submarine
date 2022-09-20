@@ -13,7 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.cli.config.command import get_config, init_config, list_config, set_config
+from submarine.cli.config.command import (
+    get_config,
+    init_config,
+    list_config,
+    set_config,
+)
 
 __all__ = [
     "list_config",

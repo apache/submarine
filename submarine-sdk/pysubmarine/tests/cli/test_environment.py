@@ -38,7 +38,7 @@ def test_all_environment_e2e():
     # check if cli config is correct for testing
     result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
     assert result.exit_code == 0
-    assert "connection.port={}".format(8080) in result.output
+    assert "connection.port=8080" in result.output
 
     submarine_client = EnvironmentClient(host="http://localhost:8080")
     kernel_spec = KernelSpec(
@@ -66,12 +66,12 @@ def test_all_environment_e2e():
 
     # test get environment
     result = runner.invoke(main.entry_point, ["get", "environment", environment_name])
-    assert "Environment(name = {} )".format(environment_name) in result.output
+    assert f"Environment(name = {environment_name} )" in result.output
     assert environment["environmentSpec"]["name"] in result.output
 
     # test delete environment
     result = runner.invoke(main.entry_point, ["delete", "environment", environment_name])
-    assert "Environment(name = {} ) deleted".format(environment_name) in result.output
+    assert f"Environment(name = {environment_name} ) deleted" in result.output
 
     # test get environment fail after delete
     result = runner.invoke(main.entry_point, ["get", "environment", environment_name])

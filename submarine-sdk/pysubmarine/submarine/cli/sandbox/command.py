@@ -22,7 +22,7 @@ import click
 @click.option("-v", "--version", "version", help="Specify sandbox version", default="0.6.0")
 def start_sandbox(version):
     """Start sandbox"""
-    click.echo("start sandbox! version={}".format(version))
+    click.echo(f"start sandbox! version={version}")
 
 
 @click.command("delete")

@@ -26,9 +26,6 @@
 """
 
 
-import six
-
-
 class OpenApiException(Exception):
     """The base exception class for all OpenAPIExceptions"""
 
@@ -57,8 +54,8 @@ class ApiTypeError(OpenApiException, TypeError):
         self.key_type = key_type
         full_msg = msg
         if path_to_item:
-            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
-        super(ApiTypeError, self).__init__(full_msg)
+            full_msg = f"{msg} at {render_path(path_to_item)}"
+        super().__init__(full_msg)
 
 
 class ApiValueError(OpenApiException, ValueError):
@@ -75,8 +72,8 @@ class ApiValueError(OpenApiException, ValueError):
         self.path_to_item = path_to_item
         full_msg = msg
         if path_to_item:
-            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
-        super(ApiValueError, self).__init__(full_msg)
+            full_msg = f"{msg} at {render_path(path_to_item)}"
+        super().__init__(full_msg)
 
 
 class ApiKeyError(OpenApiException, KeyError):
@@ -92,8 +89,8 @@ class ApiKeyError(OpenApiException, KeyError):
         self.path_to_item = path_to_item
         full_msg = msg
         if path_to_item:
-            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
-        super(ApiKeyError, self).__init__(full_msg)
+            full_msg = f"{msg} at {render_path(path_to_item)}"
+        super().__init__(full_msg)
 
 
 class ApiException(OpenApiException):
@@ -111,12 +108,12 @@ class ApiException(OpenApiException):
 
     def __str__(self):
         """Custom error messages for exception"""
-        error_message = "({0})\nReason: {1}\n".format(self.status, self.reason)
+        error_message = f"({self.status})\nReason: {self.reason}\n"
         if self.headers:
-            error_message += "HTTP response headers: {0}\n".format(self.headers)
+            error_message += f"HTTP response headers: {self.headers}\n"
 
         if self.body:
-            error_message += "HTTP response body: {0}\n".format(self.body)
+            error_message += f"HTTP response body: {self.body}\n"
 
         return error_message
 
@@ -125,8 +122,8 @@ def render_path(path_to_item):
     """Returns a string representation of a path"""
     result = ""
     for pth in path_to_item:
-        if isinstance(pth, six.integer_types):
-            result += "[{0}]".format(pth)
+        if isinstance(pth, int):
+            result += f"[{pth}]"
         else:
-            result += "['{0}']".format(pth)
+            result += f"['{pth}']"
     return result

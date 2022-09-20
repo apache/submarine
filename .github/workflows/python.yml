@@ -26,12 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          pip install --upgrade pip setuptools wheel
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
+      - name: List installed packages
+        run: pip list
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
 
@@ -40,33 +42,65 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python-version: [3.6, 3.7]
-        tf-version: [1.15.0, 2.6.0]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        exclude:
+          - python-version: '3.8'
+            tf-version: '1.15.0'
+          - python-version: '3.9'
+            tf-version: '1.15.0'
+          - python-version: '3.10'
+            tf-version: '1.15.0'
+          - python-version: '3.10'
+            tf-version: '2.6.0'
+          - python-version: '3.10'
+            tf-version: '2.7.0'
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: |
-          pip install --upgrade pip
+          pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install pysubmarine with tf1 and pytorch
-        if: matrix.tf-version == '1.15.0'
-        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
+        if: ${{ matrix.tf-version == '1.15.0' }}
+        run: |
+          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
       - name: Install pysubmarine with tf2 and pytorch
-        if: matrix.tf-version == '2.6.0'
-        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+        if: startsWith(matrix.tf-version, '2.')
+        run: |
+          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
+      - name: List installed packages
+        run: pip list
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 
   integration:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        exclude:
+          - python-version: '3.8'
+            tf-version: '1.15.0'
+          - python-version: '3.9'
+            tf-version: '1.15.0'
+          - python-version: '3.10'
+            tf-version: '1.15.0'
+          - python-version: '3.10'
+            tf-version: '2.6.0'
+          - python-version: '3.10'
+            tf-version: '2.7.0'
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 50
       - name: Set up JDK 1.8
@@ -98,7 +132,7 @@ jobs:
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
       # Cache maven (for submarine server)
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -109,16 +143,24 @@ jobs:
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Setup python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.6
-      - name: Install dependencies
+          python-version: ${{ matrix.python-version }}
+      - name: Install tf1 dependencies
+        if: ${{ matrix.tf-version == '1.15.0' }}
         run: |
-          pip install --upgrade pip
+          pip install --upgrade pip setuptools wheel
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
-          pip install --no-cache-dir tensorflow-addons
-          pip install --no-cache-dir tf_slim
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Install tf2 dependencies
+        if: startsWith(matrix.tf-version, '2.')
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: List installed packages
+        run: pip list
       - name: Set CLI config for e2e pytest
         run: |
           submarine config set connection.hostname localhost

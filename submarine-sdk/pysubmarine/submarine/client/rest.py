@@ -26,20 +26,15 @@
 """
 
 
-from __future__ import absolute_import
-
 import io
 import json
 import logging
 import re
 import ssl
+from urllib.parse import urlencode
 
 import certifi
-
-# python 2 and python 3 compatibility library
-import six
 import urllib3
-from six.moves.urllib.parse import urlencode
 
 from submarine.client.exceptions import ApiException, ApiValueError
 
@@ -62,7 +57,7 @@ class RESTResponse(io.IOBase):
         return self.urllib3_response.getheader(name, default)
 
 
-class RESTClientObject(object):
+class RESTClientObject:
     def __init__(self, configuration, pools_size=4, maxsize=None):
         # urllib3.PoolManager will pass all kw parameters to connectionpool
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/poolmanager.py#L75  # noqa: E501
@@ -107,7 +102,7 @@ class RESTClientObject(object):
                 key_file=configuration.key_file,
                 proxy_url=configuration.proxy,
                 proxy_headers=configuration.proxy_headers,
-                **addition_pool_args
+                **addition_pool_args,
             )
         else:
             self.pool_manager = urllib3.PoolManager(
@@ -117,7 +112,7 @@ class RESTClientObject(object):
                 ca_certs=ca_certs,
                 cert_file=configuration.cert_file,
                 key_file=configuration.key_file,
-                **addition_pool_args
+                **addition_pool_args,
             )
 
     def request(
@@ -160,7 +155,7 @@ class RESTClientObject(object):
 
         timeout = None
         if _request_timeout:
-            if isinstance(_request_timeout, (int,) if six.PY3 else (int, long)):  # noqa: E501,F821
+            if isinstance(_request_timeout, (int,)):
                 timeout = urllib3.Timeout(total=_request_timeout)
             elif isinstance(_request_timeout, tuple) and len(_request_timeout) == 2:
                 timeout = urllib3.Timeout(connect=_request_timeout[0], read=_request_timeout[1])
@@ -239,7 +234,7 @@ class RESTClientObject(object):
                     headers=headers,
                 )
         except urllib3.exceptions.SSLError as e:
-            msg = "{0}\n{1}".format(type(e).__name__, str(e))
+            msg = f"{type(e).__name__}\n{str(e)}"
             raise ApiException(status=0, reason=msg)
 
         if _preload_content:
@@ -253,9 +248,7 @@ class RESTClientObject(object):
 
         return r
 
-    def GET(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
-    ):
+    def GET(self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None):
         return self.request(
             "GET",
             url,
@@ -265,9 +258,7 @@ class RESTClientObject(object):
             query_params=query_params,
         )
 
-    def HEAD(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
-    ):
+    def HEAD(self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None):
         return self.request(
             "HEAD",
             url,

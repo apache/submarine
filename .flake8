@@ -16,5 +16,5 @@
 #
 
 [flake8]
-max-line-length = 100
-exclude = dev-support/cicd
+max-line-length = 110
+extend-ignore = E203  # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated

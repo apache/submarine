@@ -31,9 +31,7 @@ from submarine.client.exceptions import ApiException
 submarineCliConfig = loadConfig()
 
 environmentClient = EnvironmentClient(
-    host="http://{}:{}".format(
-        submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
-    )
+    host=f"http://{submarineCliConfig.connection.hostname}:{submarineCliConfig.connection.port}"
 )
 
 POLLING_INTERVAL = 1  # sec
@@ -81,9 +79,9 @@ def list_environment():
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("environment")
@@ -94,7 +92,7 @@ def get_environment(name):
     try:
         thread = environmentClient.get_environment_async(name)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Fetching Environment(name = {} )...".format(name)):
+        with console.status(f"[bold green] Fetching Environment(name = {name} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -105,13 +103,13 @@ def get_environment(name):
         result = result.result
 
         json_data = richJSON.from_data(result)
-        console.print(Panel(json_data, title="Environment(name = {} )".format(name)))
+        console.print(Panel(json_data, title=f"Environment(name = {name} )"))
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("environment")
@@ -122,7 +120,7 @@ def delete_environment(name):
     try:
         thread = environmentClient.delete_environment_async(name)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Deleting Environment(name = {} )...".format(name)):
+        with console.status(f"[bold green] Deleting Environment(name = {name} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -132,11 +130,11 @@ def delete_environment(name):
         result = thread.get()
         result = result.result
 
-        console.print("[bold green] Environment(name = {} ) deleted".format(name))
+        console.print(f"[bold green] Environment(name = {name} ) deleted")
 
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
