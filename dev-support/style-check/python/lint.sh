@@ -23,10 +23,10 @@ cd ../../../
 # Check imports
 isort -c submarine-sdk/ dev-support/ website/
 # Check code format
-black submarine-sdk/ dev-support/ website/ --check --experimental-string-processing
+black submarine-sdk/ dev-support/ website/docs --check --preview --diff --color
 # Check lint: Not checking the code in website
 flake8 submarine-sdk/ dev-support/
 # Check static typing for Python
-mypy --ignore-missing-imports submarine-sdk/pysubmarine/submarine/
+mypy submarine-sdk/pysubmarine/submarine/
 
 set +euxo pipefail

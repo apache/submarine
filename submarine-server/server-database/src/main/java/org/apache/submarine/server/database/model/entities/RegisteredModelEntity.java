@@ -24,6 +24,8 @@ import java.util.List;
 
 public class RegisteredModelEntity {
 
+  private Long modelId;
+
   private String name;
 
   private Timestamp creationTime;
@@ -33,6 +35,14 @@ public class RegisteredModelEntity {
   private String description;
 
   private List<String> tags;
+
+  public Long getModelId() {
+    return modelId;
+  }
+
+  public void setModelId(Long modelId) {
+    this.modelId = modelId;
+  }
 
   public String getName() {
     return name;
@@ -78,7 +88,8 @@ public class RegisteredModelEntity {
 
   public String toString() {
     return "RegisteredModelEntity{" +
-        "name='" + name + '\'' +
+        "modelId=" + modelId +
+        ", name='" + name + '\'' +
         ", createTime='" + creationTime + '\'' +
         ", lastUpdatedTime=" + lastUpdatedTime + '\'' +
         ", description='" + description + '\'' +

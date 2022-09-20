@@ -58,7 +58,7 @@ class SqlAlchemyStore(AbstractStore):
                        <https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls>`_
                        for format specifications. Submarine supports the dialects ``mysql``.
         """
-        super(SqlAlchemyStore, self).__init__()
+        super().__init__()
 
         self.db_uri = db_uri
         self.db_type = extract_db_type_from_uri(db_uri)
@@ -168,9 +168,7 @@ class SqlAlchemyStore(AbstractStore):
                 session.flush()
                 return registered_model.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError as e:
-                raise SubmarineException(
-                    f"Registered model (name={name}) already exists.\nError: {str(e)}"
-                )
+                raise SubmarineException(f"Registered model (name={name}) already exists.\nError: {str(e)}")
 
     @classmethod
     def _get_sql_registered_model(
@@ -235,15 +233,11 @@ class SqlAlchemyStore(AbstractStore):
                 for sql_model_version in sql_registered_model.model_versions:
                     sql_model_version.name = new_name
                     sql_model_version.last_updated_time = update_time
-                self._save_to_db(
-                    session, [sql_registered_model] + sql_registered_model.model_versions
-                )
+                self._save_to_db(session, [sql_registered_model] + sql_registered_model.model_versions)
                 session.flush()
                 return sql_registered_model.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError as e:
-                raise SubmarineException(
-                    f"Registered Model (name={name}) already exists. Error: {str(e)}"
-                )
+                raise SubmarineException(f"Registered Model (name={name}) already exists. Error: {str(e)}")
 
     def delete_registered_model(self, name: str) -> None:
         """
@@ -268,16 +262,14 @@ class SqlAlchemyStore(AbstractStore):
         conditions = []
         if filter_tags is not None:
             conditions += [
-                SqlRegisteredModel.tags.any(SqlRegisteredModelTag.tag.contains(tag))
-                for tag in filter_tags
+                SqlRegisteredModel.tags.any(SqlRegisteredModelTag.tag.contains(tag)) for tag in filter_tags
             ]
         if filter_str is not None:
             conditions.append(SqlRegisteredModel.name.startswith(filter_str))
         with self.ManagedSessionMaker() as session:
             sql_registered_models = session.query(SqlRegisteredModel).filter(*conditions).all()
             return [
-                sql_registered_model.to_submarine_entity()
-                for sql_registered_model in sql_registered_models
+                sql_registered_model.to_submarine_entity() for sql_registered_model in sql_registered_models
             ]
 
     def get_registered_model(self, name: str) -> RegisteredModel:
@@ -290,9 +282,7 @@ class SqlAlchemyStore(AbstractStore):
             return self._get_sql_registered_model(session, name, True).to_submarine_entity()
 
     @classmethod
-    def _get_registered_model_tag(
-        cls, session: Session, name: str, tag: str
-    ) -> SqlRegisteredModelTag:
+    def _get_registered_model_tag(cls, session: Session, name: str, tag: str) -> SqlRegisteredModelTag:
         tags = (
             session.query(SqlRegisteredModelTag)
             .filter(SqlRegisteredModelTag.name == name, SqlRegisteredModelTag.tag == tag)
@@ -363,7 +353,7 @@ class SqlAlchemyStore(AbstractStore):
 
         def next_version(sql_registered_model: SqlRegisteredModel) -> int:
             if sql_registered_model.model_versions:
-                return max([m.version for m in sql_registered_model.model_versions]) + 1
+                return max(m.version for m in sql_registered_model.model_versions) + 1
             else:
                 return 1
 
@@ -420,15 +410,12 @@ class SqlAlchemyStore(AbstractStore):
             raise SubmarineException(f"Model Version (name={name}, version={version}) not found.")
         elif len(models) > 1:
             raise SubmarineException(
-                f"Expected only 1 model version with (name={name}, version={version}). Found"
-                f" {len(models)}."
+                f"Expected only 1 model version with (name={name}, version={version}). Found {len(models)}."
             )
         else:
             return models[0]
 
-    def update_model_version_description(
-        self, name: str, version: int, description: str
-    ) -> ModelVersion:
+    def update_model_version_description(self, name: str, version: int, description: str) -> ModelVersion:
         """
         Update description associated with the version of model in backend.
         :param name: Registered model name.
@@ -502,8 +489,7 @@ class SqlAlchemyStore(AbstractStore):
         conditions = [SqlModelVersion.name == name]
         if filter_tags is not None:
             conditions += [
-                SqlModelVersion.tags.any(SqlModelVersionTag.tag.contains(tag))
-                for tag in filter_tags
+                SqlModelVersion.tags.any(SqlModelVersionTag.tag.contains(tag)) for tag in filter_tags
             ]
         with self.ManagedSessionMaker() as session:
             sql_models = session.query(SqlModelVersion).filter(*conditions).all()

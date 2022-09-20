@@ -20,7 +20,7 @@ import tensorflow as tf
 logger = logging.getLogger(__name__)
 
 
-class OptimizerKey(object):
+class OptimizerKey:
     """Optimizer key strings."""
 
     ADAM = "adam"
@@ -33,9 +33,7 @@ def get_optimizer(optimizer_key: str, learning_rate: float):
     optimizer_key = optimizer_key.lower()
 
     if optimizer_key == OptimizerKey.ADAM:
-        op = tf.train.AdamOptimizer(
-            learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8
-        )
+        op = tf.train.AdamOptimizer(learning_rate=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8)
     elif optimizer_key == OptimizerKey.ADAGRAD:
         op = tf.train.AdagradOptimizer(learning_rate=learning_rate, initial_accumulator_value=1e-8)
     elif optimizer_key == OptimizerKey.MOMENTUM:

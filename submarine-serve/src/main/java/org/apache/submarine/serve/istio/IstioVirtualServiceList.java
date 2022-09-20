@@ -27,7 +27,10 @@ import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ListMeta;
 import org.apache.submarine.serve.utils.IstioConstants;
 
-public class IstioVirtualServiceList implements KubernetesListObject{
+public class IstioVirtualServiceList implements KubernetesListObject {
+
+  public IstioVirtualServiceList() {
+  }
 
   @SerializedName("apiVersion")
   private String apiVersion;
@@ -59,5 +62,21 @@ public class IstioVirtualServiceList implements KubernetesListObject{
   @Override
   public String getKind() {
     return IstioConstants.KIND + "List";
+  }
+
+  public void setApiVersion(String apiVersion) {
+    this.apiVersion = apiVersion;
+  }
+
+  public void setKind(String kind) {
+    this.kind = kind;
+  }
+
+  public void setMetadata(V1ListMeta metadata) {
+    this.metadata = metadata;
+  }
+
+  public void setItems(List<IstioVirtualService> items) {
+    this.items = items;
   }
 }

@@ -23,6 +23,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.NotebookMeta;
@@ -31,6 +32,7 @@ import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.client.K8sMockClient;
 import org.apache.submarine.server.submitter.k8s.client.MockClientUtil;
+import org.apache.submarine.server.submitter.k8s.model.AgentPod;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +63,6 @@ public class SubmitterNotebookApiTest {
   private static final String pvcName = "notebook-pvc-notebook-1642402491519-0003-test-notebook";
   private static final String userPvcName = "notebook-pvc-user-notebook-1642402491519-0003-test-notebook";
   private static final String configmapName = "overwrite-configmap-notebook-1642402491519-0003-test-notebook";
-  private static final String agentName = "notebook-1642402491519-0003-notebook-test-notebook-agent";
 
   @Rule
   public WireMockRule wireMockRule = K8sMockClient.getWireMockRule();
@@ -100,12 +101,13 @@ public class SubmitterNotebookApiTest {
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/notebook/notebook-read-api.json")));
     //  save pod agent url
+    String agentName = AgentPod.getNormalizePodName(CustomResourceType.Notebook, notebookId);
     MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
             aResponse()
                 .withStatus(200)
-                .withBody("{\"metadata\":{\"name\":\"test-notebook-agent\",\"namespace\":\"default\"}}"));
+                .withBody("{\"metadata\":{\"name\":\"" + agentName + "\",\"namespace\":\"default\"}}"));
     //  save istio url
     MappingBuilder istioPost = post(urlPathEqualTo(
         "/apis/networking.istio.io/v1beta1/namespaces/default/virtualservices"))
@@ -223,5 +225,6 @@ public class SubmitterNotebookApiTest {
     Notebook notebook = submitter.deleteNotebook(spec, notebookId);
     // check return value
     assertNotNull(notebook);
+    assertEquals(notebook.getName(), "test-notebook");
   }
 }

@@ -33,9 +33,7 @@ class FeatureLinear(nn.Module):
         :param feature_idx: torch.LongTensor (batch_size, num_fields)
         :param feature_value: torch.LongTensor (batch_size, num_fields)
         """
-        return (
-            torch.sum(self.weight(feature_idx) * feature_value.unsqueeze(dim=-1), dim=1) + self.bias
-        )
+        return torch.sum(self.weight(feature_idx) * feature_value.unsqueeze(dim=-1), dim=1) + self.bias
 
 
 class FeatureEmbedding(nn.Module):
@@ -59,9 +57,7 @@ class PairwiseInteraction(nn.Module):
         square_of_sum = torch.square(torch.sum(x, dim=1))  # (batch_size, embedding_dim)
         # (batch_size, embedding_dim)
         sum_of_square = torch.sum(torch.square(x), dim=1)
-        return 0.5 * torch.sum(
-            square_of_sum - sum_of_square, dim=1, keepdim=True
-        )  # (batch_size, 1)
+        return 0.5 * torch.sum(square_of_sum - sum_of_square, dim=1, keepdim=True)  # (batch_size, 1)
 
 
 class DNN(nn.Module):
@@ -78,7 +74,7 @@ class DNN(nn.Module):
                 )
                 for (i, o), p in zip(layers, dropout_rates)
             ),
-            nn.Linear(*out_layer)
+            nn.Linear(*out_layer),
         )
 
     def forward(self, x: torch.FloatTensor):

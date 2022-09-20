@@ -31,7 +31,6 @@ import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
-import io.kubernetes.client.util.generic.options.CreateOptions;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import io.kubernetes.client.util.generic.options.ListOptions;
 
@@ -39,9 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
-import org.apache.submarine.serve.seldon.SeldonDeployment;
-import org.apache.submarine.serve.tensorflow.SeldonTFServing;
 import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.common.CustomResourceType;
@@ -66,6 +62,8 @@ import org.apache.submarine.server.submitter.k8s.model.common.PersistentVolumeCl
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonDeploymentFactory;
+import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonResource;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 
@@ -347,8 +345,7 @@ public class K8sSubmitter implements Submitter {
               NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
     }
     // index-4: agent
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
-            CustomResourceType.Notebook, notebookId);
+    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
     // index-5: notebook VirtualService custom resource
     IstioVirtualService istioVirtualService = new IstioVirtualService(createMeta(namespace, name));
 
@@ -370,39 +367,38 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
+    // delete notebook
     NotebookCR notebookCR = new NotebookCR(spec, notebookId, getServerNamespace());
     final String name = notebookCR.getMetadata().getName();
     final String namespace = notebookCR.getMetadata().getNamespace();
 
-    // delete crd
-    Notebook notebook = notebookCR.delete(k8sClient);
+    // dependent resources
+    List<K8sResource> dependents = new ArrayList<K8sResource>();
 
     // delete VirtualService
-    new IstioVirtualService(createMeta(namespace, name)).delete(k8sClient);
+    dependents.add(new IstioVirtualService(createMeta(namespace, name)));
 
     // delete pvc
     //  workspace pvc
-    new PersistentVolumeClaim(namespace, String.format("%s-%s", NotebookUtils.PVC_PREFIX, name),
-            NotebookUtils.STORAGE).delete(k8sClient);
+    dependents.add(new PersistentVolumeClaim(namespace,
+          String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.STORAGE));
     //  user set pvc
-    new PersistentVolumeClaim(namespace, String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name),
-            NotebookUtils.DEFAULT_USER_STORAGE).delete(k8sClient);
+    dependents.add(new PersistentVolumeClaim(namespace,
+          String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.DEFAULT_USER_STORAGE));
 
     // configmap
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
-      new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name))
-              .delete(k8sClient);
+      dependents.add(new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name)));
     }
 
     // delete agent
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
-            CustomResourceType.Notebook, notebookId);
+    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
     LOG.info(String.format("Notebook:%s had been deleted, start to delete agent pod:%s",
             spec.getMeta().getName(), agentPod.getMetadata().getName()));
-    new AgentPod(namespace, spec.getMeta().getName(), CustomResourceType.Notebook, notebookId)
-            .delete(k8sClient);
+    dependents.add(agentPod);
 
-    return notebook;
+    // delete resources 
+    return deleteResourcesTransaction(notebookCR, dependents.toArray(dependents.toArray(new K8sResource[0])));
   }
 
   @Override
@@ -423,48 +419,23 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public void createServe(ServeSpec spec)
-          throws SubmarineRuntimeException {
-    SeldonDeployment seldonDeployment = parseServeSpec(spec);
-    IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
-            spec.getModelVersion());
-    try {
-      k8sClient.getSeldonDeploymentClient().create("default", seldonDeployment,
-              new CreateOptions()).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error(e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    }
-    try {
-      k8sClient.getIstioVirtualServiceClient().create("default", istioVirtualService, new CreateOptions())
-              .throwsApiException();
-    } catch (ApiException e) {
-      LOG.error(e.getMessage(), e);
-      try {
-        k8sClient.getSeldonDeploymentClient().delete("default", seldonDeployment.getMetadata().getName(),
-                getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
-      } catch (ApiException e1) {
-        LOG.error(e1.getMessage(), e1);
-      }
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    }
+  public void createServe(ServeSpec spec) throws SubmarineRuntimeException {
+    // Seldon Deployment Resource
+    SeldonResource seldonDeployment = SeldonDeploymentFactory.getSeldonDeployment(spec);
+    // VirtualService Resource
+    IstioVirtualService istioVirtualService = seldonDeployment.getIstioVirtualService();
+    // commit SeldonResource and IstioVirtualService with transaction
+    resourceTransaction(seldonDeployment, istioVirtualService);
   }
 
   @Override
-  public void deleteServe(ServeSpec spec)
-          throws SubmarineRuntimeException {
-    SeldonDeployment seldonDeployment = parseServeSpec(spec);
-    IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
-            spec.getModelVersion());
-    try {
-      k8sClient.getSeldonDeploymentClient().delete("default", seldonDeployment.getMetadata().getName(),
-              getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
-      k8sClient.getIstioVirtualServiceClient().delete("default", istioVirtualService.getMetadata().getName(),
-              getDeleteOptions(istioVirtualService.getApiVersion())).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error(e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    }
+  public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
+    // Seldon Deployment Resource
+    SeldonResource seldonDeployment = SeldonDeploymentFactory.getSeldonDeployment(spec);
+    // VirtualService Resource
+    IstioVirtualService istioVirtualService = seldonDeployment.getIstioVirtualService();
+    // Delete SeldonResource and IstioVirtualService with transaction
+    deleteResourcesTransaction(seldonDeployment, istioVirtualService);
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {
@@ -478,22 +449,6 @@ public class K8sSubmitter implements Submitter {
     else {
       return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
     }
-  }
-
-  private SeldonDeployment parseServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
-    String modelName = spec.getModelName();
-    String modelType = spec.getModelType();
-    String modelURI = spec.getModelURI();
-
-    SeldonDeployment seldonDeployment;
-    if (modelType.equals("tensorflow")){
-      seldonDeployment = new SeldonTFServing(modelName, modelURI);
-    } else if (modelType.equals("pytorch")){
-      seldonDeployment = new SeldonPytorchServing(modelName, modelURI);
-    } else {
-      throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
-    }
-    return seldonDeployment;
   }
 
 }

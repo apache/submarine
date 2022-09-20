@@ -41,9 +41,7 @@ def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
         reuse=True,
         scope=scope_bn,
     )
-    return tf.cond(
-        pred=tf.cast(train_phase, tf.bool), true_fn=lambda: bn_train, false_fn=lambda: bn_infer
-    )
+    return tf.cond(pred=tf.cast(train_phase, tf.bool), true_fn=lambda: bn_train, false_fn=lambda: bn_infer)
 
 
 def dnn_layer(
@@ -54,7 +52,7 @@ def dnn_layer(
     dropout,
     batch_norm_decay=0.9,
     l2_reg=0,
-    **kwargs
+    **kwargs,
 ):
     """
     The Multi Layer Perceptron
@@ -72,7 +70,6 @@ def dnn_layer(
     """
     with tf.compat.v1.variable_scope("DNN_Layer"):
         if batch_norm:
-
             if estimator_mode == tf.estimator.ModeKeys.TRAIN:
                 train_phase = True
             else:
@@ -133,9 +130,7 @@ def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
         )
 
         feat_weights = tf.nn.embedding_lookup(params=linear_weight, ids=feat_ids)
-        linear_out = (
-            tf.reduce_sum(input_tensor=tf.multiply(feat_weights, feat_vals), axis=1) + linear_bias
-        )
+        linear_out = tf.reduce_sum(input_tensor=tf.multiply(feat_weights, feat_vals), axis=1) + linear_bias
     return linear_out
 
 
@@ -208,24 +203,21 @@ class KMaxPooling(Layer):
     """
 
     def __init__(self, k=1, axis=-1, **kwargs):
-
         self.dims = 1
         self.k = k
         self.axis = axis
-        super(KMaxPooling, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def build(self, input_shape):
-
         if self.axis < 1 or self.axis > len(input_shape):
             raise ValueError("axis must be 1~%d,now is %d" % (len(input_shape), self.axis))
 
         if self.k < 1 or self.k > input_shape[self.axis]:
             raise ValueError("k must be in 1 ~ %d,now k is %d" % (input_shape[self.axis], self.k))
         self.dims = len(input_shape)
-        super(KMaxPooling, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, inputs):
-
         perm = list(range(self.dims))
         perm[-1], perm[self.axis] = perm[self.axis], perm[-1]
         shifted_input = tf.transpose(a=inputs, perm=perm)
@@ -244,5 +236,5 @@ class KMaxPooling(Layer):
         self,
     ):
         config = {"k": self.k, "axis": self.axis}
-        base_config = super(KMaxPooling, self).get_config()
+        base_config = super().get_config()
         return dict(list(base_config.items()) + list(config.items()))

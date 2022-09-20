@@ -149,9 +149,7 @@ class AbstractStore:
         pass
 
     @abstractmethod
-    def update_model_version_description(
-        self, name: str, version: int, description: str
-    ) -> ModelVersion:
+    def update_model_version_description(self, name: str, version: int, description: str) -> ModelVersion:
         """
         Update description associated with the version of model in backend.
         :param name: Registered model name.

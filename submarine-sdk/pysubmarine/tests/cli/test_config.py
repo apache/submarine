@@ -26,8 +26,8 @@ def test_list_config():
     _config = loadConfig()
     assert result.exit_code == 0
     assert "SubmarineCliConfig" in result.output
-    assert '"hostname": "{}"'.format(_config.connection.hostname) in result.output
-    assert '"port": {}'.format(_config.connection.port) in result.output
+    assert f'"hostname": "{_config.connection.hostname}"' in result.output
+    assert f'"port": {_config.connection.port}' in result.output
 
 
 def test_init_config():
@@ -36,8 +36,8 @@ def test_init_config():
     result = runner.invoke(main.entry_point, ["config", "list"])
     _default_config = SubmarineCliConfig()
     assert result.exit_code == 0
-    assert '"hostname": "{}"'.format(_default_config.connection.hostname) in result.output
-    assert '"port": {}'.format(_default_config.connection.port) in result.output
+    assert f'"hostname": "{_default_config.connection.hostname}"' in result.output
+    assert f'"port": {_default_config.connection.port}' in result.output
 
 
 def test_get_set_experiment():
@@ -47,16 +47,14 @@ def test_get_set_experiment():
     result = runner.invoke(main.entry_point, ["config", "get", "connection.hostname"])
     assert result.exit_code == 0
     _config = loadConfig()
-    assert "connection.hostname={}".format(_config.connection.hostname) in result.output
+    assert f"connection.hostname={_config.connection.hostname}" in result.output
 
-    result = runner.invoke(
-        main.entry_point, ["config", "set", "connection.hostname", mock_hostname]
-    )
+    result = runner.invoke(main.entry_point, ["config", "set", "connection.hostname", mock_hostname])
     assert result.exit_code == 0
 
     result = runner.invoke(main.entry_point, ["config", "get", "connection.hostname"])
     assert result.exit_code == 0
     _config = loadConfig()
-    assert "connection.hostname={}".format(mock_hostname) in result.output
+    assert f"connection.hostname={mock_hostname}" in result.output
     assert mock_hostname == _config.connection.hostname
     initConfig()

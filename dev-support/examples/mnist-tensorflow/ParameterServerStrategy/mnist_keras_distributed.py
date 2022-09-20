@@ -14,6 +14,8 @@
  specific language governing permissions and limitations
  under the License.
 """
+# Reference: https://www.tensorflow.org/tutorials/distribute/parameter_server_training
+
 import json
 import os
 
@@ -80,8 +82,3 @@ if __name__ == "__main__":
         submarine.log_metric("val_loss", hist.history["loss"][i], i)
         submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
     model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
-
-"""
-Reference:
-https://www.tensorflow.org/tutorials/distribute/parameter_server_training
-"""

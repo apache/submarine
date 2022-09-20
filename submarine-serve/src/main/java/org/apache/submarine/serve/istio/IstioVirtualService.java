@@ -22,6 +22,7 @@ import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.IstioConstants;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 public class IstioVirtualService implements KubernetesObject {
   @SerializedName("apiVersion")
@@ -48,12 +49,12 @@ public class IstioVirtualService implements KubernetesObject {
     this.spec = spec;
   }
 
-  public IstioVirtualService(String modelName, Integer modelVersion) {
+  public IstioVirtualService(Long id, String modelResourceName, Integer modelVersion) {
     V1ObjectMeta metadata = new V1ObjectMeta();
-    metadata.setName(modelName);
-    metadata.setNamespace(IstioConstants.DEFAULT_NAMESPACE);
+    metadata.setName(modelResourceName);
+    metadata.setNamespace(K8sUtils.getNamespace());
     setMetadata(metadata);
-    setSpec(new IstioVirtualServiceSpec(modelName, modelVersion));
+    setSpec(new IstioVirtualServiceSpec(id, modelResourceName, modelVersion));
   }
 
   public IstioVirtualService(V1ObjectMeta metadata) {

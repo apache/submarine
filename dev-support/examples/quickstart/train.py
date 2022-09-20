@@ -71,9 +71,7 @@ def main():
     with strategy.scope():
         ds_train = make_datasets_unbatched().batch(BATCH_SIZE).repeat()
         options = tf.data.Options()
-        options.experimental_distribute.auto_shard_policy = (
-            tf.data.experimental.AutoShardPolicy.DATA
-        )
+        options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.DATA
         ds_train = ds_train.with_options(options)
         # Model building/compiling need to be within `strategy.scope()`.
         multi_worker_model = build_and_compile_cnn_model()
@@ -86,6 +84,8 @@ def main():
             submarine.log_metric("accuracy", logs["accuracy"], epoch)
 
     multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
+    # save model
+    submarine.save_model(multi_worker_model, "tensorflow")
 
 
 if __name__ == "__main__":

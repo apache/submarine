@@ -14,6 +14,7 @@
  specific language governing permissions and limitations
  under the License.
 """
+# Reference: https://www.tensorflow.org/api_docs/python/tf/distribute/MirroredStrategy
 
 import os
 
@@ -27,7 +28,7 @@ mnist_train, mnist_test = datasets["train"], datasets["test"]
 
 strategy = tf.distribute.MirroredStrategy()
 
-print("Number of devices: {}".format(strategy.num_replicas_in_sync))
+print(f"Number of devices: {strategy.num_replicas_in_sync}")
 
 # You can also do info.splits.total_num_examples to get the total
 # number of examples in the dataset.
@@ -88,7 +89,7 @@ def decay(epoch):
 # Define a callback for printing the learning rate at the end of each epoch.
 class PrintLR(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
-        print("\nLearning rate for epoch {} is {}".format(epoch + 1, model.optimizer.lr.numpy()))
+        print(f"\nLearning rate for epoch {epoch + 1} is {model.optimizer.lr.numpy()}")
         submarine.log_metric("lr", model.optimizer.lr.numpy())
         submarine.save_model(model, "tensorflow", "mnist-tf")
 
@@ -109,9 +110,6 @@ if __name__ == "__main__":
         submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
     model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
     eval_loss, eval_acc = model.evaluate(eval_dataset)
-    print("Eval loss: {}, Eval accuracy: {}".format(eval_loss, eval_acc))
+    print(f"Eval loss: {eval_loss}, Eval accuracy: {eval_acc}")
     submarine.log_param("loss", eval_loss)
     submarine.log_param("acc", eval_acc)
-"""Reference:
-https://www.tensorflow.org/api_docs/python/tf/distribute/MirroredStrategy
-"""

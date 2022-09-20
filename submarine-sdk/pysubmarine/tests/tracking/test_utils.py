@@ -14,8 +14,7 @@
 # limitations under the License.
 
 import os
-
-import mock
+from unittest import mock
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore

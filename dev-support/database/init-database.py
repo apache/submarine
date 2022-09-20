@@ -35,7 +35,7 @@ def commit(sql):
         conn.commit()
 
     except mysql.connector.Error as err:
-        print("Something went wrong: {}".format(err))
+        print(f"Something went wrong: {err}")
         # Rolling back in case of error
         conn.rollback()
 

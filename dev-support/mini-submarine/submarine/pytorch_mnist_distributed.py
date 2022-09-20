@@ -24,7 +24,6 @@ using the Adam optimizer, updating the model parameters on shared parameter serv
 The current training accuracy is printed out after every 100 steps.
 """
 
-from __future__ import division, print_function
 
 import argparse
 import os
@@ -37,7 +36,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torchvision import datasets, transforms
 
 
-class AverageMeter(object):
+class AverageMeter:
     def __init__(self):
         self.sum = 0
         self.count = 0
@@ -51,7 +50,7 @@ class AverageMeter(object):
         return self.sum / self.count
 
 
-class AccuracyMeter(object):
+class AccuracyMeter:
     def __init__(self):
         self.correct = 0
         self.count = 0
@@ -68,7 +67,7 @@ class AccuracyMeter(object):
         return self.correct / self.count
 
 
-class Trainer(object):
+class Trainer:
     def __init__(self, net, optimizer, train_loader, test_loader, device):
         self.net = net
         self.optimizer = optimizer
@@ -136,7 +135,7 @@ class Trainer(object):
 
 class Net(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.fc = nn.Linear(784, 10)
 
     def forward(self, x):
@@ -155,9 +154,7 @@ def get_dataloader(root, batch_size):
     train_set = datasets.MNIST(root, train=True, transform=transform, download=True)
     sampler = DistributedSampler(train_set)
 
-    train_loader = DataLoader(
-        train_set, batch_size=batch_size, shuffle=(sampler is None), sampler=sampler
-    )
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=(sampler is None), sampler=sampler)
 
     test_loader = DataLoader(
         datasets.MNIST(root, train=False, transform=transform, download=True),
@@ -184,7 +181,7 @@ def solve(args):
         test_loss, test_acc = trainer.evaluate()
 
         print(
-            "Epoch: {}/{},".format(epoch, args.epochs),
+            f"Epoch: {epoch}/{args.epochs},",
             "train loss: {:.6f}, train acc: {:.6f}, test loss: {:.6f}, test acc: {:.6f}.".format(
                 train_loss, train_acc, test_loss, test_acc
             ),

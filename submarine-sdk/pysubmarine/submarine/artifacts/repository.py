@@ -49,7 +49,7 @@ class Repository:
 
     def log_artifacts(self, dest_path: str, local_dir: str) -> str:
         local_dir = os.path.abspath(local_dir)
-        for (root, _, filenames) in os.walk(local_dir):
+        for root, _, filenames in os.walk(local_dir):
             upload_path = dest_path
             if root != local_dir:
                 rel_path = os.path.relpath(root, local_dir)

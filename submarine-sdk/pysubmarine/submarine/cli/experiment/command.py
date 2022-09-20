@@ -31,9 +31,7 @@ from submarine.client.exceptions import ApiException
 submarineCliConfig = loadConfig()
 
 experimentClient = ExperimentClient(
-    host="http://{}:{}".format(
-        submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
-    )
+    host=f"http://{submarineCliConfig.connection.hostname}:{submarineCliConfig.connection.port}"
 )
 
 POLLING_INTERVAL = 1  # sec
@@ -85,9 +83,9 @@ def list_experiment():
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("experiment")
@@ -98,7 +96,7 @@ def get_experiment(id):
     try:
         thread = experimentClient.get_experiment_async(id)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Fetching Experiment(id = {} )...".format(id)):
+        with console.status(f"[bold green] Fetching Experiment(id = {id} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -109,13 +107,13 @@ def get_experiment(id):
         result = result.result
 
         json_data = richJSON.from_data(result)
-        console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
+        console.print(Panel(json_data, title=f"Experiment(id = {id} )"))
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("experiment")
@@ -127,7 +125,7 @@ def delete_experiment(id, wait):
     try:
         thread = experimentClient.delete_experiment_async(id)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)):
+        with console.status(f"[bold green] Deleting Experiment(id = {id} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -139,15 +137,15 @@ def delete_experiment(id, wait):
 
         if wait:
             if result["status"] == "Deleted":
-                console.print("[bold green] Experiment(id = {} ) deleted".format(id))
+                console.print(f"[bold green] Experiment(id = {id} ) deleted")
             else:
                 console.print("[bold red] Failed")
                 json_data = richJSON.from_data(result)
-                console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
+                console.print(Panel(json_data, title=f"Experiment(id = {id} )"))
 
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")

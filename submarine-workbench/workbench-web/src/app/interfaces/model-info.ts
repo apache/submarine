@@ -20,7 +20,7 @@
 export interface ModelInfo {
   name: string;
   creationTime: string,
-  lastUpdatedTime: string, 
+  lastUpdatedTime: string,
   tags: string[],
   description: string,
 }

@@ -21,9 +21,7 @@ from submarine.ml.pytorch.model.ctr import AFM
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-conf", help="a JSON configuration file for AFM", type=str)
-    parser.add_argument(
-        "-task_type", default="train", help="train or evaluate, by default is train"
-    )
+    parser.add_argument("-task_type", default="train", help="train or evaluate, by default is train")
     args = parser.parse_args()
 
     trainer = AFM(json_path=args.conf)

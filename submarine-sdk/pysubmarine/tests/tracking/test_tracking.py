@@ -37,9 +37,7 @@ MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
 class TestTracking(unittest.TestCase):
     def setUp(self):
         environ["JOB_ID"] = JOB_ID
-        submarine.set_db_uri(
-            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
-        )
+        submarine.set_db_uri("mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
         self.db_uri = submarine.get_db_uri()
         self.client = SubmarineClient(
             db_uri=self.db_uri,
@@ -99,8 +97,8 @@ class TestTracking(unittest.TestCase):
         input_arr = tensorflow.random.uniform((1, 5))
         model = LinearNNModel()
         model(input_arr)
-        self.client.save_model(model, "tensorflow", "name_1", REGISTERED_MODEL_NAME)
-        self.client.save_model(model, "tensorflow", "name_2", REGISTERED_MODEL_NAME)
+        self.client.save_model(model, "tensorflow", REGISTERED_MODEL_NAME)
+        self.client.save_model(model, "tensorflow", REGISTERED_MODEL_NAME)
         # Validate model_versions
         model_versions = self.model_registry.list_model_versions(REGISTERED_MODEL_NAME)
         assert len(model_versions) == 2

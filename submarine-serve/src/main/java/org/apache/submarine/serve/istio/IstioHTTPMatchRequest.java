@@ -18,22 +18,49 @@
  */
 package org.apache.submarine.serve.istio;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 public class IstioHTTPMatchRequest {
+
   @SerializedName("uri")
+  @JsonProperty("uri")
   private IstioPrefix prefix;
+
+  public IstioHTTPMatchRequest() {
+  }
 
   public IstioHTTPMatchRequest(String prefix) {
     this.prefix = new IstioPrefix(prefix);
   }
 
   public static class IstioPrefix {
+
     @SerializedName("prefix")
+    @JsonProperty("prefix")
     private String path;
+
+    public IstioPrefix() {
+    }
 
     public IstioPrefix(String path){
       this.path = path;
     }
+
+    public String getPath() {
+      return path;
+    }
+
+    public void setPath(String path) {
+      this.path = path;
+    }
+  }
+
+  public IstioPrefix getPrefix() {
+    return prefix;
+  }
+
+  public void setPrefix(IstioPrefix prefix) {
+    this.prefix = prefix;
   }
 }

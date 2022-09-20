@@ -51,7 +51,7 @@ class SqlAlchemyStore(AbstractStore):
                        <https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls>`_
                        for format specifications. Submarine supports the dialects ``mysql``.
         """
-        super(SqlAlchemyStore, self).__init__()
+        super().__init__()
         self.db_uri = db_uri
         self.db_type = extract_db_type_from_uri(db_uri)
         self.engine = sqlalchemy.create_engine(db_uri, pool_pre_ping=True)

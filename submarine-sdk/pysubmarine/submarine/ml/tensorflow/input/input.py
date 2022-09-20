@@ -28,7 +28,7 @@ def libsvm_input_fn(
     num_epochs: int = 3,  # pylint: disable=W0613
     perform_shuffle: bool = False,
     delimiter: str = " ",
-    **kwargs
+    **kwargs,
 ):
     def _input_fn():
         def decode_libsvm(line):

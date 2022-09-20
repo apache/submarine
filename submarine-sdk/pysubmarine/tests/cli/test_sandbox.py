@@ -24,12 +24,12 @@ def test_start_sandbox():
     runner = CliRunner()
     result = runner.invoke(main.entry_point, ["sandbox", "start"])
     assert result.exit_code == 0
-    assert "start sandbox! version={}".format(default_version) in result.output
+    assert f"start sandbox! version={default_version}" in result.output
 
     runner = CliRunner()
     result = runner.invoke(main.entry_point, ["sandbox", "start", "-v", mock_version])
     assert result.exit_code == 0
-    assert "start sandbox! version={}".format(mock_version) in result.output
+    assert f"start sandbox! version={mock_version}" in result.output
 
 
 def test_delete_sandbox():

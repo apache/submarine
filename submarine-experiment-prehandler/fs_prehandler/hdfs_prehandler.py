@@ -20,6 +20,7 @@ import subprocess
 from fs_prehandler import FsPreHandler
 from fsspec.implementations.arrow import HadoopFileSystem
 
+
 class HDFSPreHandler(FsPreHandler):
     def __init__(self):
         self.hdfs_host=os.environ['HDFS_HOST']
