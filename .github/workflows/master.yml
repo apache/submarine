@@ -16,7 +16,13 @@
 name: Submarine
 
 # Trigger the workflow on push or pull request
-on: [push, pull_request]
+# on: [push, pull_request]
+# TODO: restore
+on:
+pull_request:
+push:
+  branches:
+    - main
 
 env:
   VERSION: "0.8.0-SNAPSHOT"
@@ -560,7 +566,7 @@ jobs:
         with:
           path: |
             ./submarine-server/server-submitter/target/jacoco.exec
-          key: ${{ runner.os }}-docker-${{ github.sha }}      
+          key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache submitter-k8s jacoco.exec
         uses: actions/cache@v2
         with:
