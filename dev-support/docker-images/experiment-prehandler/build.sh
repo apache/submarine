@@ -19,6 +19,12 @@ set -euxo pipefail
 SUBMARINE_VERSION=0.8.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}"
 
+if [ -L ${BASH_SOURCE-$0} ]; then
+  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
+else
+  PWD=$(dirname ${BASH_SOURCE-$0})
+fi
+
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
@@ -33,7 +39,11 @@ trap "test -f $tmpfile && rm $tmpfile" RETURN
 curl -L -o $tmpfile ${HADOOP_TAR_URL}
 mv $tmpfile ${CURRENT_PATH}/tmp/hadoop-3.3.3.tar.gz
 
+curl -L -o ${CURRENT_PATH}/tmp/hadoop-aws-3.3.3.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.3/hadoop-aws-3.3.3.jar 
+curl -L -o ${CURRENT_PATH}/tmp/aws-java-sdk-bundle-1.12.267.jar https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.267/aws-java-sdk-bundle-1.12.267.jar
+
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
+cd ${CURRENT_PATH}
 docker build -t ${SUBMARINE_IMAGE_NAME} .
 
 # clean temp file

@@ -21,7 +21,8 @@ RUN apt-get -y install python3 python3-pip bash tini
 
 ADD ./tmp/hadoop-3.3.3.tar.gz /opt/
 ADD ./tmp/submarine-experiment-prehandler /opt/submarine-experiment-prehandler
-
+ADD ./tmp/hadoop-aws-3.3.3.jar /opt/hadoop-3.3.3/share/hadoop/hdfs
+ADD ./tmp/aws-java-sdk-bundle-1.12.267.jar /opt/hadoop-3.3.3/share/hadoop/hdfs
 
 ENV HADOOP_HOME=/opt/hadoop-3.3.3
 ENV ARROW_LIBHDFS_DIR=/opt/hadoop-3.3.3/lib/native

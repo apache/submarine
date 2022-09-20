@@ -22,6 +22,7 @@ package org.apache.submarine.server.submitter.k8s.model.xgboostjob;
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.generic.options.CreateOptions;
@@ -75,11 +76,16 @@ public class XGBoostJob extends MLJob {
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
-
+      V1Container initContainer = this.getExperimentHandlerContainer(experimentSpec);
       if (XGBoostJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = ExperimentSpecParser.parseTemplateSpec(taskSpec, experimentSpec);
+        
+        if (initContainer != null && replicaType.equals("Master")) {
+          podTemplateSpec.getSpec().addInitContainersItem(initContainer);  
+        }
+        
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {

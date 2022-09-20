@@ -22,5 +22,12 @@
       "replicas": 2,
       "resources": "cpu=1,memory=1024M"
     }
+  },
+  "experimentHandlerSpec": {
+    "FILE_SYSTEM_TYPE": "HDFS",
+    "HDFS_HOST": "127.0.0.1",
+    "HDFS_PORT": "9000",
+    "HDFS_SOURCE": "/tmp",
+    "ENABLE_KERBEROS": "false"
   }
 }
