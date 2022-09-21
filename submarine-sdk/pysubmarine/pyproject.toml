@@ -1,3 +1,0 @@
-[tool.pytest.ini_options]
-markers = ["e2e"]
-addopts = "-vs --strict-markers --cov submarine --cov-report term-missing"
