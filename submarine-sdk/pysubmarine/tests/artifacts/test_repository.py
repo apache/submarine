@@ -21,7 +21,6 @@ def test_log_artifact():
     local_file.unlink()
 
     common_prefixes = repo.list_artifact_subfolder("folder01")
-    print(common_prefixes)
     assert common_prefixes == [{"Prefix": "folder01/subfolder01/"}]
 
 
@@ -49,7 +48,6 @@ def test_log_artifacts():
     assert s3_folder_name == "s3://submarine/folder01/data"
 
     common_prefixes = repo.list_artifact_subfolder("folder01")
-    print(common_prefixes)
     assert common_prefixes == [{"Prefix": "folder01/data/"}]
 
 
@@ -70,5 +68,4 @@ def test_delete_folder():
     repo.delete_folder("folder01/subfolder01")
 
     common_prefixes = repo.list_artifact_subfolder("folder01")
-    print(common_prefixes)
     assert common_prefixes == [{"Prefix": "folder01/subfolder02/"}]
