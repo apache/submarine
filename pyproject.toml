@@ -26,7 +26,3 @@ skip-string-normalization = true
 [tool.mypy]
 plugins = "sqlalchemy.ext.mypy.plugin"
 ignore_missing_imports = true  # suppress `Cannot find implementation or library stub` error
-
-[tool.pytest.ini_options]
-addopts = "--strict-markers"
-markers = ["e2e"]
