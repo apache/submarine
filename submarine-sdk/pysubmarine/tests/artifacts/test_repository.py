@@ -40,9 +40,7 @@ def test_log_artifacts():
         file.write("test")
 
     repo = Repository()
-    s3_folder_name = repo.log_artifacts(
-        dest_path="folder01/data", local_dir=str(local_dir)
-    )
+    s3_folder_name = repo.log_artifacts(dest_path="folder01/data", local_dir=str(local_dir))
 
     for item in local_dir.iterdir():
         item.unlink()
@@ -64,12 +62,8 @@ def test_delete_folder():
     with local_file.open("w", encoding="utf-8") as file:
         file.write("test")
 
-    s3.meta.client.upload_file(
-        str(local_file), "submarine", "folder01/subfolder01/text.txt"
-    )
-    s3.meta.client.upload_file(
-        str(local_file), "submarine", "folder01/subfolder02/text.txt"
-    )
+    s3.meta.client.upload_file(str(local_file), "submarine", "folder01/subfolder01/text.txt")
+    s3.meta.client.upload_file(str(local_file), "submarine", "folder01/subfolder02/text.txt")
     local_file.unlink()
 
     repo = Repository()
