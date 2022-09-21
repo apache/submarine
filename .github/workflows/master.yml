@@ -16,13 +16,7 @@
 name: Submarine
 
 # Trigger the workflow on push or pull request
-# on: [push, pull_request]
-# TODO: restore
-on:
-pull_request:
-push:
-  branches:
-    - main
+on: [push, pull_request]
 
 env:
   VERSION: "0.8.0-SNAPSHOT"
