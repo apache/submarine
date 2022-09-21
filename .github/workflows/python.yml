@@ -78,7 +78,7 @@ jobs:
       - name: List installed packages
         run: pip list
       - name: Run unit test
-        run: pytest --cov=submarine -vs -m "not e2e"
+        run: pytest -m "not e2e"
 
   integration:
     runs-on: ubuntu-latest
@@ -168,7 +168,7 @@ jobs:
           submarine config list
       - name: Run integration test
         working-directory: ./submarine-sdk/pysubmarine
-        run: pytest --cov=submarine -vs -m "e2e"
+        run: pytest -m "e2e"
       - name: Failure status
         run: |
           kubectl describe nodes
