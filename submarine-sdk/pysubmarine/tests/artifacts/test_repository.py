@@ -1,4 +1,5 @@
 import pathlib
+import shutil
 
 import boto3
 from moto import mock_s3
@@ -29,26 +30,33 @@ def test_log_artifacts():
     s3 = boto3.resource("s3")
     s3.create_bucket(Bucket="submarine")
 
+    # create the following directory tree:
+    # data/
+    # ├── subdir-00
+    # │   └── subdir-10
+    # │       └── text1.txt
+    # └── subdir-01
+    #     └── subdir-10
+    #         └── text2.txt
     local_dir = pathlib.Path(__file__).parent / "data"
-    local_dir.mkdir(parents=True, exist_ok=True)
-    local_file1 = local_dir / "text1.txt"
+    (local_dir / "subdir-00" / "subdir-10").mkdir(parents=True, exist_ok=True)
+    (local_dir / "subdir-01" / "subdir-10").mkdir(parents=True, exist_ok=True)
+    local_file1 = local_dir / "subdir-00" / "subdir-10" / "text1.txt"
     with local_file1.open("w", encoding="utf-8") as file:
         file.write("test")
-    local_file2 = local_dir / "text2.txt"
+    local_file2 = local_dir / "subdir-01" / "subdir-10" / "text2.txt"
     with local_file2.open("w", encoding="utf-8") as file:
         file.write("test")
 
     repo = Repository()
-    s3_folder_name = repo.log_artifacts(dest_path="folder01/data", local_dir=str(local_dir))
+    s3_folder_name = repo.log_artifacts(dest_path="data", local_dir=str(local_dir))
 
-    for item in local_dir.iterdir():
-        item.unlink()
-    local_dir.rmdir()
+    shutil.rmtree(local_dir)
 
-    assert s3_folder_name == "s3://submarine/folder01/data"
+    assert s3_folder_name == "s3://submarine/data"
 
-    common_prefixes = repo.list_artifact_subfolder("folder01")
-    assert common_prefixes == [{"Prefix": "folder01/data/"}]
+    common_prefixes = repo.list_artifact_subfolder("data")
+    assert common_prefixes == [{'Prefix': 'data/subdir-00/'}, {'Prefix': 'data/subdir-01/'}]
 
 
 @mock_s3
