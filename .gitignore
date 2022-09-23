@@ -105,3 +105,6 @@ dev-support/docker-images/operator/tmp/
 
 # installation binary
 submarine-serve/installation/istioctl
+
+# mypy
+.mypy_cache/

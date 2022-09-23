@@ -33,7 +33,7 @@ setup(
         "sqlalchemy>=1.4.0",
         "sqlparse",
         "pymysql",
-        "requests",
+        "requests>=2.26.0",  # SUBMARINE-922. avoid GPL dependency.
         "urllib3>=1.15.1",
         "certifi>=14.05.14",
         "python-dateutil>=2.5.3",
