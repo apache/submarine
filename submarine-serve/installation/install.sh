@@ -33,13 +33,3 @@ if [[ ! -f ${CURRENT_PATH}/istioctl ]]; then
 fi
 
 ${CURRENT_PATH}/istioctl install --skip-confirmation
-
-kubectl create ns seldon-system
-kubectl apply -f ${CURRENT_PATH}/seldon-secret.yaml
-helm install seldon-core seldon-core-operator \
-    --repo https://storage.googleapis.com/seldon-charts \
-    --namespace seldon-system \
-    --version 1.10.0 \
-    --set istio.enabled=true \
-    --set executor.defaultEnvSecretRefName=submarine-serve-secret 2> /dev/null
-kubectl apply -f ${CURRENT_PATH}/seldon-gateway.yaml
