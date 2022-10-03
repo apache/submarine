@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 import pytest
 
 # noqa
@@ -32,22 +30,22 @@ LIBSVM_DATA = """0 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 8:0 9:0 10:0 11:0 12:0 13:0 1
 
 
 @pytest.fixture
-def get_model_param(tmpdir):
-    data_file = os.path.join(str(tmpdir), "libsvm.txt")
-    save_model_dir = os.path.join(str(tmpdir), "experiment")
-    os.mkdir(save_model_dir)
+def get_model_param(tmp_path):
+    data_file = tmp_path / "libsvm.txt"
+    save_model_dir = tmp_path / "experiment"
+    save_model_dir.mkdir()
 
-    with open(data_file, "wt") as writer:
+    with data_file.open("wt") as writer:
         writer.write(LIBSVM_DATA)
 
     params = {
         "input": {
-            "train_data": data_file,
-            "valid_data": data_file,
-            "test_data": data_file,
+            "train_data": str(data_file),
+            "valid_data": str(data_file),
+            "test_data": str(data_file),
             "type": "libsvm",
         },
-        "output": {"save_model_dir": save_model_dir, "metric": "roc_auc"},
+        "output": {"save_model_dir": str(save_model_dir), "metric": "roc_auc"},
         "training": {
             "batch_size": 4,
             "num_epochs": 1,
@@ -77,4 +75,4 @@ def get_model_param(tmpdir):
     }
 
     yield params
-    os.remove(data_file)
+    data_file.unlink()
