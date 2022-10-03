@@ -45,3 +45,11 @@ podSecurityPolicy:
 istio:
   enabled: true
   gatewaySelector: ingressgateway
+
+# seldon-core-operator configuration
+seldon-core-operator:
+  enabled: true
+
+# executor configuration
+executor:
+  defaultEnvSecretRefName: submarine-serve-secret 2> /dev/null

@@ -29,3 +29,4 @@ dependencies:
   - name: seldon-core-operator
     version: "1.10.0"
     repository: https://storage.googleapis.com/seldon-charts
+    condition: seldon-core-operator.enabled
