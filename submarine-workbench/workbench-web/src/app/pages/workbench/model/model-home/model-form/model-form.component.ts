@@ -29,6 +29,9 @@ import { NzMessageService } from 'ng-zorro-antd';
     styleUrls: ['./model-form.component.scss']
 })
 export class ModelFormComponent implements OnInit {
+
+  @Input() fetchModelCards;
+
   isVisible: boolean;
   modelForm: FormGroup;
 
@@ -37,14 +40,14 @@ export class ModelFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modelService: ModelService,
-    private nzMessageService: NzMessageService,
+    private nzMessageService: NzMessageService
   ) {}
 
   ngOnInit(): void {
     this.modelForm = this.fb.group({
       modelName: [null, Validators.required],
       description: [null],
-      tags: this.fb.array([]),
+      tags: this.fb.array([])
     });
     this.fetchRegisteredModelList();
   }
@@ -57,7 +60,7 @@ export class ModelFormComponent implements OnInit {
     return this.modelForm.get("description");
   }
 
-  get tags(){
+  get tags() {
     return this.modelForm.get("tags");
   }
 
@@ -65,12 +68,12 @@ export class ModelFormComponent implements OnInit {
       this.isVisible = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.modelForm.reset();
     this.isVisible = false;
   }
 
-  fetchRegisteredModelList(){
+  fetchRegisteredModelList() {
     this.modelService.fetchModelList().subscribe(list => {
       list.forEach(e => {
         this.registeredModelList.push(e.name);
@@ -83,25 +86,25 @@ export class ModelFormComponent implements OnInit {
   }
 
   submitForm() {
-    const modelInfo : ModelInfo = {
+    const modelInfo: ModelInfo = {
       name: this.modelName.value,
       creationTime: null,
       lastUpdatedTime: null,
       description: this.description.value,
-      tags: this.tags.value,
+      tags: this.tags.value
     }
     this.modelService.createModel(modelInfo).subscribe({
       next: (result) => {
-        console.log(result)
         this.nzMessageService.success('Create Model Registry Success!');
         this.closeModal();
+        // refresh model card list
+        this.fetchModelCards();
       },
       error: (msg) => {
-        console.log(msg)
         this.nzMessageService.error(`Model registry with name: ${modelInfo.name} is exist.`, {
-          nzPauseOnHover: true,
+          nzPauseOnHover: true
         });
-      },
+      }
     })
   }
 }

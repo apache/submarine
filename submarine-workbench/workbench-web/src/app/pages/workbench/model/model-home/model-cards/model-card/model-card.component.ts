@@ -18,7 +18,7 @@
  */
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelVersionService } from '@submarine/services/model-version.service';
 import { ModelService } from '@submarine/services/model.service';
@@ -31,6 +31,8 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class ModelCardComponent implements OnInit {
   @Input() card: ModelInfo;
+  // tslint:disable-next-line:prefer-output-readonly
+  @Output() private refreshCards = new EventEmitter<boolean>();
   description: string;
 
   constructor(private modelService: ModelService, private modelVersionService: ModelVersionService,
@@ -49,9 +51,10 @@ export class ModelCardComponent implements OnInit {
     this.modelService.deleteModel(modelName).subscribe({
       next: (result) => {
         this.nzMessageService.success('Delete registered model success!');
+        // send EventEmitter true to refresh cards
+        this.refreshCards.emit(true)
       },
-      error: (err: HttpErrorResponse ) => {
-        console.log(err)
+      error: (err: HttpErrorResponse) => {
         this.nzMessageService.error(`${err.error.message}`, {
           nzPauseOnHover: true,
         });

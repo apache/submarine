@@ -20,7 +20,7 @@
 <nz-list nzGrid [nzPagination]="pagination" [nzLoading]="isLoading">
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="6" *ngFor="let card of onPageModelCards; let i = index">
-      <submarine-model-card [card]="card"></submarine-model-card>
+      <submarine-model-card [card]="card" (refreshCards)="refreshCards($event)"></submarine-model-card>
     </div>
   </div>
   <ng-template #pagination>

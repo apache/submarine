@@ -27,6 +27,8 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
 export class ModelCardsComponent implements OnInit {
   @Input() modelCards: Array<ModelInfo>;
   @Input() isLoading: boolean;
+  @Input() fetchModelCards;
+
   nowPage: number;
   totalPages: number;
   onPageModelCards: Array<ModelInfo>;
@@ -47,5 +49,9 @@ export class ModelCardsComponent implements OnInit {
     this.totalPages = this.modelCards.length;
     let start = this.pageUnit * (newPage - 1);
     this.onPageModelCards = this.modelCards.filter((_, index) => index < start + this.pageUnit && index >= start);
+  }
+
+  refreshCards(refresh: boolean) {
+    if (refresh) { this.fetchModelCards(); }
   }
 }

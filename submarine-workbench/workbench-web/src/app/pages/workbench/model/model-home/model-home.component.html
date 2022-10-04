@@ -36,7 +36,7 @@
           <submarine-model-tag [tag]="selected.nzLabel" [type]="'selection'"></submarine-model-tag>
         </ng-template>
       </nz-select>
-      
+
     </div>
     <div nz-col [nzOffset]="12" align="right">
       <button
@@ -49,8 +49,7 @@
       </button>
     </div>
   </div>
-  <model-form #form></model-form>
+  <model-form #form [fetchModelCards]="fetchModelCards"></model-form>
   <nz-divider></nz-divider>
-  <submarine-model-cards [modelCards]="onDisplayModelCards" [isLoading]="isModelCardsLoading"></submarine-model-cards>
+  <submarine-model-cards [modelCards]="onDisplayModelCards" [isLoading]="isModelCardsLoading" [fetchModelCards]="fetchModelCards"></submarine-model-cards>
 </div>
-  
