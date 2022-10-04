@@ -49,7 +49,7 @@ istio:
 # seldon-core-operator configuration
 seldon-core-operator:
   enabled: true
-
-# executor configuration
-executor:
-  defaultEnvSecretRefName: submarine-serve-secret 2> /dev/null
+  istio:
+    enabled: true
+  executor:
+    defaultEnvSecretRefName: submarine-serve-secret 2> /dev/null
