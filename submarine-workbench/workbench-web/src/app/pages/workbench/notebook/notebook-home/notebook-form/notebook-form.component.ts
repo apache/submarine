@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
@@ -44,6 +44,9 @@ export class NotebookFormComponent implements OnInit {
   // Form
   notebookForm: FormGroup;
   MEMORY_UNITS = ['M', 'Gi'];
+
+  // refresh notebook list function
+  @Output() private refreshNotebook = new EventEmitter<boolean>();
 
   constructor(
     private fb: FormBuilder,
@@ -212,6 +215,8 @@ export class NotebookFormComponent implements OnInit {
           nzPauseOnHover: true,
         });
         this.isVisible = false;
+        // refresh list after created a new notebook
+        this.refreshNotebook.emit(true);
       },
     });
   }

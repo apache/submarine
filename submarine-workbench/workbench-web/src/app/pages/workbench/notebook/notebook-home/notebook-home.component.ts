@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NotebookInfo } from "@submarine/interfaces/notebook-interfaces/notebook-info";
 import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { UserService } from '@submarine/services/user.service';
 import { isEqual } from 'lodash';
-import { NotebookFormComponent } from './notebook-form/notebook-form.component';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { interval, Subscription } from 'rxjs';
+import { NotebookFormComponent } from './notebook-form/notebook-form.component';
 
 @Component({
   selector: 'submarine-notebook-home',
@@ -35,7 +36,7 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
   userId;
 
   // Notebook list
-  notebookList;
+  notebookList: NotebookInfo[] = [];
 
   subscribtions = new Subscription();
 
@@ -50,17 +51,55 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userService.fetchUserInfo().subscribe((res) => {
       this.userId = res.id;
+      // get notebook list first
+      this.refreshNotebook(true);
     });
 
+    // add a loop to refresh notebook
     const resourceSub = interval(10000).subscribe(() => {
-      this.notebookService.fetchNotebookList(this.userId).subscribe((res) => {
-        if (!isEqual(this.notebookList, res)) {
-          this.notebookList = res;
-        }
-      });
+      this.refreshNotebook(false);
     });
-
     this.subscribtions.add(resourceSub);
+  }
+
+  /**
+   * refresh notebook list
+   * @param total total refresh
+   */
+  refreshNotebook(total: boolean) {
+    this.notebookService.fetchNotebookList(this.userId).subscribe((res) => {
+      if (total) {
+        // Direct override of all, suitable in case of add/delete
+        this.notebookList = res;
+      } else {// Partial refresh required
+        // exists list size
+        const currentListSize = this.notebookList.length;
+        // The backend returns a real-time list
+        const newListSize = res.length;
+        for (let i = 0; i < newListSize; i++) {
+          // The latest notebook info
+          const notebook = res[i]
+          // If a new row is found, insert it directly into
+          if (i > currentListSize - 1) {
+            this.notebookList = [...this.notebookList, notebook]
+          } else {
+            // Otherwise compare relevant information and update
+            let current = this.notebookList[i];
+            // compare
+            const keys = Object.keys(current);
+            for (const key of keys) {
+              if (!isEqual(current[key], notebook[key])) {
+                current[key] = notebook[key]
+              }
+            }
+          }
+        }
+        // Delete redundant rows
+        if (currentListSize > newListSize) {
+          this.notebookList = this.notebookList.splice(0, newListSize - currentListSize);
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -76,9 +115,11 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
         });
       },
       complete: () => {
-        this.nzMessageService.info(`Delete Notebook...`, {
+        this.nzMessageService.info(`Deleted Notebook!`, {
           nzPauseOnHover: true,
         });
+        // refresh notebook list after deleted a row
+        this.refreshNotebook(true);
       },
     });
   }
