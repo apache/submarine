@@ -34,5 +34,5 @@
     [notebookList]="notebookList"
     (deleteNotebook)="onDeleteNotebook($event)"
   ></submarine-notebook-list>
-  <submarine-notebook-form #form></submarine-notebook-form>
+  <submarine-notebook-form #form (refreshNotebook)="refreshNotebook($event)" ></submarine-notebook-form>
 </div>
