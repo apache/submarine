@@ -31,7 +31,8 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class ModelCardComponent implements OnInit {
   @Input() card: ModelInfo;
-  @Output() private outer = new EventEmitter<boolean>();
+  // tslint:disable-next-line:prefer-output-readonly
+  @Output() private refreshCards = new EventEmitter<boolean>();
   description: string;
 
   constructor(private modelService: ModelService, private modelVersionService: ModelVersionService,
@@ -51,7 +52,7 @@ export class ModelCardComponent implements OnInit {
       next: (result) => {
         this.nzMessageService.success('Delete registered model success!');
         // send EventEmitter true to refresh cards
-        this.outer.emit(true)
+        this.refreshCards.emit(true)
       },
       error: (err: HttpErrorResponse) => {
         this.nzMessageService.error(`${err.error.message}`, {
