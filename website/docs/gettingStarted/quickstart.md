@@ -228,6 +228,8 @@ eval $(minikube docker-env)
    4. The experiment is successfully submitted
       ![](/img/quickstart-submit-4-0-7-0.png)
 
+4. In the meantime, we have built this image in docker hub and you can run this experiment directly if you choose `quickstart` in `From predefined experiment library`.
+
 ### 4. Monitor the process
 
 1. In our code, we use `submarine` from `submarine-sdk` to record the metrics. To see the result, click corresponding experiment with name `mnist-example` in the workbench.
