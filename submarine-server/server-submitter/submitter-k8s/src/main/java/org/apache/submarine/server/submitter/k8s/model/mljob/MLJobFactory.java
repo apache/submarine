@@ -52,4 +52,12 @@ public class MLJobFactory {
     }
   }
 
+  /**
+   * Get ml job labelSelector.
+   * The new training-operator has unified label.
+   */
+  public static String getJobLabelSelector(ExperimentSpec experimentSpec) {
+    return String.format("job-name=%s", experimentSpec.getMeta().getExperimentId());
+  }
+
 }
