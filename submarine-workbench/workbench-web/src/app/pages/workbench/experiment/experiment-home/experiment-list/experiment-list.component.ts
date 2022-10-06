@@ -41,7 +41,7 @@ export class ExperimentListComponent implements OnInit {
 
   statusColor: { [key: string]: string } = {
     Accepted: 'gold',
-    Created: 'white',
+    Created: 'lime',
     Running: 'green',
     Succeeded: 'blue',
   };
