@@ -83,6 +83,13 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   }
 
   @Test
+  public void testValidLabel() throws IOException, URISyntaxException {
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    String label = MLJobFactory.getJobLabelSelector(experimentSpec);
+    Assert.assertEquals("job-name=" + experimentSpec.getMeta().getExperimentId(), label);
+  }
+
+  @Test
   public void testValidTensorFlowExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
     ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
