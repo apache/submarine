@@ -23,6 +23,7 @@ import { ExperimentFormService } from '@submarine/services/experiment.form.servi
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { interval } from 'rxjs';
+import { isEqual } from 'lodash';
 import { filter, mergeMap, take, tap, timeout, retryWhen } from 'rxjs/operators';
 import { ExperimentFormComponent } from './experiment-form/experiment-form.component';
 
@@ -38,7 +39,7 @@ export class ExperimentHomeComponent implements OnInit {
     because when we modify the array in child component,
     the modification will be sync to parent.
   */
-  experimentList: ExperimentInfo[];
+  experimentList: ExperimentInfo[] = [];
   isListLoading: boolean = true;
   checkedList: boolean[];
   selectAllChecked: boolean = false;
@@ -49,7 +50,7 @@ export class ExperimentHomeComponent implements OnInit {
   reloadInterval = interval(this.reloadPeriod);
   reloadSub = null;
 
-  //mlflow
+  // mlflow
   isMlflowLoading: boolean = true;
   mlflowUrl: string = '';
 
@@ -86,21 +87,52 @@ export class ExperimentHomeComponent implements OnInit {
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
         this.isListLoading = false;
-        this.experimentList = list;
+        // Partial refresh required
+        // exists list size
+        const currentListSize = this.experimentList.length;
+        // The backend returns a real-time list
+        const newListSize = list.length;
         const currentTime = new Date();
-        this.experimentList.forEach((item) => {
-          if (item.status === 'Succeeded') {
-            const finTime = new Date(item.finishedTime);
-            const runTime = new Date(item.runningTime);
-            const result = (finTime.getTime() - runTime.getTime()) / 1000;
-            item.duration = this.experimentService.durationHandle(result);
-          } else if (item.runningTime) {
-            const runTime = new Date(item.runningTime);
-            const result = (currentTime.getTime() - runTime.getTime()) / 1000;
-            item.duration = this.experimentService.durationHandle(result);
+        // for loop experiment list
+        for (let i = 0; i < newListSize; i++) {
+          // The latest experiment info
+          const experiment = list[i]
+          // If a new row is found, insert it directly into
+          if (i > currentListSize - 1) {
+            this.experimentList = [...this.experimentList, experiment]
+          } else {
+            // Otherwise compare relevant information and update
+            const item = this.experimentList[i];
+            // compare
+            const keys = Object.keys(item);
+            for (const key of keys) {
+              if (key !== 'duration' && !isEqual(item[key], experiment[key])) {
+                item[key] = experiment[key]
+              }
+            }
+            // cal duration
+            if (item.status === 'Succeeded') {
+              const finTime = new Date(item.finishedTime);
+              const runTime = new Date(item.runningTime);
+              const result = (finTime.getTime() - runTime.getTime()) / 1000;
+              item.duration = this.experimentService.durationHandle(result);
+            } else if (item.runningTime) {
+              const runTime = new Date(item.runningTime);
+              const result = (currentTime.getTime() - runTime.getTime()) / 1000;
+              item.duration = this.experimentService.durationHandle(result);
+            } else {
+              const acceptedTime = new Date(item.acceptedTime);
+              const result = (currentTime.getTime() - acceptedTime.getTime()) / 1000;
+              item.duration = this.experimentService.durationHandle(result);
+            }
           }
-        });
-        if(!isAutoReload){
+        }
+        // Delete redundant rows
+        if (currentListSize > newListSize) {
+          this.experimentList = this.experimentList.splice(0, newListSize - currentListSize);
+        }
+
+        if (!isAutoReload) {
           // If it is auto-reloading, we do not want to change the state of checkbox.
           this.checkedList = [];
           for (let i = 0; i < this.experimentList.length; i++) {
@@ -199,4 +231,3 @@ export class ExperimentHomeComponent implements OnInit {
       );
   }
 }
- 
