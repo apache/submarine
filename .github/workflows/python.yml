@@ -42,8 +42,8 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        python-version: ['3.7']  # ['3.7', '3.8', '3.9', '3.10']
+        tf-version: ['2.6.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
         exclude:
           - python-version: '3.8'
             tf-version: '1.15.0'
@@ -80,14 +80,17 @@ jobs:
       - name: Run unit test
         working-directory: ./submarine-sdk/pysubmarine
         run: pytest -m "not e2e"
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: unit tests
 
   integration:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        python-version: ['3.7']  # ['3.7', '3.8', '3.9', '3.10']
+        tf-version: ['2.6.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
         exclude:
           - python-version: '3.8'
             tf-version: '1.15.0'
@@ -170,6 +173,9 @@ jobs:
       - name: Run integration test
         working-directory: ./submarine-sdk/pysubmarine
         run: pytest -m "e2e"
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: integration tests
       - name: Failure status
         run: |
           kubectl describe nodes
