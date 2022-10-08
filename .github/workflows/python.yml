@@ -79,7 +79,7 @@ jobs:
         run: pip list
       - name: Run unit test
         working-directory: ./submarine-sdk/pysubmarine
-        run: pytest -m "not e2e"
+        run: pytest -m "not e2e" --cov-report xml
       - uses: codecov/codecov-action@v3
         with:
           flags: unit
@@ -173,7 +173,7 @@ jobs:
           submarine config list
       - name: Run integration test
         working-directory: ./submarine-sdk/pysubmarine
-        run: pytest -m "e2e"
+        run: pytest -m "e2e" --cov-report xml
       - uses: codecov/codecov-action@v3
         with:
           flags: integration
