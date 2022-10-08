@@ -19,7 +19,7 @@ name: python-sdk
 on: [push, pull_request]
 
 env:
-  KUBERNETES_VERSION: "v1.21.2"
+  KUBERNETES_VERSION: "v1.21.14"
 
 jobs:
   check-style:
@@ -43,7 +43,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.7']  # ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['2.6.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        tf-version: ['1.15.0', '2.9.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
         exclude:
           - python-version: '3.8'
             tf-version: '1.15.0'
@@ -82,7 +82,7 @@ jobs:
         run: pytest -m "not e2e" --cov-report xml
       - uses: codecov/codecov-action@v3
         with:
-          flags: unit
+          flags: python-unit
           root_dir: ./submarine-sdk/pysubmarine
 
   integration:
@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.7']  # ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['2.6.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        tf-version: ['1.15.0', '2.9.0']  # ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
         exclude:
           - python-version: '3.8'
             tf-version: '1.15.0'
@@ -176,7 +176,7 @@ jobs:
         run: pytest -m "e2e" --cov-report xml
       - uses: codecov/codecov-action@v3
         with:
-          flags: integration
+          flags: python-integration
           root_dir: ./submarine-sdk/pysubmarine
       - name: Failure status
         run: |
