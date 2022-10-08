@@ -82,7 +82,7 @@ jobs:
         run: pytest -m "not e2e"
       - uses: codecov/codecov-action@v3
         with:
-          flags: unit tests
+          flags: unit
 
   integration:
     runs-on: ubuntu-latest
@@ -175,7 +175,7 @@ jobs:
         run: pytest -m "e2e"
       - uses: codecov/codecov-action@v3
         with:
-          flags: integration tests
+          flags: integration
       - name: Failure status
         run: |
           kubectl describe nodes
