@@ -16,9 +16,7 @@
 name: Submarine
 
 # Trigger the workflow on push or pull request
-on:
-  push:
-    branches: [master]
+on: [push, pull_request]
 
 env:
   VERSION: "0.8.0-SNAPSHOT"
