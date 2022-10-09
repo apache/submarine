@@ -83,7 +83,8 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: python-unit
-          root_dir: ./submarine-sdk/pysubmarine
+          files: ./submarine-sdk/pysubmarine/coverage.xml
+          name: codecov-unit
 
   integration:
     runs-on: ubuntu-latest
@@ -177,7 +178,8 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: python-integration
-          root_dir: ./submarine-sdk/pysubmarine
+          files: ./submarine-sdk/pysubmarine/coverage.xml
+          name: codecov-integration
       - name: Failure status
         run: |
           kubectl describe nodes
