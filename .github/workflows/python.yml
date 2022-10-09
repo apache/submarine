@@ -19,7 +19,7 @@ name: python-sdk
 on: [push, pull_request]
 
 env:
-  KUBERNETES_VERSION: "v1.21.2"
+  KUBERNETES_VERSION: "v1.21.14"
 
 jobs:
   check-style:
@@ -79,7 +79,12 @@ jobs:
         run: pip list
       - name: Run unit test
         working-directory: ./submarine-sdk/pysubmarine
-        run: pytest -m "not e2e"
+        run: pytest -m "not e2e" --cov-report xml
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: python-unit
+          files: ./submarine-sdk/pysubmarine/coverage.xml
+          name: codecov-unit
 
   integration:
     runs-on: ubuntu-latest
@@ -169,7 +174,12 @@ jobs:
           submarine config list
       - name: Run integration test
         working-directory: ./submarine-sdk/pysubmarine
-        run: pytest -m "e2e"
+        run: pytest -m "e2e" --cov-report xml
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: python-integration
+          files: ./submarine-sdk/pysubmarine/coverage.xml
+          name: codecov-integration
       - name: Failure status
         run: |
           kubectl describe nodes

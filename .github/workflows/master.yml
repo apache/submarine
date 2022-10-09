@@ -30,7 +30,7 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.18.20\", \"v1.19.16\", \"v1.20.15\", \"v1.21.10\"]"
+          echo "::set-output name=matrix::[\"v1.18.20\", \"v1.19.16\", \"v1.20.15\", \"v1.21.14\"]"
   submarine-operator-verify-codegen:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -754,7 +754,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./target/coverage/all.xml
       - name: Delete temporary build artifacts before caching
