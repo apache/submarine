@@ -39,6 +39,7 @@ Running operator out-of-cluster is very handy for development
 
 ```bash
 # Step1: Install helm chart dependencies, --set dev=true option will not install the operator deployment to the cluster
+helm dependency update ./helm-charts/submarine
 helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine
 
 # Step2: Build & Run "submarine-operator"
@@ -104,6 +105,7 @@ eval $(minikube docker-env)
 make image
 
 # Step2: Install helm dependencies
+helm dependency update ./helm-charts/submarine
 helm install --wait --set dev=true submarine ../helm-charts/submarine
 
 # Step3: Run Tests

@@ -44,6 +44,7 @@ istiod-699b647f8b-nx9rt                 1/1     Running   2          7d4h
 Before running submarine operator, install submarine dependencies with helm. `--set dev=true` option will not install the operator deployment to the cluster.
 
 ```bash
+helm dependency update ./helm-charts/submarine
 helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine-cloud-v3-system
 ```
 
@@ -137,6 +138,7 @@ eval $(minikube docker-env -u)
 # running Step3 will create it.
 # However, note that if podSecurityPolicy is enabled,
 # the submarine operator pod will not be permitted until running this
+helm dependency update ./helm-charts/submarine
 helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine-cloud-v3-system
 
 # Step3: Deploy the operator.

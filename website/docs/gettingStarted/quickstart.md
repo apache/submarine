@@ -65,6 +65,8 @@ kubectl label namespace submarine-user-test istio-injection=enabled
 3. Install the submarine operator and dependencies by helm chart
 
 ```bash
+# We move seldon-core install to helm, thus we need to update our dependency.
+helm dependency update ./helm-charts/submarine
 helm install submarine ./helm-charts/submarine -n submarine
 ```
 
@@ -74,7 +76,7 @@ helm install submarine ./helm-charts/submarine -n submarine
 kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
 ```
 
-5. Install submarine serve package istio and seldon-core
+5. Install submarine serve package istio
 
 ```bash
 ./submarine-serve/installation/install.sh
@@ -296,5 +298,4 @@ Events:            <none>
 6. After successfully serving the model, we can test the results of serving using the test python code [serve_predictions.py](https://github.com/apache/submarine/blob/master/dev-support/examples/quickstart/serve_predictions.py)
 
 ![](/img/submarine-serve-prediction.png)
-  
-   
+
