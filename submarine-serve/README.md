@@ -22,6 +22,7 @@ Submarine serve uses istio 1.6.8 and seldon-core 1.10.0 for serving.
 
 ```bash
 cd submarine
+helm dependency update ./helm-charts/submarine
 helm install submarine ./helm-charts/submarine
 ```
 
