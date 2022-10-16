@@ -42,7 +42,7 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
   private static final Logger LOG = LoggerFactory.getLogger(AgentPod.class);
 
   private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-  private static final String AGENT_IMAGE = "apache/submarine:agent-0.8.0-SNAPSHOT";
+  private static final String AGENT_IMAGE = "apache/submarine:agent-" + SubmarineConfiguration.SUBMARINE_VERSION;
   private static final String CONTAINER_NAME = "agent";
 
   public AgentPod(String namespace, String name,

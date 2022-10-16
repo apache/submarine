@@ -29,10 +29,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.apache.submarine</groupId>
   <artifactId>submarine-workbench-web</artifactId>
   <packaging>war</packaging>
-  <version>0.8.0-SNAPSHOT</version>
   <name>Submarine: Workbench Web Angular</name>
 
   <!-- See https://github.com/eirslett/frontend-maven-plugin/issues/229 -->

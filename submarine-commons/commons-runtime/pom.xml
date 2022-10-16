@@ -30,7 +30,6 @@
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>submarine-commons-runtime</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
   <name>Submarine: Commons Runtime</name>
 
   <dependencies>
