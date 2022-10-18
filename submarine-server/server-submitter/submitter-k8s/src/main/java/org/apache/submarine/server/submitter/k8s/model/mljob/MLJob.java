@@ -218,7 +218,8 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
 
     if (checkExperimentHanderArg(handlerSpec)) {
       V1Container initContainer = new V1Container();
-      initContainer.setImage("apache/submarine:experiment-prehandler-" + SubmarineConfiguration.SUBMARINE_VERSION);
+      initContainer.setImage("apache/submarine:experiment-prehandler-"
+          + SubmarineConfiguration.SUBMARINE_VERSION);
       initContainer.setName("ExperimentHandler".toLowerCase());
       List<V1EnvVar> envVar = new ArrayList<>();
 
