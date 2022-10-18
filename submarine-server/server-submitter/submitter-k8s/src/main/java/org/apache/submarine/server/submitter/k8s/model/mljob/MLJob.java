@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.experiment.Experiment;
@@ -214,69 +215,70 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
 
   public V1Container getExperimentHandlerContainer(ExperimentSpec spec) {
     Map<String, String> handlerSpec = spec.getExperimentHandlerSpec();
-    
+
     if (checkExperimentHanderArg(handlerSpec)) {
       V1Container initContainer = new V1Container();
-      initContainer.setImage("apache/submarine:experiment-prehandler-0.8.0-SNAPSHOT");
+      initContainer.setImage("apache/submarine:experiment-prehandler-"
+          + SubmarineConfiguration.SUBMARINE_VERSION);
       initContainer.setName("ExperimentHandler".toLowerCase());
       List<V1EnvVar> envVar = new ArrayList<>();
-      
+
       V1EnvVar hdfsHostVar = new V1EnvVar();
       hdfsHostVar.setName("HDFS_HOST");
       hdfsHostVar.setValue(handlerSpec.get("HDFS_HOST"));
       envVar.add(hdfsHostVar);
-      
+
       V1EnvVar hdfsPortVar = new V1EnvVar();
       hdfsPortVar.setName("HDFS_PORT");
       hdfsPortVar.setValue(handlerSpec.get("HDFS_PORT"));
       envVar.add(hdfsPortVar);
-      
+
       V1EnvVar hdfsSourceVar = new V1EnvVar();
       hdfsSourceVar.setName("HDFS_SOURCE");
       hdfsSourceVar.setValue(handlerSpec.get("HDFS_SOURCE"));
       envVar.add(hdfsSourceVar);
-      
+
       V1EnvVar hdfsEnableKerberosVar = new V1EnvVar();
       hdfsEnableKerberosVar.setName("ENABLE_KERBEROS");
       hdfsEnableKerberosVar.setValue(handlerSpec.get("ENABLE_KERBEROS"));
       envVar.add(hdfsEnableKerberosVar);
-      
+
       V1EnvVar destMinIOHostVar = new V1EnvVar();
       destMinIOHostVar.setName("DEST_MINIO_HOST");
       destMinIOHostVar.setValue("submarine-minio-service");
       envVar.add(destMinIOHostVar);
-      
+
       V1EnvVar destMinIOPortVar = new V1EnvVar();
       destMinIOPortVar.setName("DEST_MINIO_PORT");
       destMinIOPortVar.setValue("9000");
       envVar.add(destMinIOPortVar);
-      
+
       V1EnvVar minIOAccessKeyVar = new V1EnvVar();
       minIOAccessKeyVar.setName("MINIO_ACCESS_KEY");
       minIOAccessKeyVar.setValue("submarine_minio");
       envVar.add(minIOAccessKeyVar);
-      
+
       V1EnvVar minIOSecretKeyVar = new V1EnvVar();
       minIOSecretKeyVar.setName("MINIO_SECRET_KEY");
       minIOSecretKeyVar.setValue("submarine_minio");
       envVar.add(minIOSecretKeyVar);
-      
+
       V1EnvVar fileSystemTypeVar = new V1EnvVar();
       fileSystemTypeVar.setName("FILE_SYSTEM_TYPE");
       fileSystemTypeVar.setValue(handlerSpec.get("FILE_SYSTEM_TYPE"));
       envVar.add(fileSystemTypeVar);
-      
+
       V1EnvVar experimentIdVar = new V1EnvVar();
       experimentIdVar.setName("EXPERIMENT_ID");
       experimentIdVar.setValue(this.experimentId);
       envVar.add(experimentIdVar);
-      
+
       initContainer.setEnv(envVar);
       return initContainer;
     }
     return null;
   }
-  
+
   private boolean checkExperimentHanderArg(Map<String, String> handlerSpec) {
     if (handlerSpec == null)
       return false;
@@ -290,7 +292,7 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
     }
     return true;
   }
-  
+
   /**
    * Convert MLJob object to return Experiment object
    */

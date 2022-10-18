@@ -27,10 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class SubmarineConfiguration extends XMLConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
@@ -42,7 +44,24 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   private static volatile SubmarineConfiguration conf;
 
-  private Map<String, String> properties = new HashMap<>();
+  private final Map<String, String> properties = new HashMap<>();
+
+  public static final String SUBMARINE_VERSION;
+
+  public static String getSubmarineVersion() {
+    return SUBMARINE_VERSION;
+  }
+
+  static {
+    Properties properties = new Properties();
+    try {
+      properties.load(SubmarineConfiguration.class.getClassLoader()
+          .getResourceAsStream("submarine.properties"));
+      SUBMARINE_VERSION = properties.getProperty("project.version");
+    } catch (IOException e) {
+      throw new RuntimeException("Can not get submarine version!");
+    }
+  }
 
   private SubmarineConfiguration(URL url) throws ConfigurationException {
     setDelimiterParsingDisabled(true);

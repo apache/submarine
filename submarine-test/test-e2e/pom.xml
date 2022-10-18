@@ -29,7 +29,6 @@
   </parent>
 
   <artifactId>submarine-test-e2e</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
   <name>Submarine: E2E Test</name>
 
   <properties>
