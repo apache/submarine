@@ -55,7 +55,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
   static {
     Properties properties = new Properties();
     try {
-      properties.load(SubmarineConfiguration.class.getClassLoader().getResourceAsStream("submarine.properties"));
+      properties.load(SubmarineConfiguration.class.getClassLoader()
+          .getResourceAsStream("submarine.properties"));
       SUBMARINE_VERSION = properties.getProperty("project.version");
     } catch (IOException e) {
       throw new RuntimeException("Can not get submarine version!");
