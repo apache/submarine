@@ -20,6 +20,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService } from '@submarine/services';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'submarine-register',
@@ -32,7 +34,13 @@ export class RegisterComponent implements OnInit {
   existedUsernames = ['test', 'haha'];
   existedEmails = ['test@gmail.com'];
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private userService: UserService,
+    private nzNotificationService: NzNotificationService
+  ) {}
+
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       username: [null, [Validators.required, this.checkExistedUsernames.bind(this)]],
@@ -48,8 +56,26 @@ export class RegisterComponent implements OnInit {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    this.router.navigate(['/user/login']);
-    console.log('SubmitForm (Sign up Page)');
+
+    if (this.validateForm.status === 'VALID') {
+      const { value } = this.validateForm;
+      const params = {
+        'userName': value['username'],
+        'realName': value['username'],
+        'password': value['password'],
+        'email': value['email'],
+        'deleted': 0
+      };
+
+      this.userService.createUser(params).subscribe(
+        () => {
+          this.router.navigate(['/user/login']);
+        },
+        (error) => {
+          this.registerFailed(error);
+        }
+      );
+    }
   }
 
   updateConfirmValidator(): void {
@@ -99,5 +125,15 @@ export class RegisterComponent implements OnInit {
       return { validPasswordLength: false };
     }
     return null;
+  }
+
+  registerFailed(error: Error) {
+    this.nzNotificationService.error(
+      'Register Failed',
+      'Save user failed!',
+      {
+        nzDuration: 4000
+      }
+    );
   }
 }
