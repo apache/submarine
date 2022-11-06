@@ -175,6 +175,9 @@
           <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobTypes = 'Distributed Pytorch'">
             Distributed PyTorch
           </label>
+          <label nz-radio nzValue="XGBoost" (click)="deleteAllItem(specs); jobTypes = 'Distributed XGBoostJob'">
+            Distributed XGBoostJob
+          </label>
           <label
             nz-radio
             nzValue="Standalone"
@@ -198,6 +201,9 @@
                   </div>
                   <div *ngSwitchCase="'Pytorch'">
                     <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                  <div *ngSwitchCase="'XGBoost'">
+                    <nz-option *ngFor="let spec of XGBOOST_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                   </div>
                 </nz-select>
               </div>
