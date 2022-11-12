@@ -22,7 +22,7 @@
   nzBordered
   #basicTable
   [nzData]="experimentList"
-  [nzNoResult]="'No data'"
+  [nzNoResult]="'No data' | translate"
   [nzLoading]="isLoading"
 >
   <thead>
@@ -30,7 +30,7 @@
       <th>
         <label nz-checkbox [ngModel]="selectAllChecked" (ngModelChange)="onSelectAllClick($event)"></label>
       </th>
-      <th>Experiment Name</th>
+      <th>{{ 'Experiment Name' | translate }}</th>
       <th>Experiment ID</th>
       <th>Tags</th>
       <th>Status</th>

@@ -37,6 +37,8 @@ import { EnvironmentModule } from './environment/environment.module';
 import { TemplateModule } from './template/template.module';
 import { ModelModule } from './model/model.module';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
 
 @NgModule({
   declarations: [WorkbenchComponent, HomeComponent, WorkspaceComponent, DataComponent],
@@ -55,6 +57,7 @@ import { ModelModule } from './model/model.module';
     EnvironmentModule,
     TemplateModule,
     ModelModule,
+    TranslateModule.forRoot(TRANSLATE_CONFIG)
   ],
 })
 export class WorkbenchModule {}
