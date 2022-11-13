@@ -19,9 +19,9 @@
 
 <div>
   <nz-steps [nzCurrent]="step">
-    <nz-step nzTitle="First Step"></nz-step>
-    <nz-step nzTitle="Second Step"></nz-step>
-    <nz-step nzTitle="Preview"></nz-step>
+    <nz-step nzTitle="{{'First Step' | translate}}"></nz-step>
+    <nz-step nzTitle="{{'Second Step' | translate}}"></nz-step>
+    <nz-step nzTitle="{{'Preview' | translate}}"></nz-step>
   </nz-steps>
 </div>
 <div>
@@ -31,7 +31,7 @@
         <div class="single-field-group">
           <label for="experimentName">
             <span class="red-star">*</span>
-            Experiment Name
+            {{'Experiment Name' | translate}}
           </label>
           <input
             nz-input
@@ -43,24 +43,24 @@
           />
           <div class="alert-message-container">
             <div class="alert-message" *ngIf="experiment.get('experimentName').hasError('pattern')">
-              Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start or end with hyphens.
+              {{'Only letters(a - z), numbers(0 - 9), and hyphens are allowed, but you can`t start or end with hyphens.' | translate}}
             </div>
           </div>
         </div>
         <div class="single-field-group">
-          <label for="description">Description</label>
+          <label for="description">{{'Description' | translate}}</label>
           <textarea
             nz-input
             [nzAutosize]="{ minRows: 1, maxRows: 4 }"
             name="description"
             formControlName="description"
             id="description"
-            placeholder="Run distributed mnist example"
+            placeholder="{{'Run distributed mnist example' | translate}}"
           ></textarea>
         </div>
         <div class="single-field-group">
           <label for="tags">
-            Tags
+            {{'Tags' | translate}}
           </label>
           <nz-select
             formControlName="tags"
@@ -75,7 +75,7 @@
         <div class="single-field-group">
           <label for="cmd">
             <span class="red-star">*</span>
-            Command
+            {{'Command' | translate}}
           </label>
           <textarea
             nz-input
@@ -89,7 +89,7 @@
         <div class="single-field-group">
           <label for="image">
             <span class="red-star">*</span>
-            Image
+            {{'Image'| translate}}
           </label>
           <nz-select nzShowSearch [nzDropdownRender]="renderTemplate" name="image" formControlName="image" id="image">
             <nz-option *ngFor="let image of imageList" [nzValue]="image" [nzLabel]="image"></nz-option>
@@ -100,7 +100,7 @@
               <input type="text" nz-input #inputElement />
               <a class="add-item" (click)="addItem(inputElement)">
                 <i nz-icon nzType="plus"></i>
-                Add item
+                {{'Add item' | translate}}
               </a>
             </div>
           </ng-template>
@@ -113,7 +113,7 @@
             nzType="default"
             (click)="ADVANCED = !ADVANCED"
           >
-            Advanced
+            {{'Advanced' | translate}}
             <i nz-icon [nzType]="ADVANCED ? 'up' : 'down'"></i>
           </button>
         </div>
@@ -130,7 +130,7 @@
             />
           </nz-input-group>
           <ng-template #suffixTemplateInfo>
-            <i nz-icon nz-tooltip nzTitle="Copy git repo to /code/current in container." nzType="info-circle"></i>
+            <i nz-icon nz-tooltip nzTitle="{{'Copy git repo to /code/current in container.' | translate}}" nzType="info-circle"></i>
           </ng-template>
         </div>
         <div *ngIf="ADVANCED">
@@ -162,7 +162,7 @@
             </ng-container>
           </ul>
           <button nz-button id="env-btn" style="display: block; margin: auto" nzType="primary" (click)="onCreateEnv()">
-            Add new environment variable
+            {{'Add new environment variable' | translate}}
           </button>
           <br />
         </div>
