@@ -17,18 +17,18 @@
  * under the License.
  */
 
-package org.apache.submarine.server.security.simple;
+package org.apache.submarine.server.security.oidc;
 
 import org.apache.submarine.server.security.SecurityProvider;
-import org.apache.submarine.server.security.common.CommonConfig;
 import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
-import org.pac4j.core.matching.matcher.PathMatcher;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
-import org.pac4j.jwt.profile.JwtProfile;
+import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.credentials.authenticator.UserInfoOidcAuthenticator;
+import org.pac4j.oidc.profile.OidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,57 +37,62 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Optional;
 
-public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtProfile> {
+public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfile> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SimpleSecurityProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OidcSecurityProvider.class);
 
   @Override
-  public Class<SimpleFilter> getFilterClass() {
-    return SimpleFilter.class;
+  public Class<OidcFilter> getFilterClass() {
+    return OidcFilter.class;
   }
 
   @Override
   public Config createConfig() {
-    if (pac4jConfig != null) {
-      return pac4jConfig;
-    }
-    // header client
-    HeaderClient headerClient = new HeaderClient(CommonConfig.AUTH_HEADER, CommonConfig.BEARER_HEADER_PREFIX,
-            SimpleLoginConfig.getJwtAuthenticator());
-    Config pac4jConfig = new Config(headerClient);
-    // skip login rest api
-    pac4jConfig.addMatcher("api", new PathMatcher().excludeRegex("^/api/auth/login$"));
-    return pac4jConfig;
+    // oidc config
+    OidcConfiguration oidcConf = new OidcConfiguration();
+    oidcConf.setClientId(OidcConfig.CLIENT_ID);
+    oidcConf.setSecret(OidcConfig.CLIENT_SECRET);
+    oidcConf.setDiscoveryURI(OidcConfig.DISCOVER_URI);
+    oidcConf.setExpireSessionWithToken(true);
+    oidcConf.setUseNonce(true);
+    oidcConf.setReadTimeout(5000);
+    oidcConf.setMaxAge(OidcConfig.MAX_AGE);
+    // user authenticator
+    UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(oidcConf);
+    // oidc client
+    HeaderClient oidcClient = new HeaderClient(OidcConfig.AUTH_HEADER,
+            OidcConfig.BEARER_HEADER_PREFIX, authenticator);
+    return new Config(oidcClient);
   }
 
   @Override
   public String getClient(HttpServletRequest httpServletRequest) {
-    return "HeaderClient";
+    return "HeaderClient"; // use token
   }
 
   @Override
-  public Optional<JwtProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+  public Optional<OidcProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
     JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
     UserProfile profile = CommonFilter.SECURITY_LOGIC.perform(
         context,
         getConfig(),
         (JEEContext ctx, Collection<UserProfile> profiles, Object... parameters) -> {
           if (profiles.isEmpty()) {
-            LOG.warn("No profiles found with default auth.");
+            LOG.warn("No profiles found after OIDC auth.");
             return null;
           } else {
             return profiles.iterator().next();
           }
         },
         CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), DEFAULT_AUTHORIZER, "api", null);
-    return Optional.ofNullable((JwtProfile) profile);
+        getClient(hsRequest), DEFAULT_AUTHORIZER, null, null);
+    return Optional.ofNullable((OidcProfile) profile);
   }
 
   @Override
-  public Optional<JwtProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+  public Optional<OidcProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
     JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    ProfileManager<JwtProfile> manager = new ProfileManager<>(context);
+    ProfileManager<OidcProfile> manager = new ProfileManager<>(context);
     return manager.get(true);
   }
 }

@@ -30,32 +30,48 @@ import java.util.Optional;
 /**
  * Provide security methods for different authentication types
  */
-public interface SecurityProvider<T extends Filter, R extends CommonProfile> {
+public abstract class SecurityProvider<T extends Filter, R extends CommonProfile> {
 
-  String DEFAULT_AUTHORIZER = "isAuthenticated";
+  protected final String DEFAULT_AUTHORIZER = "isAuthenticated";
+
+  protected final Config pac4jConfig;
+
+  public SecurityProvider() {
+    this.pac4jConfig = createConfig();
+    // skip web static resources
+    // pac4jConfig.addMatcher("static", new PathMatcher().excludeRegex(
+    //        "^/.*(\\.map|\\.js|\\.css|\\.ico|\\.svg|\\.png|\\.html|\\.htm)$"));
+  }
 
   /**
    * Get filter class
    */
-  Class<T> getFilterClass();
+  public abstract Class<T> getFilterClass();
 
   /**
    * Get pac4j config
    */
-  Config getConfig();
+  public Config getConfig() {
+    return pac4jConfig;
+  }
+
+  /**
+   * Create pac4j config
+   */
+  protected abstract Config createConfig();
 
   /**
    * Get pac4j client
    */
-  String getClient(HttpServletRequest httpServletRequest);
+  public abstract String getClient(HttpServletRequest httpServletRequest);
 
   /**
    * Process authentication information and return user profile
    */
-  Optional<R> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
+  public abstract Optional<R> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 
   /**
    * Get user profile
    */
-  Optional<R> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
+  public abstract Optional<R> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 }

@@ -134,7 +134,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
   @Override
   public String getRequestURI() {
-    return null;
+    return "/api/test/url";
   }
 
   private StringBuffer requestUrl;

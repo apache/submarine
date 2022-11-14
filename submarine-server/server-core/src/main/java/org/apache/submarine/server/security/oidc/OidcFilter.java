@@ -17,11 +17,11 @@
  * under the License.
  */
 
-package org.apache.submarine.server.security.simple;
+package org.apache.submarine.server.security.oidc;
 
 import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.common.CommonFilter;
-import org.pac4j.jwt.profile.JwtProfile;
+import org.pac4j.oidc.profile.OidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,44 +36,40 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-/**
- * Simple authentication
- * Only users in submarine sys_user table can log in, and user is verified based on token
- */
-public class SimpleFilter extends CommonFilter implements Filter {
+public class OidcFilter extends CommonFilter implements Filter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SimpleFilter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OidcFilter.class);
 
-  private final SimpleSecurityProvider provider;
+  private final OidcSecurityProvider provider;
 
-  public SimpleFilter() {
-    this.provider = SecurityFactory.getSimpleSecurityProvider();
+  public OidcFilter() {
+    this.provider = SecurityFactory.getPac4jSecurityProvider();
   }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
+
   }
 
   @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-                       FilterChain filterChain) throws IOException, ServletException {
-    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-    HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     if (isProtectedApi(httpServletRequest)) {
-      // check header token
-      Optional<JwtProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
-      // If the token can be correctly parsed then continue processing, otherwise return 401
+      Optional<OidcProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
       if (profile.isPresent()) {
-        filterChain.doFilter(servletRequest, servletResponse);
+        chain.doFilter(request, response);
       } else {
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
       }
     } else {
-      filterChain.doFilter(servletRequest, servletResponse);
+      chain.doFilter(request, response);
     }
   }
 
   @Override
   public void destroy() {
+
   }
 }

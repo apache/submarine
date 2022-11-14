@@ -19,7 +19,6 @@
 package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
-import com.google.gson.Gson;
 
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
@@ -52,8 +51,12 @@ import java.util.List;
 public class SysUserRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
-  private SysUserService userService = new SysUserService();
-  private static final Gson gson = new Gson();
+  private final SysUserService userService = new SysUserService();
+
+  // default user is admin
+  public static final String DEFAULT_ADMIN_UID = "e9ca23d68d884d4ebb19d07889727dae";
+  // default password is `password` by angular markAsDirty method
+  public static final String DEFAULT_CREATE_USER_PASSWORD = "5f4dcc3b5aa765d61d8327deb882cf99";
 
   @Inject
   public SysUserRestApi() {
