@@ -56,7 +56,7 @@
         <nz-tag *ngFor="let tag of data.spec.meta.tags">{{tag}}</nz-tag>
       </td>
       <td>
-        <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+        <nz-tag [nzColor]="statusColor[data.status]">{{ data.status | translate}}</nz-tag>
       </td>
       <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>

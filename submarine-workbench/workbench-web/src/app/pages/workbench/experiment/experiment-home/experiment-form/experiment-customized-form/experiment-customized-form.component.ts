@@ -145,8 +145,8 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub1, sub2);
 
     //TODO: get tags from server
-    this.listOfOption = []; 
-  
+    this.listOfOption = [];
+
   }
 
   ngOnDestroy() {
@@ -202,11 +202,11 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   checkStatus() {
     if (this.step === 0) {
       this.experimentFormService.btnStatusChange(
-        this.experimentName.invalid || 
-          this.tags.invalid ||          
+        this.experimentName.invalid ||
+          this.tags.invalid ||
           this.cmd.invalid ||
           this.image.invalid ||
-          this.envs.invalid 
+          this.envs.invalid
       );
     } else if (this.step === 1) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);

@@ -54,7 +54,7 @@
       [disabled]="nextBtnDisable"
       (click)="proceedForm()"
     >
-      {{ modalProps.okText }}
+      {{ modalProps.okText | translate }}
     </button>
     <button *ngIf="modalProps.currentStep > 0" nz-button nzType="default" style="float: left" (click)="prevForm()">
       {{'Prev Step' | translate}}

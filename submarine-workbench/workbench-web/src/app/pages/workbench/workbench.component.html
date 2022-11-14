@@ -33,10 +33,10 @@
   </div>
   <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
     <ng-container *ngFor="let menu of menus">
-      <li *ngIf="menu.children" nz-submenu [nzDisabled]="menu.disabled" [nzTitle]="menu.title" [nzIcon]="menu.iconType">
+      <li *ngIf="menu.children" nz-submenu [nzDisabled]="menu.disabled" [nzTitle]="menu.title | translate" [nzIcon]="menu.iconType">
         <ul>
           <li nz-menu-item nzMatchRouter [nzDisabled]="menu.disabled" *ngFor="let subItem of menu.children">
-            <a [routerLink]="subItem.routerLink">{{ subItem.title }}</a>
+            <a [routerLink]="subItem.routerLink">{{ subItem.title | translate }}</a>
           </li>
         </ul>
       </li>
@@ -45,13 +45,13 @@
         nz-menu-item
         nz-tooltip
         [nzDisabled]="menu.disabled"
-        [nzTitle]="menu.title"
+        [nzTitle]="menu.title | translate"
         nzPlacement="right"
         nzMatchRouter
         [routerLink]="menu.routerLink"
       >
         <i nz-icon [nzType]="menu.iconType"></i>
-        <span>{{ menu.title }}</span>
+        <span>{{ menu.title | translate }}</span>
       </li>
     </ng-container>
   </ul>

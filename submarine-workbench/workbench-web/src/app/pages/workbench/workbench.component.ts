@@ -136,8 +136,10 @@ export class WorkbenchComponent implements OnInit {
   }
 
   setLang(lang: string) {
+    // change language
     this.translate.use(lang);
     console.log(`change language to ${lang}`)
+    // save to localStorage in order to refresh the page can correctly display the language
     localStorage.setItem('translate', lang);
   }
 
