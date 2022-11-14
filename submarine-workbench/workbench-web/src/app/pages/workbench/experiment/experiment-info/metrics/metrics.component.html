@@ -18,7 +18,8 @@
   -->
 
 <div id="metricTable">
-  <nz-table #metricTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podMetric">
+  <nz-table #metricTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podMetric"
+            [nzNoResult]="'No data' | translate">
     <thead>
       <tr>
         <th>Key</th>

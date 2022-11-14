@@ -18,7 +18,8 @@
   -->
 
 <div id="paramTable">
-  <nz-table #paramTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podParam">
+  <nz-table #paramTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podParam"
+            [nzNoResult]="'No data' | translate">
     <thead>
       <tr>
         <th>Key</th>
