@@ -17,7 +17,7 @@ import os
 import re
 import tempfile
 from datetime import datetime
-from typing import Optional, Any, Dict
+from typing import Any, Dict, Optional
 
 import submarine
 from submarine.artifacts.repository import Repository

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, List
+from typing import List, Optional
 
 from submarine.entities.model_registry import ModelVersion, RegisteredModel
 
