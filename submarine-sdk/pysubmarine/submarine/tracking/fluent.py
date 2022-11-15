@@ -19,6 +19,7 @@ Submarine run. This module is exposed to users at the top-level :py:mod:`submari
 
 import logging
 from datetime import datetime
+from typing import Optional
 
 from submarine.tracking.client import SubmarineClient
 from submarine.tracking.utils import get_job_id, get_worker_index
@@ -56,9 +57,9 @@ def log_metric(key, value, step=None):
 def save_model(
     model,
     model_type: str,
-    registered_model_name: str = None,
-    input_dim: list = None,
-    output_dim: list = None,
+    registered_model_name: Optional[str] = None,
+    input_dim: Optional[list] = None,
+    output_dim: Optional[list] = None,
 ):
     """
     Save a model into the minio pod.

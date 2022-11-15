@@ -14,7 +14,7 @@
 # limitations under the License.
 
 from abc import ABCMeta, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from submarine.entities.model_registry import ModelVersion, RegisteredModel
 
@@ -36,7 +36,7 @@ class AbstractStore:
 
     @abstractmethod
     def create_registered_model(
-        self, name: str, description: str = None, tags: List[str] = None
+        self, name: str, description: Optional[str] = None, tags: Optional[List[str]] = None
     ) -> RegisteredModel:
         """
         Create a new registered model in backend store.
@@ -82,7 +82,7 @@ class AbstractStore:
 
     @abstractmethod
     def list_registered_model(
-        self, filter_str: str = None, filter_tags: List[str] = None
+        self, filter_str: Optional[str] = None, filter_tags: Optional[List[str]] = None
     ) -> List[RegisteredModel]:
         """
         List of all models.
@@ -130,9 +130,9 @@ class AbstractStore:
         user_id: str,
         experiment_id: str,
         model_type: str,
-        dataset: str = None,
-        description: str = None,
-        tags: List[str] = None,
+        dataset: Optional[str] = None,
+        description: Optional[str] = None,
+        tags: Optional[List[str]] = None,
     ) -> ModelVersion:
         """
         Create a new version of the registered model
@@ -190,7 +190,7 @@ class AbstractStore:
         pass
 
     @abstractmethod
-    def list_model_versions(self, name: str, filter_tags: list = None) -> List[ModelVersion]:
+    def list_model_versions(self, name: str, filter_tags: Optional[list] = None) -> List[ModelVersion]:
         """
         List of all models that satisfy the filter criteria.
         :param name: Registered model name.

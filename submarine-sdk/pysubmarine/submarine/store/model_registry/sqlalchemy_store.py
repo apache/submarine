@@ -16,7 +16,7 @@
 import logging
 from contextlib import contextmanager
 from datetime import datetime
-from typing import List, Union
+from typing import List, Optional, Union
 
 import sqlalchemy
 from sqlalchemy.engine.base import Engine
@@ -140,7 +140,7 @@ class SqlAlchemyStore(AbstractStore):
             session.add(objs)
 
     def create_registered_model(
-        self, name: str, description: str = None, tags: List[str] = None
+        self, name: str, description: Optional[str] = None, tags: Optional[List[str]] = None
     ) -> RegisteredModel:
         """
         Create a new registered model in backend store.
@@ -250,7 +250,7 @@ class SqlAlchemyStore(AbstractStore):
             session.delete(sql_registered_model)
 
     def list_registered_model(
-        self, filter_str: str = None, filter_tags: List[str] = None
+        self, filter_str: Optional[str] = None, filter_tags: Optional[List[str]] = None
     ) -> List[RegisteredModel]:
         """
         List of all models.
@@ -334,9 +334,9 @@ class SqlAlchemyStore(AbstractStore):
         user_id: str,
         experiment_id: str,
         model_type: str,
-        dataset: str = None,
-        description: str = None,
-        tags: List[str] = None,
+        dataset: Optional[str] = None,
+        description: Optional[str] = None,
+        tags: Optional[List[str]] = None,
     ) -> ModelVersion:
         """
         Create a new version of the registered model
@@ -478,7 +478,7 @@ class SqlAlchemyStore(AbstractStore):
             sql_model_version = self._get_sql_model_version(session, name, version, True)
             return sql_model_version.to_submarine_entity()
 
-    def list_model_versions(self, name: str, filter_tags: list = None) -> List[ModelVersion]:
+    def list_model_versions(self, name: str, filter_tags: Optional[list] = None) -> List[ModelVersion]:
         """
         List of all models that satisfy the filter criteria.
         :param name: Registered model name.

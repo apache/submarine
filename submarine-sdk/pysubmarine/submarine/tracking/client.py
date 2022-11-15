@@ -17,7 +17,7 @@ import os
 import re
 import tempfile
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import submarine
 from submarine.artifacts.repository import Repository
@@ -38,10 +38,10 @@ class SubmarineClient:
 
     def __init__(
         self,
-        db_uri: str = None,
-        s3_registry_uri: str = None,
-        aws_access_key_id: str = None,
-        aws_secret_access_key: str = None,
+        db_uri: Optional[str] = None,
+        s3_registry_uri: Optional[str] = None,
+        aws_access_key_id: Optional[str] = None,
+        aws_secret_access_key: Optional[str] = None,
         host: str = generate_host(),
     ) -> None:
         """
@@ -100,9 +100,9 @@ class SubmarineClient:
         self,
         model,
         model_type: str,
-        registered_model_name: str = None,
-        input_dim: list = None,
-        output_dim: list = None,
+        registered_model_name: Optional[str] = None,
+        input_dim: Optional[list] = None,
+        output_dim: Optional[list] = None,
     ) -> None:
         """
         Save a model into the minio pod or even register a model.
@@ -159,8 +159,8 @@ class SubmarineClient:
         dest_path: str,
         model_type: str,
         model_id: str,
-        input_dim: list = None,
-        output_dim: list = None,
+        input_dim: Optional[list] = None,
+        output_dim: Optional[list] = None,
     ):
         """
         Save a model into the minio pod.
