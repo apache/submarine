@@ -15,8 +15,8 @@
 
 import logging
 from contextlib import contextmanager
+from typing import List, Optional, Union
 from datetime import datetime
-from typing import Optional, List, Union
 
 import sqlalchemy
 from sqlalchemy.engine.base import Engine

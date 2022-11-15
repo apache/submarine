@@ -19,10 +19,11 @@ Submarine run. This module is exposed to users at the top-level :py:mod:`submari
 
 import logging
 from datetime import datetime
+from typing import Optional
 
 from submarine.tracking.client import SubmarineClient
 from submarine.tracking.utils import get_job_id, get_worker_index
-from typing import Optional
+
 
 _RUN_ID_ENV_VAR = "SUBMARINE_RUN_ID"
 
