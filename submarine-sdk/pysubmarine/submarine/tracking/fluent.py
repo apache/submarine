@@ -22,6 +22,7 @@ from datetime import datetime
 
 from submarine.tracking.client import SubmarineClient
 from submarine.tracking.utils import get_job_id, get_worker_index
+from typing import Optional
 
 _RUN_ID_ENV_VAR = "SUBMARINE_RUN_ID"
 
@@ -56,9 +57,9 @@ def log_metric(key, value, step=None):
 def save_model(
     model,
     model_type: str,
-    registered_model_name: str = None,
-    input_dim: list = None,
-    output_dim: list = None,
+    registered_model_name: Optional[str] = None,
+    input_dim: Optional[list] = None,
+    output_dim: Optional[list] = None,
 ):
     """
     Save a model into the minio pod.
