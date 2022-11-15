@@ -16,8 +16,8 @@ import json
 import os
 import re
 import tempfile
-from typing import Any, Dict, Optional
 from datetime import datetime
+from typing import Optional, Any, Dict
 
 import submarine
 from submarine.artifacts.repository import Repository

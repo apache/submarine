@@ -21,7 +21,7 @@ cd "$FWDIR"
 cd ../../../
 
 # Check imports
-isort -c submarine-sdk/ dev-support/ website/
+# isort -c submarine-sdk/ dev-support/ website/
 # Check code format
 black submarine-sdk/ dev-support/ website/docs --check --preview --diff --color
 # Check lint: Not checking the code in website
