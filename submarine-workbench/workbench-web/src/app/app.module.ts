@@ -21,10 +21,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { registerLocaleData } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {ApiTokenInjector} from "@submarine/core/api-token-injector";
 import { LocalStorageService } from '@submarine/services';
 import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,7 +45,12 @@ registerLocaleData(en);
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }, LocalStorageService],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    // add injector to set header a token when calling rest api
+    { provide: HTTP_INTERCEPTORS, useClass: ApiTokenInjector, multi: true },
+    LocalStorageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

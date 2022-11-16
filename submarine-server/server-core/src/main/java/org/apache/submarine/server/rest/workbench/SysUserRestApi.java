@@ -20,6 +20,8 @@ package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
@@ -29,11 +31,14 @@ import org.apache.submarine.server.api.workbench.Action;
 import org.apache.submarine.server.api.workbench.Permission;
 import org.apache.submarine.server.api.workbench.Role;
 import org.apache.submarine.server.api.workbench.UserInfo;
+import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,6 +49,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/sys/user")
 @Produces("application/json")
@@ -72,7 +78,7 @@ public class SysUserRestApi {
                                 @QueryParam("field") String field,
                                 @QueryParam("pageNo") int pageNo,
                                 @QueryParam("pageSize") int pageSize) {
-    LOG.info("queryDictList userName:{}, email:{}, deptCode:{}, " +
+    LOG.debug("queryDictList userName:{}, email:{}, deptCode:{}, " +
             "column:{}, field:{}, pageNo:{}, pageSize:{}",
         userName, email, deptCode, column, field, pageNo, pageSize);
 
@@ -162,7 +168,65 @@ public class SysUserRestApi {
   @GET
   @Path("/info")
   @SubmarineApi
-  public Response info() {
+  public Response info(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+    UserInfo userInfo = null;
+    // get SecurityProvider to use perform method to get user info
+    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
+    if (securityProvider.isPresent()) {
+      Optional<CommonProfile> profile = securityProvider.get().perform(hsRequest, hsResponse);
+      if (profile.isPresent()) {
+        SysUserEntity sysUser;
+        try {// find match user in db
+          sysUser = userService.getUserByName(profile.get().getUsername());
+        } catch (Exception e) {
+          LOG.error(e.getMessage(), e);
+          return new JsonResponse.Builder<>(Response.Status.OK)
+                  .success(false)
+                  .message("Get error when searching user name!")
+                  .build();
+        }
+        // user not found
+        if (sysUser == null || sysUser.getDeleted() == 1) {
+          return new JsonResponse.Builder<>(Response.Status.OK).
+                  success(false)
+                  .message("User can not be found!")
+                  .build();
+        }
+        UserInfo.Builder userInfoBuilder = new UserInfo.Builder(sysUser.getId(), sysUser.getUserName());
+        userInfo = userInfoBuilder
+                .username(sysUser.getUserName())
+                .password("******")
+                .avatar(sysUser.getAvatar())
+                .status(sysUser.getStatus())
+                .telephone(sysUser.getPhone())
+                .lastLoginIp("******")
+                .lastLoginTime(System.currentTimeMillis())
+                .creatorId(sysUser.getUserName())
+                .createTime(sysUser.getCreateTime().getTime())
+                .merchantCode("")
+                .deleted(0)
+                .roleId("default")
+                .role(createDefaultRole()).build();
+      } else {
+        return new JsonResponse.Builder<>(Response.Status.OK)
+                .success(false)
+                .message("User can not be found!")
+                .build();
+      }
+    }
+    if (userInfo == null) userInfo = createDefaultUser();
+
+    return new JsonResponse.Builder<UserInfo>(Response.Status.OK)
+            .success(true)
+            .result(userInfo)
+            .build();
+  }
+
+  /**
+   * Create default role
+   */
+  private Role createDefaultRole() {
+    // TODO(cdmikechen): Will do after the role function is completed
     List<Action> actions = new ArrayList<Action>();
     Action action1 = new Action("add", false, "add");
     Action action2 = new Action("query", false, "query");
@@ -226,17 +290,35 @@ public class SysUserRestApi {
     permissions.add(permission12);
 
     Role.Builder roleBuilder = new Role.Builder("admin", "admin");
-    Role role = roleBuilder.describe("Permission").status(1).creatorId("system")
-        .createTime(1497160610259L).deleted(0).permissions(permissions).build();
+    return roleBuilder.describe("Permission")
+            .status(1)
+            .creatorId("system")
+            .createTime(System.currentTimeMillis())
+            .deleted(0)
+            .permissions(permissions)
+            .build();
+  }
 
-    UserInfo.Builder userInfoBuilder = new UserInfo.Builder("4291d7da9005377ec9aec4a71ea837f", "admin");
-    UserInfo userInfo = userInfoBuilder.username("admin").password("")
-        .avatar("/avatar2.jpg").status(1).telephone("").lastLoginIp("27.154.74.117")
-        .lastLoginTime(1534837621348L).creatorId("admin")
-        .createTime(1497160610259L).merchantCode("TLif2btpzg079h15bk")
-        .deleted(0).roleId("admin").role(role).build();
-
-    return new JsonResponse.Builder<UserInfo>(Response.Status.OK).success(true).result(userInfo).build();
+  /**
+   * Create default user
+   */
+  private UserInfo createDefaultUser() {
+    LOG.warn("Can not get user info, use a default admin user");
+    UserInfo.Builder userInfoBuilder = new UserInfo.Builder(DEFAULT_ADMIN_UID, "admin");
+    return userInfoBuilder.username("admin")
+            .password("")
+            .avatar("/avatar2.jpg")
+            .status("1")
+            .telephone("")
+            .lastLoginIp("******")
+            .lastLoginTime(System.currentTimeMillis())
+            .creatorId("admin")
+            .createTime(System.currentTimeMillis())
+            .merchantCode("TLif2btpzg079h15bk")
+            .deleted(0)
+            .roleId("admin")
+            .role(createDefaultRole())
+            .build();
   }
 
   @POST

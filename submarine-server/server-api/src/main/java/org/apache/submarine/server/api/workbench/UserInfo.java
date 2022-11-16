@@ -24,7 +24,7 @@ public class UserInfo {
   private final String username;
   private final String password;
   private final String avatar;
-  private final int status;
+  private final String status;
   private final String telephone;
   private final String lastLoginIp;
   private final long lastLoginTime;
@@ -60,7 +60,7 @@ public class UserInfo {
     private String username;
     private String password;
     private String avatar;
-    private int status = 0;
+    private String status;
     private String telephone;
     private String lastLoginIp;
     private long lastLoginTime;
@@ -91,7 +91,7 @@ public class UserInfo {
       return this;
     }
 
-    public Builder status(int status) {
+    public Builder status(String status) {
       this.status = status;
       return this;
     }

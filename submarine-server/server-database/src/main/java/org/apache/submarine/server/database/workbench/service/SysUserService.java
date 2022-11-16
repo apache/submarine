@@ -54,6 +54,19 @@ public class SysUserService {
     return sysUser;
   }
 
+  /**
+   * Get user by unique name
+   */
+  public SysUserEntity getUserByName(String name) {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+      return sysUserMapper.getUserByUniqueName(name);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+  }
+
   public SysUserEntity login(HashMap<String, String> mapParams) throws Exception {
     SysUserEntity sysUser = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

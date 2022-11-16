@@ -17,27 +17,25 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
-// @ts-ignore
-import provider from '../assets/security/provider.json';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {AuthService} from "../services";
 
-@Component({
-  selector: 'submarine-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  constructor(private router: Router, private title: Title) {}
+@Injectable()
+export class ApiTokenInjector implements HttpInterceptor {
 
-  ngOnInit(): void {
-    console.log(provider)
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      const paths = this.router.url.split('/');
+  constructor(private authService: AuthService) { }
 
-      this.title.setTitle(`Submarine - ${paths[paths.length - 1]}`);
-    });
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // If there is a token in localstorage, set the token into the header
+    const authToken = this.authService.getToken();
+    if (!!authToken) {
+      return next.handle(request.clone({
+        setHeaders: {Authorization: `Bearer ${authToken}`}
+      }));
+    } else {
+      return next.handle(request);
+    }
   }
 }

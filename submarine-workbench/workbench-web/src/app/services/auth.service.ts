@@ -45,6 +45,10 @@ export class AuthService {
     this.isLoggedIn = !!authToken;
   }
 
+  getToken() {
+    return this.localStorageService.get<string>(this.authTokenKey);
+  }
+
   login(userForm: { userName: string; password: string }): Observable<SysUser> {
     const apiUrl = this.baseApi.getRestApi('/auth/login');
     const params = {
