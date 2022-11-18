@@ -32,17 +32,28 @@ import { LocalStorageService } from './local-storage.service';
 export class AuthService {
   isLoggedIn = false;
   authTokenKey = 'auth_token';
-
   // store the URL so we can redirect after logging in
   redirectUrl: string;
+  // auth type, like simple, oidc, ldap, saml ...
+  authType: string = "simple";
 
   constructor(
     private localStorageService: LocalStorageService,
     private baseApi: BaseApiService,
     private httpClient: HttpClient
   ) {
-    const authToken = this.localStorageService.get<string>(this.authTokenKey);
-    this.isLoggedIn = !!authToken;
+    this.authType = window.GLOBAL_CONFIG.type
+    // console.log(`auth type = ${this.authType}`)
+    if (this.authType === "oidc") {
+      this.isLoggedIn = true;
+    } else {
+      const authToken = this.localStorageService.get<string>(this.authTokenKey);
+      this.isLoggedIn = !!authToken;
+    }
+  }
+
+  getAuthType(): string {
+    return this.authType;
   }
 
   getToken() {
@@ -75,15 +86,19 @@ export class AuthService {
   }
 
   logout() {
-    return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
-      map((res) => {
-        if (res.result) {
-          this.isLoggedIn = false;
-          this.localStorageService.remove(this.authTokenKey);
-        }
-
-        return res.result;
-      })
-    );
+    if (this.authType === "oidc") {
+      this.removeToken();
+      const url = window.location.origin + window.location.pathname
+      window.location.href = '/auth/logout?redirect_url=' + url;
+    } else {
+      return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
+        map((res) => {
+          if (res.result) {
+            this.removeToken();
+          }
+          return res.result;
+        })
+      );
+    }
   }
 }

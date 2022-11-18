@@ -22,7 +22,7 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {of, throwError, Observable} from 'rxjs';
 import {catchError} from "rxjs/operators";
-import {AuthService} from "../services";
+import {AuthService} from "../../services";
 
 @Injectable()
 export class ApiTokenInjector implements HttpInterceptor {
@@ -35,19 +35,21 @@ export class ApiTokenInjector implements HttpInterceptor {
       // remove token cache
       this.authService.removeToken();
       // navigate to login
-      this.router.navigate(['/user/login']);
+      if ("oidc" !== this.authService.getAuthType()) {
+        this.router.navigate(['/user/login']);
+      }
       return of(err.message);
     }
     return throwError(err);
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // If there is a token in localstorage, set the token into the header
-    const authToken = this.authService.getToken();
+    // If there is a token in localstorage and not oidc auth type, set the token into the header
+    const checkToken = "oidc" !== this.authService.getAuthType() && !!this.authService.getToken();
     let handler;
-    if (!!authToken) {
+    if (checkToken) {
       handler = next.handle(request.clone({
-        setHeaders: {Authorization: `Bearer ${authToken}`}
+        setHeaders: {Authorization: `Bearer ${this.authService.getToken()}`}
       }));
     } else {
       handler = next.handle(request);

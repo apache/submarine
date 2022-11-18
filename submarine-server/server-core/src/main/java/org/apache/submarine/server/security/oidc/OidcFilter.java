@@ -19,8 +19,12 @@
 
 package org.apache.submarine.server.security.oidc;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.common.CommonFilter;
+import org.apache.submarine.server.security.common.RegistryUserActionAdapter;
+import org.pac4j.core.config.Config;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +45,12 @@ public class OidcFilter extends CommonFilter implements Filter {
   private static final Logger LOG = LoggerFactory.getLogger(OidcFilter.class);
 
   private final OidcSecurityProvider provider;
+  private final Config oidcConfig;
+  private final RegistryUserActionAdapter userActionAdapter = new RegistryUserActionAdapter();
 
   public OidcFilter() {
     this.provider = SecurityFactory.getPac4jSecurityProvider();
+    this.oidcConfig = provider.getConfig();
   }
 
   @Override
@@ -56,15 +63,31 @@ public class OidcFilter extends CommonFilter implements Filter {
       throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-    if (isProtectedApi(httpServletRequest)) {
+    if (OidcCallbackResource.SELF_URL.equals(httpServletRequest.getRequestURI())) {
+      CALLBACK_LOGIC.perform(
+          new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
+          oidcConfig,
+          userActionAdapter,
+          "/",
+          true, false, false, null);
+    } else if (OidcConfig.LOGOUT_ENDPOINT.equals(httpServletRequest.getRequestURI())) {
+      String redirectUrl = OidcConfig.LOGOUT_REDIRECT_URI;
+      if (StringUtils.isBlank(redirectUrl)) {
+        redirectUrl = httpServletRequest.getParameter("redirect_url");
+      }
+      LOGOUT_LOGIC.perform(
+          new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
+          oidcConfig,
+          DEFAULT_HTTP_ACTION_ADAPTER,
+          redirectUrl,
+          "/", true, true, true);
+    }  else {
       Optional<OidcProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
       if (profile.isPresent()) {
         chain.doFilter(request, response);
-      } else {
+      } else if (httpServletRequest.getHeader(OidcConfig.AUTH_HEADER) != null) {
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
       }
-    } else {
-      chain.doFilter(request, response);
     }
   }
 

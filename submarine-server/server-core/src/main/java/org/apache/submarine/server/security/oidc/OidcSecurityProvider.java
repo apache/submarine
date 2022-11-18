@@ -23,9 +23,12 @@ import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
+import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
+import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.authenticator.UserInfoOidcAuthenticator;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -57,17 +60,19 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
     oidcConf.setUseNonce(true);
     oidcConf.setReadTimeout(5000);
     oidcConf.setMaxAge(OidcConfig.MAX_AGE);
-    // user authenticator
-    UserInfoOidcAuthenticator authenticator = new UserInfoOidcAuthenticator(oidcConf);
     // oidc client
-    HeaderClient oidcClient = new HeaderClient(OidcConfig.AUTH_HEADER,
-            OidcConfig.BEARER_HEADER_PREFIX, authenticator);
-    return new Config(oidcClient);
+    OidcClient oidcClient = new OidcClient(oidcConf);
+    oidcClient.setUrlResolver(new DefaultUrlResolver(true));
+    oidcClient.setCallbackUrlResolver(new NoParameterCallbackUrlResolver());
+    // header client
+    HeaderClient headerClient = new HeaderClient(OidcConfig.AUTH_HEADER,
+            OidcConfig.BEARER_HEADER_PREFIX, new UserInfoOidcAuthenticator(oidcConf));
+    return new Config(OidcCallbackResource.SELF_URL, oidcClient, headerClient);
   }
 
   @Override
   public String getClient(HttpServletRequest httpServletRequest) {
-    return "HeaderClient"; // use token
+    return "OidcClient,HeaderClient";
   }
 
   @Override
