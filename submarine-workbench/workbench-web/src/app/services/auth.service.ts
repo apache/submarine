@@ -49,6 +49,11 @@ export class AuthService {
     return this.localStorageService.get<string>(this.authTokenKey);
   }
 
+  removeToken() {
+    this.isLoggedIn = false;
+    this.localStorageService.remove(this.authTokenKey);
+  }
+
   login(userForm: { userName: string; password: string }): Observable<SysUser> {
     const apiUrl = this.baseApi.getRestApi('/auth/login');
     const params = {

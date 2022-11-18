@@ -17,25 +17,42 @@
  * under the License.
  */
 
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Router} from '@angular/router';
+import {of, throwError, Observable} from 'rxjs';
+import {catchError} from "rxjs/operators";
 import {AuthService} from "../services";
 
 @Injectable()
 export class ApiTokenInjector implements HttpInterceptor {
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
+
+  private handleAuthError(err: HttpErrorResponse): Observable<any> {
+    // handle auth error or rethrow
+    if (err.status === 401 || err.status === 403) {
+      // remove token cache
+      this.authService.removeToken();
+      // navigate to login
+      this.router.navigate(['/user/login']);
+      return of(err.message);
+    }
+    return throwError(err);
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // If there is a token in localstorage, set the token into the header
     const authToken = this.authService.getToken();
+    let handler;
     if (!!authToken) {
-      return next.handle(request.clone({
+      handler = next.handle(request.clone({
         setHeaders: {Authorization: `Bearer ${authToken}`}
       }));
     } else {
-      return next.handle(request);
+      handler = next.handle(request);
     }
+    // handle unauthorized exception (like 401)
+    return handler.pipe(catchError(x => this.handleAuthError(x)));
   }
 }

@@ -59,6 +59,7 @@ public class CommonFilter {
     // TODO(cdmikechen): Now we just verify the api,
     // Next we will get a more detailed determination of the protected path based on
     // resource openapi package `org.apache.submarine.server.rest` and `@Path` annotation
-    return httpServletRequest.getRequestURI().startsWith("/api");
+    String requestURI = httpServletRequest.getRequestURI();
+    return requestURI.startsWith("/api") && !requestURI.equals("/api/auth/login");
   }
 }
