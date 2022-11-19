@@ -34,14 +34,7 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
 
   protected final String DEFAULT_AUTHORIZER = "isAuthenticated";
 
-  protected final Config pac4jConfig;
-
-  public SecurityProvider() {
-    this.pac4jConfig = createConfig();
-    // skip web static resources
-    // pac4jConfig.addMatcher("static", new PathMatcher().excludeRegex(
-    //        "^/.*(\\.map|\\.js|\\.css|\\.ico|\\.svg|\\.png|\\.html|\\.htm)$"));
-  }
+  protected Config pac4jConfig;
 
   /**
    * Get filter class
@@ -52,6 +45,7 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
    * Get pac4j config
    */
   public Config getConfig() {
+    if (this.pac4jConfig == null) this.pac4jConfig = createConfig();
     return pac4jConfig;
   }
 
@@ -70,8 +64,4 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
    */
   public abstract Optional<R> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 
-  /**
-   * Get user profile
-   */
-  public abstract Optional<R> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 }

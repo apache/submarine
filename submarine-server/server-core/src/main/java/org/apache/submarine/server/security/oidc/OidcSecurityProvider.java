@@ -94,10 +94,4 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
     return Optional.ofNullable((OidcProfile) profile);
   }
 
-  @Override
-  public Optional<OidcProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    ProfileManager<OidcProfile> manager = new ProfileManager<>(context);
-    return manager.get(true);
-  }
 }

@@ -199,6 +199,20 @@ public class SubmarineServer extends ResourceConfig {
       webApp.setTempDirectory(warTempDirectory);
     }
 
+    String staticProviderJs = String.format(
+        "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();",
+        conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE)
+    );
+    ServletHolder authProviderServlet = new ServletHolder(new HttpServlet() {
+      private static final long serialVersionUID = 1L;
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+              throws ServletException, IOException {
+        resp.getWriter().write(staticProviderJs);
+      }
+    });
+    webApp.addServlet(authProviderServlet, "/assets/security/provider.js");
+
     webApp.addServlet(new ServletHolder(new DefaultServlet()), "/");
     // When requesting the workbench page, the content of index.html needs to be returned,
     // otherwise a 404 error will be displayed

@@ -19,6 +19,6 @@
 
 (function () {
   window.GLOBAL_CONFIG = {
-    "type": "oidc"
+    "type": "simple"
   };
 })();

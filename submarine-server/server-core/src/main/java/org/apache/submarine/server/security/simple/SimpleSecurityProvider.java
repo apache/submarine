@@ -54,10 +54,7 @@ public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtPr
     // header client
     HeaderClient headerClient = new HeaderClient(CommonConfig.AUTH_HEADER, CommonConfig.BEARER_HEADER_PREFIX,
             SimpleLoginConfig.getJwtAuthenticator());
-    Config pac4jConfig = new Config(headerClient);
-    // skip login rest api
-    pac4jConfig.addMatcher("api", new PathMatcher().excludeRegex("^/api/auth/login$"));
-    return pac4jConfig;
+    return new Config(headerClient);
   }
 
   @Override
@@ -80,14 +77,7 @@ public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtPr
           }
         },
         CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), DEFAULT_AUTHORIZER, "api", null);
+        getClient(hsRequest), DEFAULT_AUTHORIZER, null, null);
     return Optional.ofNullable((JwtProfile) profile);
-  }
-
-  @Override
-  public Optional<JwtProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    ProfileManager<JwtProfile> manager = new ProfileManager<>(context);
-    return manager.get(true);
   }
 }
