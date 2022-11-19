@@ -66,9 +66,9 @@ public class WebSocketServer extends WebSocketServlet
 
   private static AtomicReference<WebSocketServer> self = new AtomicReference<>();
 
-  private ConnectionManager connectionManager;
+  private static ConnectionManager connectionManager;
 
-  private ExecutorService executorService = Executors.newFixedThreadPool(10);
+  private static ExecutorService executorService = Executors.newFixedThreadPool(10);
 
   public WebSocketServer() {
     this.connectionManager = new ConnectionManager();

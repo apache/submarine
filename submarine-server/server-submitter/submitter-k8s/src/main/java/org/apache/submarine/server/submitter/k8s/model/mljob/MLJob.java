@@ -284,7 +284,7 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
       return false;
     if (handlerSpec.get("FILE_SYSTEM_TYPE") == null)
       return false;
-    else if (handlerSpec.get("FILE_SYSTEM_TYPE") == "HDFS") {
+    else if (handlerSpec.get("FILE_SYSTEM_TYPE").equals("HDFS")) {
       if ((handlerSpec.get("HDFS_HOST") == null) || (handlerSpec.get("HDFS_PORT") == null) ||
           (handlerSpec.get("HDFS_SOURCE") == null) || (handlerSpec.get("ENABLE_KERBEROS") == null)) {
         return false;

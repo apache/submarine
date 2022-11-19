@@ -35,7 +35,7 @@ import org.apache.submarine.server.s3.Client;
  * ModelVersion manager.
  */
 public class ModelVersionManager {
-  private static volatile ModelVersionManager manager;
+  private static ModelVersionManager manager;
 
   /* Model version service */
   private final ModelVersionService modelVersionService;

@@ -50,7 +50,7 @@ public class XGBoostJobList implements KubernetesListObject {
 
   @Override
   public String getApiVersion() {
-    return XGBoostJob.CRD_XGBOOST_API_VERSION_V1;
+    return apiVersion;
   }
 
   @Override
