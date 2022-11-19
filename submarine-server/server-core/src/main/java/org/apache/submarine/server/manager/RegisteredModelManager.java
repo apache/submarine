@@ -37,7 +37,7 @@ import org.apache.submarine.server.s3.Client;
  * Registered model manager.
  */
 public class RegisteredModelManager {
-  private static volatile RegisteredModelManager manager;
+  private static RegisteredModelManager manager;
   /* Registered model service */
   private final RegisteredModelService registeredModelService;
 
