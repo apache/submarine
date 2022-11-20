@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -48,10 +47,6 @@ public class SimpleFilter extends CommonFilter implements Filter {
 
   public SimpleFilter() {
     this.provider = SecurityFactory.getSimpleSecurityProvider();
-  }
-
-  @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
   }
 
   @Override

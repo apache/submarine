@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -51,11 +50,6 @@ public class OidcFilter extends CommonFilter implements Filter {
   public OidcFilter() {
     this.provider = SecurityFactory.getPac4jSecurityProvider();
     this.oidcConfig = provider.getConfig();
-  }
-
-  @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-
   }
 
   @Override

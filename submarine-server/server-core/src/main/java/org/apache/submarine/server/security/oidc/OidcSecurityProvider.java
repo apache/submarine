@@ -25,7 +25,6 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.oidc.client.OidcClient;

@@ -21,6 +21,7 @@ package org.apache.submarine.server.rest.workbench;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.submarine.server.rest.workbench.annotation.NoneAuth;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.database.workbench.mappers.SysUserMapper;
@@ -54,6 +55,7 @@ public class LoginRestApi {
   @POST
   @Path("/login")
   @SubmarineApi
+  @NoneAuth
   public Response login(String loginParams) {
     HashMap<String, String> mapParams
         = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());

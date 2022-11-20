@@ -20,6 +20,7 @@ package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 
+import org.apache.submarine.server.rest.workbench.annotation.NoneAuth;
 import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.utils.response.JsonResponse;
@@ -117,6 +118,8 @@ public class SysUserRestApi {
   @POST
   @Path("/add")
   @SubmarineApi
+  /* This is temporarily marked as not requiring validation in the way that on the login page failed */
+  @NoneAuth
   public Response add(SysUserEntity sysUser) {
     LOG.info("add({})", sysUser.toString());
 

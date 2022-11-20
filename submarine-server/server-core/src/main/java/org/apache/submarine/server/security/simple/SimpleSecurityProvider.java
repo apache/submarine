@@ -24,8 +24,6 @@ import org.apache.submarine.server.security.common.CommonConfig;
 import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
-import org.pac4j.core.matching.matcher.PathMatcher;
-import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.jwt.profile.JwtProfile;

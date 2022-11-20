@@ -48,7 +48,7 @@ public class SecurityFactory {
   static {
     AUTH_TYPE = SubmarineConfiguration.getInstance()
             .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
-    // int provider map
+    // init provider map
     providerMap = new HashMap<>();
     providerMap.put("simple", new SimpleSecurityProvider());
     providerMap.put("oidc", new OidcSecurityProvider());
