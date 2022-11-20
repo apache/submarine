@@ -199,19 +199,29 @@ public class SubmarineServer extends ResourceConfig {
       webApp.setTempDirectory(warTempDirectory);
     }
 
-    String staticProviderJs = String.format(
-        "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();",
-        conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE)
-    );
-    ServletHolder authProviderServlet = new ServletHolder(new HttpServlet() {
-      private static final long serialVersionUID = 1L;
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-              throws ServletException, IOException {
-        resp.getWriter().write(staticProviderJs);
-      }
-    });
-    webApp.addServlet(authProviderServlet, "/assets/security/provider.js");
+    // add security filter
+    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
+    if (securityProvider.isPresent()) {
+      SecurityProvider provider = securityProvider.get();
+      Class<Filter> filterClass = provider.getFilterClass();
+      // add filter
+      LOG.info("Add {} to support auth", filterClass);
+      webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
+      // add flow type result to front end
+      String staticProviderJs = String.format(
+          "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();",
+          provider.getAuthType().getType()
+      );
+      ServletHolder authProviderServlet = new ServletHolder(new HttpServlet() {
+        private static final long serialVersionUID = 1L;
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+                throws ServletException, IOException {
+          resp.getWriter().write(staticProviderJs);
+        }
+      });
+      webApp.addServlet(authProviderServlet, "/assets/security/provider.js");
+    }
 
     webApp.addServlet(new ServletHolder(new DefaultServlet()), "/");
     // When requesting the workbench page, the content of index.html needs to be returned,
@@ -220,14 +230,6 @@ public class SubmarineServer extends ResourceConfig {
     // you need to modify the `/workbench/*` here.
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
-
-    // add security filter
-    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
-    if (securityProvider.isPresent()) {
-      Class<Filter> filterClass = securityProvider.get().getFilterClass();
-      LOG.info("Add {} to support auth", filterClass);
-      webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
-    }
 
     handlers.setHandlers(new Handler[]{webApp});
 

@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
   }
 
   checkLogin(url: string): boolean {
-    if (this.authService.isLoggedIn || this.authService.getAuthType() === "oidc") {
+    if (this.authService.isLoggedIn || this.authService.getFlowType() === "session") {
       return true;
     }
 

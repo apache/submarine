@@ -34,17 +34,17 @@ export class AuthService {
   authTokenKey = 'auth_token';
   // store the URL so we can redirect after logging in
   redirectUrl: string;
-  // auth type, like simple, oidc, ldap, saml ...
-  authType: string = "simple";
+  // auth flow type: token, session
+  flowType: string = "token";
 
   constructor(
     private localStorageService: LocalStorageService,
     private baseApi: BaseApiService,
     private httpClient: HttpClient
   ) {
-    this.authType = window.GLOBAL_CONFIG.type
+    this.flowType = window.GLOBAL_CONFIG.type
     // console.log(`auth type = ${this.authType}`)
-    if (this.authType === "oidc") {
+    if (this.flowType === "session") {
       this.isLoggedIn = true;
     } else {
       const authToken = this.localStorageService.get<string>(this.authTokenKey);
@@ -52,8 +52,8 @@ export class AuthService {
     }
   }
 
-  getAuthType(): string {
-    return this.authType;
+  getFlowType(): string {
+    return this.flowType;
   }
 
   getToken() {
@@ -86,7 +86,7 @@ export class AuthService {
   }
 
   logout() {
-    if (this.authType === "oidc") {
+    if (this.flowType === "oidc") {
       this.removeToken();
       const url = window.location.origin + window.location.pathname
       window.location.href = '/auth/logout?redirect_url=' + url;

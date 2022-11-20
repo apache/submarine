@@ -32,10 +32,10 @@ export class ApiTokenInjector implements HttpInterceptor {
   private handleAuthError(err: HttpErrorResponse): Observable<any> {
     // handle auth error or rethrow
     if (err.status === 401 || err.status === 403) {
-      // remove token cache
-      this.authService.removeToken();
-      // navigate to login
-      if ("oidc" !== this.authService.getAuthType()) {
+      if ("session" !== this.authService.getFlowType()) {
+        // remove token cache
+        this.authService.removeToken();
+        // navigate to login
         this.router.navigate(['/user/login']);
       }
       return of(err.message);
@@ -44,8 +44,8 @@ export class ApiTokenInjector implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // If there is a token in localstorage and not oidc auth type, set the token into the header
-    const checkToken = "oidc" !== this.authService.getAuthType() && !!this.authService.getToken();
+    // If there is a token in localstorage and not with session, set the token into the header
+    const checkToken = "session" !== this.authService.getFlowType() && !!this.authService.getToken();
     let handler;
     if (checkToken) {
       handler = next.handle(request.clone({

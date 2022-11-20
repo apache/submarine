@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.security;
 
+import org.apache.submarine.server.security.common.AuthFlowType;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -35,6 +36,13 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
   protected final String DEFAULT_AUTHORIZER = "isAuthenticated";
 
   protected Config pac4jConfig;
+
+  /**
+   * Get authentication flow type
+   */
+  public AuthFlowType getAuthType() {
+    return AuthFlowType.TOKEN;
+  }
 
   /**
    * Get filter class
