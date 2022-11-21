@@ -22,7 +22,7 @@
   nzBordered
   #basicTable
   [nzData]="experimentList"
-  [nzNoResult]="'No data'"
+  [nzNoResult]="'No data' | translate"
   [nzLoading]="isLoading"
 >
   <thead>
@@ -30,15 +30,15 @@
       <th>
         <label nz-checkbox [ngModel]="selectAllChecked" (ngModelChange)="onSelectAllClick($event)"></label>
       </th>
-      <th>Experiment Name</th>
-      <th>Experiment ID</th>
-      <th>Tags</th>
-      <th>Status</th>
-      <th>Finished Time</th>
-      <th>Created Time</th>
-      <th>Running Time</th>
-      <th>Duration</th>
-      <th>Action</th>
+      <th>{{ 'Experiment Name' | translate }}</th>
+      <th>{{ 'Experiment ID' | translate }}</th>
+      <th>{{ 'Tags' | translate }}</th>
+      <th>{{ 'Status' | translate }}</th>
+      <th>{{ 'Finished Time' | translate }}</th>
+      <th>{{ 'Created Time' | translate }}</th>
+      <th>{{ 'Running Time' | translate }}</th>
+      <th>{{ 'Duration' | translate }}</th>
+      <th>{{ 'Action' | translate }}</th>
     </tr>
   </thead>
   <tbody>
@@ -56,7 +56,7 @@
         <nz-tag *ngFor="let tag of data.spec.meta.tags">{{tag}}</nz-tag>
       </td>
       <td>
-        <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+        <nz-tag [nzColor]="statusColor[data.status]">{{ data.status | translate}}</nz-tag>
       </td>
       <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
@@ -64,7 +64,7 @@
       <td>{{ data.duration }}</td>
       <td class="td-action">
         <a (click)="initModal.emit({ initMode: 'clone', initFormType: 'customized', id: null, spec: data.spec })">
-          Clone
+          {{ 'Clone' | translate }}
         </a>
         <nz-divider nzType="vertical"></nz-divider>
         <a
@@ -72,18 +72,18 @@
             initModal.emit({ initMode: 'update', initFormType: 'customized', id: data.experimentId, spec: data.spec })
           "
         >
-          Update
+          {{ 'Update' | translate }}
         </a>
         <nz-divider nzType="vertical"></nz-divider>
         <a
           nz-popconfirm
           nzPlacement="left"
-          nzTitle="Are you sure you want to delete?"
-          nzCancelText="Cancel"
-          nzOkText="Ok"
+          nzTitle="{{ 'Are you sure you want to delete?' | translate }}"
+          nzCancelText="{{ 'Cancel' | translate }}"
+          nzOkText="{{ 'Ok' | translate }}"
           (nzOnConfirm)="onDeleteExperiment(data.experimentId)"
         >
-          Delete
+          {{ 'Delete' | translate }}
         </a>
       </td>
     </tr>

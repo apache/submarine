@@ -18,11 +18,11 @@
   -->
 
 <div id="artifactTable">
-  <nz-table #artifactTable nzSize="middle" [nzBordered]="true" [nzData]="artifactPaths" [nzNoResult]="'No data'">
+  <nz-table #artifactTable nzSize="middle" [nzBordered]="true" [nzData]="artifactPaths" [nzNoResult]="'No data' | translate">
     <thead>
       <tr>
         <th>ArtifactPath</th>
-        <th>Action</th>
+        <th>{{'Action' | translate}}</th>
       </tr>
     </thead>
     <tbody>
@@ -36,7 +36,7 @@
             style="margin: 10px 4px 10px 4px"
             (click)="form.initModal()"
           >
-            Register model
+            {{'Register model' | translate}}
           </button>
         </td>
         <register-model-form #form [baseDir]="artifactPath" [experimentId]="experimentID"></register-model-form>

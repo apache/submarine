@@ -19,11 +19,11 @@
 
 <form nz-form [formGroup]="predefinedForm">
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzFor="predefined-template" nzRequired>predefined-template</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please select templates.">
+    <nz-form-label [nzSpan]="5" nzFor="predefined-template" nzRequired>{{'predefined-template' | translate}}</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="{{'Please select templates.' | translate}}">
       <nz-select
         id="predefined-template"
-        nzPlaceHolder="Select a predefined experiment template"
+        nzPlaceHolder="{{'Select a predefined experiment template' | translate}}"
         formControlName="templateName"
         (ngModelChange)="onTemplateChange()"
       >
@@ -33,7 +33,7 @@
   </nz-form-item>
 
   <div formGroupName="params" *ngIf="currentOption != null">
-    <h4 nz-typography>Configurable Parameters</h4>
+    <h4 nz-typography>{{'Configurable Parameters' | translate}}</h4>
     <nz-form-item *ngFor="let item of paramList">
       <nz-form-label [nzSpan]="5" [nzRequired]="item.required" [nzFor]="item.name">{{ item.name }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzErrorTip="Please provide the value!" *ngIf="item.name != 'experiment_name'">
@@ -42,7 +42,7 @@
       <nz-form-control [nzSpan]="12" *ngIf="item.name == 'experiment_name'">
         <input type="text" nz-input [id]="item.name" [formControlName]="item.name" />
         <div class="alert-message" *ngIf="predefinedForm.get('params').get(item.name).hasError('pattern')">
-          Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start or end with hyphens.
+          {{'Only letters(a - z), numbers(0 - 9), and hyphens are allowed, but you can`t start or end with hyphens.' | translate}}
         </div>
       </nz-form-control>
     </nz-form-item>
@@ -50,22 +50,22 @@
 
   <nz-form-item *ngIf="currentOption != null">
     <nz-descriptions nzTitle="Spec" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
-      <nz-descriptions-item nzTitle="Name">
+      <nz-descriptions-item nzTitle="{{'Name' | translate}}">
         {{ templates[currentOption].experimentName }}
       </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Namespace">
+      <nz-descriptions-item nzTitle="{{'Namespace' | translate}}">
         {{ templates[currentOption].experimentNamespace }}
       </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
+      <nz-descriptions-item nzTitle="{{'Command' | translate}}" [nzSpan]="2">
         {{ templates[currentOption].experimentCommand }}
       </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Image" [nzSpan]="2">
+      <nz-descriptions-item nzTitle="{{'Image' | translate}}" [nzSpan]="2">
         {{ templates[currentOption].experimentImage }}
       </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
+      <nz-descriptions-item nzTitle="{{'Environment Variables' | translate}}" [nzSpan]="2">
         {{ templates[currentOption].experimentVars }}
       </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Tags">
+      <nz-descriptions-item nzTitle="{{'Tags' | translate}}">
         <nz-tag *ngFor="let tag of templates[currentOption].experimentTags">{{tag}}</nz-tag>
       </nz-descriptions-item>
     </nz-descriptions>

@@ -29,14 +29,14 @@
   >
     <thead>
       <tr>
-        <th>Experiment Name</th>
-        <th>Experiment ID</th>
-        <th>Created Time</th>
-        <th>Running Time</th>
-        <th>Finished Time</th>
-        <th>Duration</th>
-        <th>Status</th>
-        <th>Action</th>
+        <th>{{'Experiment Name' | translate}}</th>
+        <th>{{'Experiment ID' | translate}}</th>
+        <th>{{'Created Time' | translate}}</th>
+        <th>{{'Running Time' | translate}}</th>
+        <th>{{'Finished Time' | translate}}</th>
+        <th>{{'Duration' | translate}}</th>
+        <th>{{'Status' | translate}}</th>
+        <th>{{'Action' | translate}}</th>
       </tr>
     </thead>
     <tbody>
@@ -48,28 +48,28 @@
         <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
         <td>{{ experimentInfo.duration }}</td>
         <td>
-          <nz-tag [nzColor]="statusColor[experimentInfo.status]">{{ experimentInfo.status }}</nz-tag>
+          <nz-tag [nzColor]="statusColor[experimentInfo.status]">{{ experimentInfo.status  | translate }}</nz-tag>
         </td>
         <td class="td-action">
-          <a (click)="startExperiment()">Start</a>
+          <a (click)="startExperiment()">{{'Start' | translate}}</a>
           <nz-divider nzType="vertical"></nz-divider>
           <a nz-dropdown [nzDropdownMenu]="more">
-            More
+            {{'More' | translate}}
             <i nz-icon nzType="down"></i>
           </a>
           <nz-dropdown-menu #more="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li nz-menu-item (click)="editExperiment()">Edit</li>
+              <li nz-menu-item (click)="editExperiment()">{{'Edit' | translate}}</li>
               <li
                 nz-menu-item
                 nz-popconfirm
                 nzPlacement="left"
                 nzTitle="Are you sure you want to delete?"
-                nzCancelText="Cancel"
-                nzOkText="Ok"
+                nzCancelText="{{'Cancel' | translate}}"
+                nzOkText="{{'Ok' | translate}}"
                 (nzOnConfirm)="onDeleteExperiment()"
               >
-                Delete
+                {{ 'Delete' | translate }}
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -88,23 +88,23 @@
       <ul nz-menu>
         <li nz-menu-item nzSelected (click)="currentState = 0">
           <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          Charts
+          {{'Charts' | translate}}
         </li>
         <li nz-menu-item (click)="currentState = 1">
           <i nz-icon nzType="bars" nzTheme="outline"></i>
-          Parameters
+          {{'Parameters' | translate}}
         </li>
         <li nz-menu-item (click)="currentState = 2">
           <i nz-icon nzType="appstore" nzTheme="outline"></i>
-          Metrics
+          {{'Metrics' | translate}}
         </li>
         <li nz-menu-item (click)="currentState = 3">
           <i nz-icon nzType="desktop" nzTheme="outline"></i>
-          Outputs
+          {{'Outputs' | translate}}
         </li>
         <li nz-menu-item (click)="currentState = 4">
           <i nz-icon nzType="experiment" nzTheme="outline"></i>
-          Artifacts
+          {{'Artifacts' | translate}}
         </li>
       </ul>
     </nz-sider>

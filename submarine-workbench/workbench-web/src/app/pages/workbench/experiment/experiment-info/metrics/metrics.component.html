@@ -18,13 +18,14 @@
   -->
 
 <div id="metricTable">
-  <nz-table #metricTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podMetric">
+  <nz-table #metricTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podMetric"
+            [nzNoResult]="'No data' | translate">
     <thead>
       <tr>
         <th>Key</th>
         <th>Value</th>
-        <th>Time</th>
-        <th>Step</th>
+        <th>{{'Time' | translate}}</th>
+        <th>{{'Step' | translate}}</th>
       </tr>
     </thead>
     <tbody>

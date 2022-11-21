@@ -20,14 +20,14 @@
 <div style="margin: 15px; padding: 15px; background-color: white">
   <div align="right">
     <div style="margin: 0px 4px 0px 4px; display: inline-block">
-      Auto Reload
+      {{ 'Auto Reload' | translate }}
       <nz-switch [(ngModel)]="switchValue" (click)="onSwitchAutoReload()"></nz-switch>
     </div>
 
     <nz-radio-group>
-      <label nz-radio-button nzValue="All">All</label>
-      <label nz-radio-button nzValue="Own">Owned By Me</label>
-      <label nz-radio-button nzValue="Access">Accessible By Me</label>
+      <label nz-radio-button nzValue="All">{{ 'All' | translate }}</label>
+      <label nz-radio-button nzValue="Own">{{ 'Owned By Me' | translate }}</label>
+      <label nz-radio-button nzValue="Access">{{ 'Accessible By Me' | translate }}</label>
     </nz-radio-group>
     <a
       nz-button
@@ -53,7 +53,7 @@
     </a>
     <br />
     <nz-input-group nzSearch style="width: 300px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input placeholder="input search text" />
+      <input type="text" nz-input placeholder="{{'input search text' | translate}}" />
     </nz-input-group>
     <ng-template #suffixIconButton>
       <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
@@ -67,7 +67,7 @@
       (click)="form.initModal('create')"
     >
       <i nz-icon nzType="plus"></i>
-      New Experiment
+      {{'New Experiment' | translate}}
     </button>
 
     <button
@@ -75,13 +75,13 @@
       nzType="primary"
       style="margin: 10px 4px 10px 4px"
       nz-popconfirm
-      nzTitle="Confirm to delete?"
-      nzCancelText="Cancel"
-      nzOkText="Ok"
+      nzTitle="{{'Confirm to delete?' | translate}}"
+      nzCancelText="{{'Cancel' | translate}}"
+      nzOkText="{{'Ok' | translate}}"
       (nzOnConfirm)="deleteExperiments()"
     >
       <i nz-icon nzType="delete"></i>
-      Delete
+      {{'Delete' | translate}}
     </button>
   </div>
   <submarine-experiment-list

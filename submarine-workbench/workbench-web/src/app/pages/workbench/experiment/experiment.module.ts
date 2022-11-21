@@ -22,25 +22,28 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
+import { ExperimentService } from '@submarine/services/experiment.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { ExperimentComponent } from './experiment.component';
+import { ModelModule } from '../model/model.module';
+import { ExperimentCustomizedFormComponent } from './experiment-home/experiment-form/experiment-customized-form/experiment-customized-form.component';
+import { ExperimentFormComponent } from './experiment-home/experiment-form/experiment-form.component';
+import { ExperimentPredefinedFormComponent } from './experiment-home/experiment-form/experiment-predefined-form/experiment-predefined-form.component';
+import { ExperimentHomeComponent } from './experiment-home/experiment-home.component';
 import { ExperimentListComponent } from './experiment-home/experiment-list/experiment-list.component';
-import { ExperimentRoutingModule } from './experiment-routing.module';
+import { ArtifactsComponent } from './experiment-info/artifacts/artifacts.component';
+import { RegisterModelFormComponent } from './experiment-info/artifacts/register-model-form/register-model-form.component';
+import { RegisterModelTagsComponent } from './experiment-info/artifacts/register-model-form/register-model-tag/register-model-tags.component';
+import { ChartsComponent } from './experiment-info/charts/charts.component';
 import { ExperimentInfoComponent } from './experiment-info/experiment-info.component';
 import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-params.component';
 import { MetricsComponent } from './experiment-info/metrics/metrics.component';
-import { ChartsComponent } from './experiment-info/charts/charts.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
-import { ArtifactsComponent } from './experiment-info/artifacts/artifacts.component';
-import { ExperimentHomeComponent } from './experiment-home/experiment-home.component';
-import { ExperimentService } from '@submarine/services/experiment.service';
-import { ExperimentFormComponent } from './experiment-home/experiment-form/experiment-form.component';
-import { ExperimentPredefinedFormComponent } from './experiment-home/experiment-form/experiment-predefined-form/experiment-predefined-form.component';
-import { ExperimentCustomizedFormComponent } from './experiment-home/experiment-form/experiment-customized-form/experiment-customized-form.component';
-import { RegisterModelFormComponent } from './experiment-info/artifacts/register-model-form/register-model-form.component';
-import { RegisterModelTagsComponent } from './experiment-info/artifacts/register-model-form/register-model-tag/register-model-tags.component';
-import { ModelModule } from '../model/model.module';
+import { ExperimentRoutingModule } from './experiment-routing.module';
+import { ExperimentComponent } from './experiment.component';
+
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
 
 @NgModule({
   exports: [ExperimentComponent],
@@ -53,7 +56,8 @@ import { ModelModule } from '../model/model.module';
     RouterModule,
     PipeSharedModule,
     ExperimentRoutingModule,
-    ModelModule
+    ModelModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
   ],
   providers: [ExperimentService],
   declarations: [

@@ -22,10 +22,10 @@
     <div style="background-color: white; padding-left: 30px; padding-top: 20px">
       <nz-breadcrumb>
         <nz-breadcrumb-item>
-          <a>Home</a>
+          <a>{{ 'Home' | translate }}</a>
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>
-          <a [routerLink]="['/', 'workbench', 'experiment']">experiment</a>
+          <a [routerLink]="['/', 'workbench', 'experiment']">{{ 'experiment' | translate }}</a>
         </nz-breadcrumb-item>
         <nz-breadcrumb-item *ngIf="experimentID != null">
           {{ experimentID }}
@@ -33,7 +33,7 @@
       </nz-breadcrumb>
       <div *ngIf="experimentID == null">
         <br />
-        <h2>Experiment</h2>
+        <h2>{{ 'Experiment' | translate }}</h2>
       </div>
       <br />
     </div>

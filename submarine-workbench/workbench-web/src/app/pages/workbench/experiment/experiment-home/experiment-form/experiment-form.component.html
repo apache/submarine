@@ -19,7 +19,7 @@
 
 <nz-modal
   [(nzVisible)]="modalProps.isVisible"
-  nzTitle="Create Experiment"
+  nzTitle="{{'Create Experiment' | translate}}"
   (nzOnCancel)="closeModal()"
   [nzWidth]="1000"
   [nzContent]="modalContent"
@@ -28,10 +28,10 @@
   <ng-template #modalContent>
     <nz-button-group id="form-type-container" *ngIf="!modalProps.formType">
       <button nz-button nzType="primary" id="customized" (click)="modalProps.formType = 'customized'">
-        Define your experiment
+        {{'Define your experiment' | translate}}
       </button>
       <button nz-button nzType="primary" id="pre" (click)="modalProps.formType = 'predefined'">
-        From predefined experiment library
+        {{'From predefined experiment library' | translate}}
       </button>
     </nz-button-group>
     <submarine-experiment-customized-form
@@ -45,7 +45,7 @@
     ></submarine-experiment-predefined-form>
   </ng-template>
   <ng-template #modalFooter>
-    <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
+    <button nz-button nzType="default" (click)="closeModal()">{{'Cancel' | translate}}</button>
     <button
       id="go"
       nz-button
@@ -54,10 +54,10 @@
       [disabled]="nextBtnDisable"
       (click)="proceedForm()"
     >
-      {{ modalProps.okText }}
+      {{ modalProps.okText | translate }}
     </button>
     <button *ngIf="modalProps.currentStep > 0" nz-button nzType="default" style="float: left" (click)="prevForm()">
-      Prev Step
+      {{'Prev Step' | translate}}
     </button>
   </ng-template>
 </nz-modal>

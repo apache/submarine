@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserInfo } from '@submarine/interfaces';
-import { AuthService, UserService } from '@submarine/services';
-import { NzNotificationService } from 'ng-zorro-antd';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {UserInfo} from '@submarine/interfaces';
+import {AuthService, UserService} from '@submarine/services';
+import {NzNotificationService} from 'ng-zorro-antd';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 interface SidebarMenu {
   title: string;
@@ -129,14 +130,26 @@ export class WorkbenchComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
-    private nzNotificationService: NzNotificationService
-  ) {}
+    private nzNotificationService: NzNotificationService,
+    private translate: TranslateService
+  ) {
+  }
+
+  setLang(lang: string) {
+    // change language
+    this.translate.use(lang);
+    console.log(`change language to ${lang}`)
+    // save to localStorage in order to refresh the page can correctly display the language
+    localStorage.setItem('translate', lang);
+  }
 
   ngOnInit() {
     if (this.authService.isLoggedIn) {
       this.userInfo$ = this.userService.fetchUserInfo().pipe(
         tap((userInfo) => {
-          this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
+          this.nzNotificationService.success(this.translate.instant('Welcome'),
+            `${this.translate.instant('Welcome back')}, ${userInfo.name}`
+          );
         })
       );
     }
