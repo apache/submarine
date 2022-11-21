@@ -20,6 +20,7 @@
 package org.apache.submarine.server.security.oidc;
 
 import org.apache.submarine.server.security.SecurityProvider;
+import org.apache.submarine.server.security.common.AuthFlowType;
 import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
@@ -42,6 +43,12 @@ import java.util.Optional;
 public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfile> {
 
   private static final Logger LOG = LoggerFactory.getLogger(OidcSecurityProvider.class);
+
+  @Override
+  public AuthFlowType getAuthFlowType() {
+    return AuthFlowType.SESSION;
+  }
+
 
   @Override
   public Class<OidcFilter> getFilterClass() {

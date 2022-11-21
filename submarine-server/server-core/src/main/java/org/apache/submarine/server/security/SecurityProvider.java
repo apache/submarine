@@ -40,7 +40,7 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
   /**
    * Get authentication flow type
    */
-  public AuthFlowType getAuthType() {
+  public AuthFlowType getAuthFlowType() {
     return AuthFlowType.TOKEN;
   }
 

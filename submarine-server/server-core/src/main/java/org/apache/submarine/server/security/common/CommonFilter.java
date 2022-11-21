@@ -110,7 +110,7 @@ public class CommonFilter {
         addSupportedApiPath(path, method);
       }
     }
-    LOG.info("get security filter rest api path = {} and regrex api path = {}",
+    LOG.info("Get security filter rest api path = {} and regrex api path = {}",
         REST_API_PATHS, REST_REGREX_API_PATHS);
   }
 

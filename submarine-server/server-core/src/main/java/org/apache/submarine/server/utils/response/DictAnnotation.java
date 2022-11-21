@@ -173,7 +173,9 @@ public class DictAnnotation {
 
       return true;
     } else {
-      LOG.warn("Unsupported parse {} Dict Annotation!", result.getClass());
+      // When it contains lists, mostly arraylists and the like,
+      // we should do as a trace/debug level as it does not affect the data returned
+      LOG.trace("Unsupported parse {} Dict Annotation!", result.getClass());
     }
 
     return false;

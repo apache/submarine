@@ -19,9 +19,11 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.SecurityProvider;
+import org.apache.submarine.server.security.common.AuthFlowType;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.server.websocket.WebSocketServer;
 import org.eclipse.jetty.http.HttpVersion;
@@ -33,6 +35,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.session.DatabaseAdaptor;
+import org.eclipse.jetty.server.session.JDBCSessionDataStoreFactory;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -208,15 +212,36 @@ public class SubmarineServer extends ResourceConfig {
       LOG.info("Add {} to support auth", filterClass);
       webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
       // add flow type result to front end
-      String staticProviderJs = String.format(
-          "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();",
-          provider.getAuthType().getType()
-      );
+      AuthFlowType type = provider.getAuthFlowType();
+      // If using session, we can add JDBCSessionDataStoreFactory to support clustering session
+      // This solves two problems:
+      // 1. session loss after service restart
+      // 2. session sharing when multiple replicas
+      if (type == AuthFlowType.SESSION) {
+        // Configure a JDBCSessionDataStoreFactory.
+        JDBCSessionDataStoreFactory sessionDataStoreFactory = new JDBCSessionDataStoreFactory();
+        sessionDataStoreFactory.setGracePeriodSec(3600);
+        sessionDataStoreFactory.setSavePeriodSec(0);
+        // add datasource (current mybatis) to factory
+        DatabaseAdaptor adaptor = new DatabaseAdaptor();
+        adaptor.setDatasource(MyBatisUtil.getDatasource());
+        sessionDataStoreFactory.setDatabaseAdaptor(adaptor);
+        // Add the SessionDataStoreFactory as a bean on the server.
+        jettyWebServer.addBean(sessionDataStoreFactory);
+      }
+
       ServletHolder authProviderServlet = new ServletHolder(new HttpServlet() {
         private static final long serialVersionUID = 1L;
+        private final String staticProviderJs = String.format(
+            "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();", type.getType()
+        );
+        private static final String contentType = "application/javascript";
+        private static final String encoding = "UTF-8";
         @Override
         protected void doGet(HttpServletRequest req, HttpServletResponse resp)
                 throws ServletException, IOException {
+          resp.setContentType(contentType);
+          resp.setCharacterEncoding(encoding);
           resp.getWriter().write(staticProviderJs);
         }
       });
