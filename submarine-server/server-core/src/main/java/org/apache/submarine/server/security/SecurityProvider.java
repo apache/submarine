@@ -21,7 +21,20 @@ package org.apache.submarine.server.security;
 
 import org.apache.submarine.server.security.common.AuthFlowType;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.engine.CallbackLogic;
+import org.pac4j.core.engine.DefaultCallbackLogic;
+import org.pac4j.core.engine.DefaultLogoutLogic;
+import org.pac4j.core.engine.DefaultSecurityLogic;
+import org.pac4j.core.engine.LogoutLogic;
+import org.pac4j.core.engine.SecurityLogic;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.FindBest;
+import org.pac4j.jee.context.JEEContextFactory;
+import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
@@ -68,20 +81,67 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
   public abstract String getClient(HttpServletRequest httpServletRequest);
 
   /**
+   * Create {@link WebContext}
+   */
+  protected WebContext createWebContext(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+    return FindBest.webContextFactory(null, getConfig(), JEEContextFactory.INSTANCE)
+        .newContext(hsRequest, hsResponse);
+  }
+
+  /**
+   * Create {@link SessionStore}
+   */
+  protected SessionStore createSessionStore(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+    return FindBest.sessionStoreFactory(null, getConfig(), JEESessionStoreFactory.INSTANCE)
+        .newSessionStore(hsRequest, hsResponse);
+  }
+
+  /**
+   * Create {@link HttpActionAdapter}
+   */
+  protected HttpActionAdapter createHttpActionAdapter() {
+    return FindBest.httpActionAdapter(null, getConfig(), JEEHttpActionAdapter.INSTANCE);
+  }
+
+  /**
+   * Create {@link SecurityLogic}
+   */
+  protected SecurityLogic createSecurityLogic() {
+    return FindBest.securityLogic(null, getConfig(), DefaultSecurityLogic.INSTANCE);
+  }
+
+  /**
+   * Create {@link CallbackLogic}
+   */
+  protected CallbackLogic createCallbackLogic() {
+    return FindBest.callbackLogic(null, getConfig(), DefaultCallbackLogic.INSTANCE);
+  }
+
+  /**
+   * Create {@link LogoutLogic}
+   */
+  protected LogoutLogic createLogoutLogic() {
+    return FindBest.logoutLogic(null, this.pac4jConfig, DefaultLogoutLogic.INSTANCE);
+  }
+
+  /**
    * Process authentication information and return user profile
    */
   public abstract Optional<R> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 
-  public void login(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+  /**
+   * Handling login perform
+   */
+  public void login(HttpServletRequest hsRequest, HttpServletResponse hsResponse) { }
 
-  }
+  /**
+   * Handling callback perform
+   */
+  public void callback(HttpServletRequest hsRequest, HttpServletResponse hsResponse) { }
 
-  public void callback(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-
-  }
-
-  public void logout(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-
-  }
+  /**
+   * Handling logout perform
+   */
+  public void logout(HttpServletRequest hsRequest, HttpServletResponse hsResponse) { }
 
 }

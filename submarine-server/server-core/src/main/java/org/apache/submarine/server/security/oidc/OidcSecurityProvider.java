@@ -25,28 +25,15 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.security.common.AuthFlowType;
 import org.apache.submarine.server.security.common.RegistryUserActionAdapter;
-import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.engine.CallbackLogic;
-import org.pac4j.core.engine.DefaultCallbackLogic;
-import org.pac4j.core.engine.DefaultLogoutLogic;
-import org.pac4j.core.engine.DefaultSecurityLogic;
-import org.pac4j.core.engine.LogoutLogic;
-import org.pac4j.core.engine.SecurityLogic;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
-import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.FindBest;
 import org.pac4j.http.client.direct.HeaderClient;
-import org.pac4j.jee.context.JEEContextFactory;
-import org.pac4j.jee.context.session.JEESessionStoreFactory;
-import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.authenticator.UserInfoOidcAuthenticator;
@@ -57,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -115,18 +101,10 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
 
   @Override
   public Optional<OidcProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    final WebContext context = FindBest.webContextFactory(null, this.pac4jConfig,
-            JEEContextFactory.INSTANCE).newContext(hsRequest, hsResponse);
-    final SessionStore sessionStore = FindBest.sessionStoreFactory(null, this.pac4jConfig,
-            JEESessionStoreFactory.INSTANCE).newSessionStore(hsRequest, hsResponse);
-    final HttpActionAdapter adapter = FindBest.httpActionAdapter(null, this.pac4jConfig,
-            JEEHttpActionAdapter.INSTANCE);
-    final SecurityLogic securityLogic = FindBest.securityLogic(null, this.pac4jConfig,
-            DefaultSecurityLogic.INSTANCE);
     // perform get profile
-    UserProfile profile = (UserProfile) securityLogic.perform(
-        context,
-        sessionStore,
+    UserProfile profile = (UserProfile) createSecurityLogic().perform(
+        createWebContext(hsRequest, hsResponse),
+        createSessionStore(hsRequest, hsResponse),
         getConfig(),
         (WebContext ctx, SessionStore store, Collection<UserProfile> profiles, Object... parameters) -> {
           if (profiles.isEmpty()) {
@@ -136,7 +114,7 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
             return profiles.iterator().next();
           }
         },
-        adapter,
+        createHttpActionAdapter(),
         getClient(hsRequest), DEFAULT_AUTHORIZER, ""
     );
     return Optional.ofNullable((OidcProfile) profile);
@@ -144,15 +122,12 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
 
   @Override
   public void callback(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    final CallbackLogic bestLogic = FindBest.callbackLogic(null, this.pac4jConfig,
-        DefaultCallbackLogic.INSTANCE);
-    final WebContext context = FindBest.webContextFactory(null, this.pac4jConfig,
-        JEEContextFactory.INSTANCE).newContext(hsRequest, hsResponse);
-    final SessionStore sessionStore = FindBest.sessionStoreFactory(null, this.pac4jConfig,
-        JEESessionStoreFactory.INSTANCE).newSessionStore(hsRequest, hsResponse);
     // perform callback
-    bestLogic.perform(context, sessionStore, this.pac4jConfig, userActionAdapter, "/",
-        false, "oidcClient");
+    createCallbackLogic().perform(
+        createWebContext(hsRequest, hsResponse),
+        createSessionStore(hsRequest, hsResponse),
+        getConfig(), userActionAdapter, "/", false, "oidcClient"
+    );
   }
 
   @Override
@@ -161,17 +136,14 @@ public class OidcSecurityProvider extends SecurityProvider<OidcFilter, OidcProfi
     if (StringUtils.isBlank(redirectUrl)) {
       redirectUrl = hsRequest.getParameter("redirect_url");
     }
-    final HttpActionAdapter bestAdapter = FindBest.httpActionAdapter(null, this.pac4jConfig,
-        JEEHttpActionAdapter.INSTANCE);
-    final LogoutLogic bestLogic = FindBest.logoutLogic(null, this.pac4jConfig,
-        DefaultLogoutLogic.INSTANCE);
-    final WebContext context = FindBest.webContextFactory(null, this.pac4jConfig,
-        JEEContextFactory.INSTANCE).newContext(hsRequest, hsResponse);
-    final SessionStore sessionStore = FindBest.sessionStoreFactory(null, this.pac4jConfig,
-        JEESessionStoreFactory.INSTANCE).newSessionStore(hsRequest, hsResponse);
     // perform logout
-    bestLogic.perform(context, sessionStore, this.pac4jConfig, bestAdapter, redirectUrl, "/",
-        true, true, true);
+    createLogoutLogic().perform(
+        createWebContext(hsRequest, hsResponse),
+        createSessionStore(hsRequest, hsResponse),
+        getConfig(),
+        createHttpActionAdapter(),
+        redirectUrl, "/", true, true, true
+    );
   }
 
 }
