@@ -21,11 +21,12 @@ package org.apache.submarine.server.security.common;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.database.workbench.service.SysUserService;
-import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
-import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.jee.context.session.JEESessionStore;
+import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,23 +40,18 @@ import static org.apache.submarine.server.database.workbench.service.SysUserServ
  * Triggers automatic creation of non-existent users
  * when authenticating third party logins to the adapter at the same time
  */
-public class RegistryUserActionAdapter<T extends CommonProfile, R extends JEEContext>
-        extends JEEHttpActionAdapter {
+public class RegistryUserActionAdapter extends JEEHttpActionAdapter {
 
   private final Logger LOG = LoggerFactory.getLogger(RegistryUserActionAdapter.class);
-  private final boolean loadFromSession;
   private static final SysUserService userService = new SysUserService();
 
-  public RegistryUserActionAdapter(boolean loadFromSession) {
-    this.loadFromSession = loadFromSession;
-  }
-
   @Override
-  public T adapt(final HttpAction action, final JEEContext context) {
+  public Object adapt(HttpAction action, WebContext context) {
     super.adapt(action, context);
     // get profile
-    ProfileManager<T> manager = new ProfileManager<>(context);
-    Optional<T> profile = manager.get(loadFromSession);
+    //final SessionStore store = FindBest.sessionStore(null, Config.INSTANCE, JEESessionStore.INSTANCE);
+    ProfileManager manager = new ProfileManager(context, JEESessionStore.INSTANCE);
+    Optional<UserProfile> profile = manager.getProfile();
     // every time call back, check if this user is exists
     profile.ifPresent(this::createUndefinedUser);
     return null;
@@ -64,27 +60,25 @@ public class RegistryUserActionAdapter<T extends CommonProfile, R extends JEECon
   /**
    * Create a user that does not exist
    */
-  protected void createUndefinedUser(CommonProfile ... profiles) {
+  protected void createUndefinedUser(UserProfile profile) {
     LOG.trace("Check user if exists ...");
-    for (CommonProfile profile : profiles) {
-      try {
-        // If the user does not exist then create
-        userService.getOrCreateUser(profile.getUsername(), () -> {
-          SysUserEntity entity = new SysUserEntity();
-          entity.setUserName(profile.getUsername());
-          entity.setRealName(profile.getDisplayName());
-          entity.setPassword(DEFAULT_CREATE_USER_PASSWORD);
-          entity.setEmail(profile.getEmail());
-          entity.setPhone(ObjectUtils.identityToString(profile.getAttribute("phone")));
-          entity.setAvatar(ObjectUtils.identityToString(profile.getPictureUrl()));
-          entity.setDeleted(0);
-          entity.setCreateBy(DEFAULT_ADMIN_UID);
-          entity.setCreateTime(new Date());
-          return entity;
-        });
-      } catch (Exception e) {
-        LOG.error("Get error when creating user, skip ...", e);
-      }
+    try {
+      // If the user does not exist then create
+      userService.getOrCreateUser(profile.getUsername(), () -> {
+        SysUserEntity entity = new SysUserEntity();
+        entity.setUserName(profile.getUsername());
+        entity.setRealName(profile.getUsername());
+        entity.setPassword(DEFAULT_CREATE_USER_PASSWORD);
+        entity.setEmail(ObjectUtils.identityToString(profile.getAttribute("email")));
+        entity.setPhone(ObjectUtils.identityToString(profile.getAttribute("phone")));
+        entity.setAvatar(ObjectUtils.identityToString(profile.getAttribute("picture")));
+        entity.setDeleted(0);
+        entity.setCreateBy(DEFAULT_ADMIN_UID);
+        entity.setCreateTime(new Date());
+        return entity;
+      });
+    } catch (Exception e) {
+      LOG.error("Get error when creating user, skip ...", e);
     }
   }
 }

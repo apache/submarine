@@ -21,16 +21,6 @@ package org.apache.submarine.server.security.common;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.server.rest.workbench.annotation.NoneAuth;
-import org.pac4j.core.context.JEEContext;
-import org.pac4j.core.context.session.JEESessionStore;
-import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.engine.DefaultCallbackLogic;
-import org.pac4j.core.engine.DefaultLogoutLogic;
-import org.pac4j.core.engine.DefaultSecurityLogic;
-import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,18 +50,6 @@ import static org.reflections.scanners.Scanners.TypesAnnotated;
 
 
 public class CommonFilter {
-
-  public static final HttpActionAdapter DEFAULT_HTTP_ACTION_ADAPTER = JEEHttpActionAdapter.INSTANCE;
-
-  public static final DefaultCallbackLogic<CommonProfile, JEEContext> CALLBACK_LOGIC =
-          new DefaultCallbackLogic<>();
-
-  public static final DefaultSecurityLogic<UserProfile, JEEContext> SECURITY_LOGIC =
-          new DefaultSecurityLogic<>();
-
-  public static final DefaultLogoutLogic<UserProfile, JEEContext> LOGOUT_LOGIC = new DefaultLogoutLogic<>();
-
-  public static final SessionStore<JEEContext> SESSION_STORE = new JEESessionStore();
 
   private static final Logger LOG = LoggerFactory.getLogger(CommonFilter.class);
 

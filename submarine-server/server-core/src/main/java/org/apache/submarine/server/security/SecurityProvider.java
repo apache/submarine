@@ -72,4 +72,16 @@ public abstract class SecurityProvider<T extends Filter, R extends CommonProfile
    */
   public abstract Optional<R> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 
+  public void login(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+
+  }
+
+  public void callback(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+
+  }
+
+  public void logout(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
+
+  }
+
 }

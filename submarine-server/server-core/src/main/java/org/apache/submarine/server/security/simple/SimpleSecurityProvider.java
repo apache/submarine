@@ -21,11 +21,18 @@ package org.apache.submarine.server.security.simple;
 
 import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.security.common.CommonConfig;
-import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.JEEContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.engine.DefaultSecurityLogic;
+import org.pac4j.core.engine.SecurityLogic;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.FindBest;
 import org.pac4j.http.client.direct.HeaderClient;
+import org.pac4j.jee.context.JEEContextFactory;
+import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,11 +69,19 @@ public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtPr
 
   @Override
   public Optional<JwtProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    UserProfile profile = CommonFilter.SECURITY_LOGIC.perform(
+    final WebContext context = FindBest.webContextFactory(null, this.pac4jConfig,
+            JEEContextFactory.INSTANCE).newContext(hsRequest, hsResponse);
+    final SessionStore sessionStore = FindBest.sessionStoreFactory(null, this.pac4jConfig,
+            JEESessionStoreFactory.INSTANCE).newSessionStore(hsRequest, hsResponse);
+    final HttpActionAdapter adapter = FindBest.httpActionAdapter(null, this.pac4jConfig,
+            JEEHttpActionAdapter.INSTANCE);
+    final SecurityLogic securityLogic = FindBest.securityLogic(null, this.pac4jConfig,
+            DefaultSecurityLogic.INSTANCE);
+    UserProfile profile = (UserProfile) securityLogic.perform(
         context,
+        sessionStore,
         getConfig(),
-        (JEEContext ctx, Collection<UserProfile> profiles, Object... parameters) -> {
+        (WebContext ctx, SessionStore store, Collection<UserProfile> profiles, Object... parameters) -> {
           if (profiles.isEmpty()) {
             LOG.warn("No profiles found with default auth.");
             return null;
@@ -74,8 +89,9 @@ public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtPr
             return profiles.iterator().next();
           }
         },
-        CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), DEFAULT_AUTHORIZER, null, null);
+        adapter,
+        getClient(hsRequest), DEFAULT_AUTHORIZER, "securityheaders"
+    );
     return Optional.ofNullable((JwtProfile) profile);
   }
 }
