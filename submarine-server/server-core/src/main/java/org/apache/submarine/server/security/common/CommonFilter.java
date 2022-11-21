@@ -54,6 +54,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static org.apache.submarine.server.security.common.CommonConfig.PYTHON_USER_AGENT_REGREX;
 import static org.reflections.scanners.Scanners.SubTypes;
 import static org.reflections.scanners.Scanners.TypesAnnotated;
 
@@ -133,8 +134,8 @@ public class CommonFilter {
         if (endpoint.startsWith("/")) endpoint = endpoint.substring(1);
         if (endpoint.endsWith("/")) endpoint = endpoint.substring(0, endpoint.length() - 1);
         String api = String.format("/api/%s/%s", path, endpoint);
-        if (api.matches("(.*)\\{[a-zA-Z0-9]+\\}(.*)")) {
-          REST_REGREX_API_PATHS.add(api.replaceAll("\\{[a-zA-Z0-9]+\\}", "((?!\\/).)*"));
+        if (api.matches("(.*)\\{\\w+\\}(.*)")) {
+          REST_REGREX_API_PATHS.add(api.replaceAll("\\{\\w+\\}", "((?!\\/).)*"));
         } else {
           REST_API_PATHS.add(api);
         }
@@ -163,7 +164,7 @@ public class CommonFilter {
   protected boolean isProtectedApi(HttpServletRequest httpServletRequest) {
     // If it is called by python, temporarily passed
     String agentHeader = httpServletRequest.getHeader(CommonConfig.AGENT_HEADER);
-    if (StringUtils.isNoneBlank(agentHeader) && CommonConfig.PYTHON_USER_AGENT.equals(agentHeader)) {
+    if (StringUtils.isNoneBlank(agentHeader) && agentHeader.matches(PYTHON_USER_AGENT_REGREX)) {
       return false;
     }
     // Now we just verify the api
