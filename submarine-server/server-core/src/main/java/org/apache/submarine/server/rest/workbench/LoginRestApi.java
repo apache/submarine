@@ -82,7 +82,8 @@ public class LoginRestApi {
         claimsMap.put("exp", new Date().getTime() + CommonConfig.MAX_AGE);
         claimsMap.put("sub", "submarine");
         claimsMap.put("jti", sysUser.getId());
-
+        // TODO(cdmikechen) By default the simple token is used,
+        //  in other cases such as ldap it may need to be returned as an interface
         String token = SimpleLoginConfig.getJwtGenerator().generate(claimsMap);
         sysUser.setToken(token);
       } else {
@@ -105,21 +106,6 @@ public class LoginRestApi {
         .success(true)
         .result(sysUser)
         .build();
-  }
-
-  /**
-   * Get user by unique name
-   */
-  public SysUserEntity getUserByName(String name) throws Exception {
-    SysUserEntity sysUser = null;
-    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
-      sysUser = sysUserMapper.getUserByUniqueName(name);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    }
-    return sysUser;
   }
 
   @POST

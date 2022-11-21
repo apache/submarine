@@ -29,12 +29,18 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class SysUserService {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserService.class);
 
-  private static String GET_USER_BY_NAME_STATEMENT
+  private static final String GET_USER_BY_NAME_STATEMENT
       = "org.apache.submarine.server.database.workbench.mappers.SysUserMapper.getUserByName";
+
+  // default user is admin
+  public static final String DEFAULT_ADMIN_UID = "e9ca23d68d884d4ebb19d07889727dae";
+  // default password is `password` by angular markAsDirty method
+  public static final String DEFAULT_CREATE_USER_PASSWORD = "5f4dcc3b5aa765d61d8327deb882cf99";
 
   public SysUserEntity getUserByName(String name, String password) throws Exception {
     SysUserEntity sysUser = null;
@@ -64,6 +70,34 @@ public class SysUserService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw e;
+    }
+  }
+
+  /**
+   * Get or create undefined user:
+   * 1. If present, determine if reactivation is required
+   * 1. If not present, create user
+   */
+  public SysUserEntity getOrCreateUser(String username, Supplier<SysUserEntity> entitySupplier) {
+    LOG.trace("Check user if exists ...");
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+      SysUserEntity sysUser = sysUserMapper.getUserByUniqueName(username);
+      if (sysUser == null) {
+        // if user is undefined, create this user
+        sysUser = entitySupplier.get();
+        LOG.info("Can not find this user, need to create! User entity: {}", sysUser);
+        sysUserMapper.add(sysUser);
+        sqlSession.commit();
+      } else if (sysUser.getDeleted() == 1) {
+        LOG.info("Reset this user {} to active", username);
+        sysUserMapper.activeUser(sysUser.getId());
+        sqlSession.commit();
+      }
+      return sysUser;
+    } catch (Exception e) {
+      LOG.error("Get error when creating user, skip ...", e);
+      return null;
     }
   }
 

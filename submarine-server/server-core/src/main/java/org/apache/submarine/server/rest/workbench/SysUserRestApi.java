@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.apache.submarine.server.database.workbench.service.SysUserService.DEFAULT_ADMIN_UID;
+
 @Path("/sys/user")
 @Produces("application/json")
 @Singleton
@@ -60,11 +62,6 @@ public class SysUserRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
   private final SysUserService userService = new SysUserService();
-
-  // default user is admin
-  public static final String DEFAULT_ADMIN_UID = "e9ca23d68d884d4ebb19d07889727dae";
-  // default password is `password` by angular markAsDirty method
-  public static final String DEFAULT_CREATE_USER_PASSWORD = "5f4dcc3b5aa765d61d8327deb882cf99";
 
   @Inject
   public SysUserRestApi() {
@@ -177,53 +174,41 @@ public class SysUserRestApi {
     // get SecurityProvider to use perform method to get user info
     Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
     if (securityProvider.isPresent()) {
-      Optional<CommonProfile> profile = securityProvider.get().perform(hsRequest, hsResponse);
-      if (profile.isPresent()) {
-        SysUserEntity sysUser;
-        try {// find match user in db
-          sysUser = userService.getUserByName(profile.get().getUsername());
-        } catch (Exception e) {
-          LOG.error(e.getMessage(), e);
-          return new JsonResponse.Builder<>(Response.Status.OK)
-                  .success(false)
-                  .message("Get error when searching user name!")
-                  .build();
+      Optional<CommonProfile> profileOpt = securityProvider.get().perform(hsRequest, hsResponse);
+      if (profileOpt.isPresent()) {
+        // Get user information
+        SysUserEntity sysUser = userService.getUserByName(profileOpt.get().getUsername());
+        if (sysUser != null) {
+          // Create user info
+          UserInfo.Builder userInfoBuilder = new UserInfo.Builder(sysUser.getId(), sysUser.getUserName());
+          userInfo = userInfoBuilder
+              .username(sysUser.getUserName())
+              .password("******")
+              .avatar(sysUser.getAvatar())
+              .status(sysUser.getStatus())
+              .telephone(sysUser.getPhone())
+              .lastLoginIp("******")
+              .lastLoginTime(System.currentTimeMillis())
+              .creatorId(sysUser.getUserName())
+              .createTime(sysUser.getCreateTime().getTime())
+              .merchantCode("")
+              .deleted(0)
+              .roleId("default")
+              .role(createDefaultRole()).build();
         }
-        // user not found
-        if (sysUser == null || sysUser.getDeleted() == 1) {
-          return new JsonResponse.Builder<>(Response.Status.OK).
-                  success(false)
-                  .message("User can not be found!")
-                  .build();
-        }
-        UserInfo.Builder userInfoBuilder = new UserInfo.Builder(sysUser.getId(), sysUser.getUserName());
-        userInfo = userInfoBuilder
-                .username(sysUser.getUserName())
-                .password("******")
-                .avatar(sysUser.getAvatar())
-                .status(sysUser.getStatus())
-                .telephone(sysUser.getPhone())
-                .lastLoginIp("******")
-                .lastLoginTime(System.currentTimeMillis())
-                .creatorId(sysUser.getUserName())
-                .createTime(sysUser.getCreateTime().getTime())
-                .merchantCode("")
-                .deleted(0)
-                .roleId("default")
-                .role(createDefaultRole()).build();
-      } else {
-        return new JsonResponse.Builder<>(Response.Status.OK)
-                .success(false)
-                .message("User can not be found!")
-                .build();
       }
     }
-    if (userInfo == null) userInfo = createDefaultUser();
-
-    return new JsonResponse.Builder<UserInfo>(Response.Status.OK)
-            .success(true)
-            .result(userInfo)
-            .build();
+    if (userInfo == null) { // user not found
+      return new JsonResponse.Builder<>(Response.Status.OK).
+              success(false)
+              .message("User can not be found!")
+              .build();
+    } else {
+      return new JsonResponse.Builder<UserInfo>(Response.Status.OK)
+              .success(true)
+              .result(userInfo)
+              .build();
+    }
   }
 
   /**

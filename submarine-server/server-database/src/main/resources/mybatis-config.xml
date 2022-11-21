@@ -20,6 +20,7 @@
 <!DOCTYPE configuration PUBLIC '-//mybatis.org//DTD Config 3.0//EN'
     'http://mybatis.org/dtd/mybatis-3-config.dtd'>
 <configuration>
+  <!-- More details can reference https://mybatis.org/mybatis-3/logging.html -->
   <settings>
     <setting name="cacheEnabled" value="true"/>
     <setting name="lazyLoadingEnabled" value="false"/>

@@ -161,4 +161,28 @@ public class SysUserEntity extends BaseEntity {
     this.birthday = birthday;
   }
 
+  @Override
+  public String toString() {
+    return "SysUserEntity{" +
+            "userName='" + userName + '\'' +
+            ", realName='" + realName + '\'' +
+            ", password='" + password + '\'' +
+            ", avatar='" + avatar + '\'' +
+            ", sex='" + sex + '\'' +
+            ", status='" + status + '\'' +
+            ", phone='" + phone + '\'' +
+            ", email='" + email + '\'' +
+            ", deptCode='" + deptCode + '\'' +
+            ", deptName='" + deptName + '\'' +
+            ", roleCode='" + roleCode + '\'' +
+            ", birthday=" + birthday +
+            ", deleted=" + deleted +
+            ", token='" + token + '\'' +
+            ", id='" + id + '\'' +
+            ", createBy='" + createBy + '\'' +
+            ", createTime=" + createTime +
+            ", updateBy='" + updateBy + '\'' +
+            ", updateTime=" + updateTime +
+            '}';
+  }
 }

@@ -86,7 +86,7 @@ export class AuthService {
   }
 
   logout() {
-    if (this.flowType === "oidc") {
+    if (this.flowType === "session") {
       this.removeToken();
       const url = window.location.origin + window.location.pathname
       window.location.href = '/auth/logout?redirect_url=' + url;

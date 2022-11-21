@@ -45,7 +45,7 @@ public class OidcFilter extends CommonFilter implements Filter {
 
   private final OidcSecurityProvider provider;
   private final Config oidcConfig;
-  private final RegistryUserActionAdapter userActionAdapter = new RegistryUserActionAdapter();
+  private final RegistryUserActionAdapter userActionAdapter = new RegistryUserActionAdapter<>(true);
 
   public OidcFilter() {
     this.provider = SecurityFactory.getPac4jSecurityProvider();
@@ -57,31 +57,43 @@ public class OidcFilter extends CommonFilter implements Filter {
       throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-    if (OidcCallbackResource.SELF_URL.equals(httpServletRequest.getRequestURI())) {
-      CALLBACK_LOGIC.perform(
-          new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
-          oidcConfig,
-          userActionAdapter,
-          "/",
-          true, false, false, null);
-    } else if (OidcConfig.LOGOUT_ENDPOINT.equals(httpServletRequest.getRequestURI())) {
-      String redirectUrl = OidcConfig.LOGOUT_REDIRECT_URI;
-      if (StringUtils.isBlank(redirectUrl)) {
-        redirectUrl = httpServletRequest.getParameter("redirect_url");
-      }
-      LOGOUT_LOGIC.perform(
-          new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
-          oidcConfig,
-          DEFAULT_HTTP_ACTION_ADAPTER,
-          redirectUrl,
-          "/", true, true, true);
-    }  else {
-      Optional<OidcProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
-      if (profile.isPresent()) {
-        chain.doFilter(request, response);
-      } else if (httpServletRequest.getHeader(OidcConfig.AUTH_HEADER) != null) {
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
-      }
+    switch (httpServletRequest.getRequestURI()) {
+      case OidcCallbackResource.SELF_URL:
+        CALLBACK_LOGIC.perform(
+            new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
+            oidcConfig,
+            userActionAdapter,
+            "/",
+            true, false, false, null
+        );
+        break;
+      case OidcConfig.LOGOUT_ENDPOINT:
+        String redirectUrl = OidcConfig.LOGOUT_REDIRECT_URI;
+        if (StringUtils.isBlank(redirectUrl)) {
+          redirectUrl = httpServletRequest.getParameter("redirect_url");
+        }
+        LOGOUT_LOGIC.perform(
+            new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE),
+            oidcConfig,
+            DEFAULT_HTTP_ACTION_ADAPTER,
+            redirectUrl,
+            "/", true, true, true
+        );
+        break;
+      default:
+        Optional<OidcProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
+        if (profile.isPresent()) {
+          chain.doFilter(request, response);
+        } else {
+          // There are some static resources that are also within the service,
+          // so we need to filter out the api
+          if (isProtectedApi(httpServletRequest)) {
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "The token/session is not valid.");
+          } else {
+            chain.doFilter(request, response);
+          }
+        }
     }
   }
 
