@@ -169,13 +169,13 @@
       </div>
       <div *ngSwitchCase="1" id="secondStep">
         <nz-radio-group [(ngModel)]="framework" [ngModelOptions]="{ standalone: true }" id="jobs-container">
-          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes = 'Distributed Tensorflow'">
+          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes='Distributed Tensorflow'">
             Distributed Tensorflow
           </label>
-          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobTypes = 'Distributed Pytorch'">
+          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobTypes='Distributed Pytorch'">
             Distributed PyTorch
           </label>
-          <label nz-radio nzValue="XGBoost" (click)="deleteAllItem(specs); jobTypes = 'Distributed XGBoostJob'">
+          <label nz-radio nzValue="XGBoost" (click)="deleteAllItem(specs); jobTypes='Distributed XGBoostJob'">
             Distributed XGBoostJob
           </label>
           <label
