@@ -27,7 +27,7 @@ import io.kubernetes.client.openapi.models.V1ListMeta;
 
 public class XGBoostJobList implements KubernetesListObject {
   @SerializedName("apiVersion")
-  private String apiVersion;
+  private String apiVersion = XGBoostJob.CRD_XGBOOST_API_VERSION_V1;
 
   @SerializedName("kind")
   private String kind;

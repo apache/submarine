@@ -50,14 +50,10 @@ public class ModelVersionManager {
    *
    * @return object
    */
-  public static ModelVersionManager getInstance() {
+  public static synchronized ModelVersionManager getInstance() {
     if (manager == null) {
-      synchronized (ModelVersionManager.class) {
-        if (manager == null) {
-          manager = new ModelVersionManager(new ModelVersionService(), new ModelVersionTagService(),
-            new Client());
-        }
-      }
+      manager = new ModelVersionManager(new ModelVersionService(), new ModelVersionTagService(),
+          new Client());
     }
     return manager;
   }

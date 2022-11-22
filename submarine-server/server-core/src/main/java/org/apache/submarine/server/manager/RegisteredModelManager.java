@@ -54,14 +54,10 @@ public class RegisteredModelManager {
    *
    * @return object
    */
-  public static RegisteredModelManager getInstance() {
+  public static synchronized RegisteredModelManager getInstance() {
     if (manager == null) {
-      synchronized (RegisteredModelManager.class) {
-        if (manager == null) {
-          manager = new RegisteredModelManager(new RegisteredModelService(), new ModelVersionService(),
-              new RegisteredModelTagService(), new Client());
-        }
-      }
+      manager = new RegisteredModelManager(new RegisteredModelService(), new ModelVersionService(),
+          new RegisteredModelTagService(), new Client());
     }
     return manager;
   }
