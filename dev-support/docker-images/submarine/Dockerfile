@@ -27,6 +27,7 @@ RUN apk update && \
     rm -rf /tmp/* /var/cache/apk/*
 
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk/jre
+ENV SUBMARINE_AUTH_TYPE simple
 
 # Install Submarine
 ADD ./tmp/submarine-dist-*.tar.gz /opt/
