@@ -24,8 +24,10 @@ icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_l
 dependencies:
   - name: training-operator
     version: "0.7.0"
+    condition: training-operator.enabled
   - name: notebook-controller
     version: "0.1.0"
+    condition: notebook-controller.enabled
   - name: seldon-core-operator
     version: "1.10.0"
     repository: https://storage.googleapis.com/seldon-charts

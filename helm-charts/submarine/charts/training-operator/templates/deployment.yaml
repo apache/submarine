@@ -33,10 +33,15 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.image.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       containers:
         - command:
             - /manager
-          image: kubeflow/training-operator
           name: training-operator
           ports:
             - containerPort: 8080
@@ -51,7 +56,8 @@ spec:
                   fieldPath: metadata.name
           securityContext:
             allowPrivilegeEscalation: false
-          image: public.ecr.aws/j1r0q0g6/training/training-operator:760ac1171dd30039a7363ffa03c77454bd714da5
+          image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
           livenessProbe:
             httpGet:
               path: /healthz

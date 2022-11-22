@@ -18,6 +18,7 @@
 name: submarine-operator
 replicas: 1
 image: apache/submarine:operator-0.8.0-SNAPSHOT
+# imagePullSecrets: []
 # dev is to tell helm to install submarine-operator or not
 dev: false
 # storageClass is for dynamically creating persistent volumes
@@ -45,6 +46,14 @@ podSecurityPolicy:
 istio:
   enabled: true
   gatewaySelector: ingressgateway
+
+# training operator
+training-operator:
+  enabled: true
+
+# notebook controller
+notebook-controller:
+  enabled: true
 
 # seldon-core-operator configuration
 seldon-core-operator:

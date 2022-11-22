@@ -31,12 +31,18 @@ spec:
       labels:
         app: notebook-controller
     spec:
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.image.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       containers:
       - name: manager
-        image: apache/submarine:notebook-controller-v1.4
+        image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}'
         command:
           - /manager
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
         env:
         - name: USE_ISTIO
           value: "false"
