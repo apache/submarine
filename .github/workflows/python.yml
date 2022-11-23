@@ -186,3 +186,20 @@ jobs:
           kubectl get pods
           kubectl -n default get events --sort-by='{.lastTimestamp}'
         if: ${{ failure() }}
+
+  sonarcloud:
+    if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+            projectBaseDir: submarine-sdk/pysubmarine
+            args: >
+              -Dsonar.organization=apache
+              -Dsonar.projectKey=apache_submarine_python_sdk
+              -Dsonar.python.version=3.7,3.8,3.9,3.10
