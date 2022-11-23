@@ -126,7 +126,7 @@ public class SubmarineAuthSimpleTest {
     FilterChain mockFilterChain = Mockito.mock(FilterChain.class);
     // 3. http request
     MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.setRequestURL(new StringBuffer("/api/test/url"));
+    mockRequest.setRequestURL(new StringBuffer("/api/sys/user/info"));
     // 4. http response
     HttpServletResponse mockResponse = Mockito.mock(HttpServletResponse.class);
     StringWriter out = new StringWriter();
