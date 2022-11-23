@@ -35,7 +35,6 @@ public class SecurityFactory {
   private static final Logger LOG = LoggerFactory.getLogger(SecurityFactory.class);
 
   private static final Map<String, SecurityProvider> providerMap;
-  public static final String AUTH_TYPE;
 
   public static SimpleSecurityProvider getSimpleSecurityProvider() {
     return (SimpleSecurityProvider) providerMap.get("simple");
@@ -46,8 +45,6 @@ public class SecurityFactory {
   }
 
   static {
-    AUTH_TYPE = SubmarineConfiguration.getInstance()
-            .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
     // init provider map
     providerMap = new HashMap<>();
     providerMap.put("simple", new SimpleSecurityProvider());
@@ -59,10 +56,12 @@ public class SecurityFactory {
   }
 
   public static Optional<SecurityProvider> getSecurityProvider() {
-    if (providerMap.containsKey(AUTH_TYPE)) {
-      return Optional.ofNullable(providerMap.get(AUTH_TYPE));
+    String authType = SubmarineConfiguration.getInstance()
+            .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
+    if (providerMap.containsKey(authType)) {
+      return Optional.ofNullable(providerMap.get(authType));
     } else {
-      LOG.warn("current auth type is {} but we can not recognize, so use none!", AUTH_TYPE);
+      LOG.warn("current auth type is {} but we can not recognize, so use none!", authType);
       return Optional.empty();
     }
   }
