@@ -100,11 +100,17 @@ spec:
               minio:
                 description: Minio is the spec that defines the submarine minio
                 properties:
+                  accessKey:
+                    description: AccessKey defines the access_key of minio
+                    type: string
                   enabled:
                     description: Enabled defines whether to enable minio or not
                     type: boolean
                   image:
                     description: Image is the submarine minio's docker image
+                    type: string
+                  secretKey:
+                    description: SecretKey defines the access_key of minio
                     type: string
                   storageSize:
                     description: StorageSize defines the storage size of minio

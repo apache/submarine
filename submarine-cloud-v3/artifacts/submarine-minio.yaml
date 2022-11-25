@@ -65,9 +65,15 @@ spec:
             - /data
           env:
             - name: MINIO_ACCESS_KEY
-              value: "submarine_minio"
+              valueFrom:
+                secretKeyRef:
+                  name: submarine-minio-secret
+                  key: MINIO_ACCESS_KEY
             - name: MINIO_SECRET_KEY
-              value: "submarine_minio"
+              valueFrom:
+                secretKeyRef:
+                  name: submarine-minio-secret
+                  key: MINIO_SECRET_KEY
           ports:
             - containerPort: 9000
           volumeMounts:
@@ -78,3 +84,25 @@ spec:
         - name: "volume"
           persistentVolumeClaim:
             claimName: "submarine-minio-pvc"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: submarine-minio-secret
+type: Opaque
+stringData:
+  MINIO_ACCESS_KEY: "submarine_minio"
+  MINIO_SECRET_KEY: "submarine_minio"
+#---
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: submarine-serve-secret
+#type: Opaque
+#stringData:
+#  RCLONE_CONFIG_S3_TYPE: s3
+#  RCLONE_CONFIG_S3_PROVIDER: minio
+#  RCLONE_CONFIG_S3_ENV_AUTH: "false"
+#  RCLONE_CONFIG_S3_ACCESS_KEY_ID: submarine_minio
+#  RCLONE_CONFIG_S3_SECRET_ACCESS_KEY: submarine_minio
+#  RCLONE_CONFIG_S3_ENDPOINT: http://submarine-minio-service:9000

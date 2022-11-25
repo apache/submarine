@@ -83,6 +83,31 @@ func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, subm
 	return service
 }
 
+// newSubmarineSeldonSecret is a function to create seldon secret which stores minio connection configurations
+func (r *SubmarineReconciler) newSubmarineMinoSecret(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Secret {
+	secret, err := ParseSecretYaml(minioYamlPath)
+	if err != nil {
+		r.Log.Error(err, "ParseSecretYaml")
+	}
+	secret.Namespace = submarine.Namespace
+	err = controllerutil.SetControllerReference(submarine, secret, r.Scheme)
+	if err != nil {
+		r.Log.Error(err, "Set Service ControllerReference")
+	}
+
+	// Process access_ey and secret_key
+	accessKey := submarine.Spec.Minio.AccessKey
+	if accessKey != "" {
+		secret.StringData["MINIO_ACCESS_KEY"] = accessKey
+	}
+	secretKey := submarine.Spec.Minio.SecretKey
+	if secretKey != "" {
+		secret.StringData["MINIO_SECRET_KEY"] = secretKey
+	}
+
+	return secret
+}
+
 // createSubmarineMinio is a function to create submarine-minio.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-minio.yaml
 func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
@@ -111,7 +136,33 @@ func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarin
 		return fmt.Errorf(msg)
 	}
 
-	// Step 2: Create Deployment
+	// Step 2: Create Minio Secret
+	secret := &corev1.Secret{}
+	err = r.Get(ctx, types.NamespacedName{Name: "submarine-minio-secret", Namespace: submarine.Namespace}, secret)
+	secret = r.newSubmarineMinoSecret(ctx, submarine)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(err) {
+		err = r.Create(ctx, secret)
+		r.Log.Info("Create Minio Secret", "name", secret.Name)
+	} else {
+		err = r.Update(ctx, secret)
+		r.Log.Info("Update Minio Secret", "name", secret.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if err != nil {
+		return err
+	}
+
+	if !metav1.IsControlledBy(secret, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, secret.Name)
+		r.Recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
+		return fmt.Errorf(msg)
+	}
+
+	// Step 3: Create Deployment
 	deployment := &appsv1.Deployment{}
 	err = r.Get(ctx, types.NamespacedName{Name: minioName, Namespace: submarine.Namespace}, deployment)
 	if errors.IsNotFound(err) {
@@ -133,7 +184,7 @@ func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarin
 		return fmt.Errorf(msg)
 	}
 
-	// Step 3: Create Service
+	// Step 4: Create Service
 	service := &corev1.Service{}
 	err = r.Get(ctx, types.NamespacedName{Name: minioServiceName, Namespace: submarine.Namespace}, service)
 	// If the resource doesn't exist, we'll create it

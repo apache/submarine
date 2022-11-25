@@ -117,6 +117,10 @@ type SubmarineMinioSpec struct {
 	Enabled *bool `json:"enabled"`
 	// StorageSize defines the storage size of minio
 	StorageSize string `json:"storageSize"`
+	// AccessKey defines the access_key of minio
+	AccessKey string `json:"accessKey,omitempty"`
+	// SecretKey defines the access_key of minio
+	SecretKey string `json:"secretKey,omitempty"`
 }
 
 // SubmarineCommon defines the observed common configuration

@@ -79,7 +79,7 @@ func parseYaml(relativePath, kind string) ([]byte, error) {
 	return marshaled, nil
 }
 
-// ParseServiceAccount parse ServiceAccount from yaml file.
+// ParseServiceAccountYaml parse ServiceAccount from yaml file.
 func ParseServiceAccountYaml(relativePath string) (*v1.ServiceAccount, error) {
 	var serviceAccount v1.ServiceAccount
 	marshaled, err := parseYaml(relativePath, "ServiceAccount")
@@ -165,4 +165,15 @@ func ParseVirtualService(relativePath string) (*istiov1alpha3.VirtualService, er
 	}
 	json.Unmarshal(marshaled, &virtualService)
 	return &virtualService, nil
+}
+
+// ParseSecretYaml parse Secret from yaml file.
+func ParseSecretYaml(relativePath string) (*v1.Secret, error) {
+	var secret v1.Secret
+	marshaled, err := parseYaml(relativePath, "Secret")
+	if err != nil {
+		return nil, err
+	}
+	json.Unmarshal(marshaled, &secret)
+	return &secret, nil
 }
