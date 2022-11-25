@@ -18,6 +18,7 @@
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -66,9 +67,11 @@ type SubmarineServerSpec struct {
 	// Replicas is the number of submarine server's replica
 	// +kubebuilder:validation:Minimum=1
 	Replicas *int32 `json:"replicas"`
+	// Envs is the extra environments that submarine server requires
+	Env []corev1.EnvVar `json:"env"`
 }
 
-// SubmarineServerSpec defines the desired submarine database
+// SubmarineDatabaseSpec defines the desired submarine database
 type SubmarineDatabaseSpec struct {
 	// Image is the submarine database's docker image
 	Image string `json:"image,omitempty"`
@@ -86,7 +89,7 @@ type SubmarineVirtualserviceSpec struct {
 	Gateways []string `json:"gateways,omitempty"`
 }
 
-// SubmarineServerSpec defines the desired submarine tensorboard
+// SubmarineTensorboardSpec defines the desired submarine tensorboard
 type SubmarineTensorboardSpec struct {
 	// Image is the submarine tensorboard's docker image
 	Image string `json:"image,omitempty"`
@@ -96,7 +99,7 @@ type SubmarineTensorboardSpec struct {
 	StorageSize string `json:"storageSize"`
 }
 
-// SubmarineServerSpec defines the desired submarine mlflow
+// SubmarineMlflowSpec defines the desired submarine mlflow
 type SubmarineMlflowSpec struct {
 	// Image is the submarine mlflow's docker image
 	Image string `json:"image,omitempty"`
@@ -106,7 +109,7 @@ type SubmarineMlflowSpec struct {
 	StorageSize string `json:"storageSize"`
 }
 
-// SubmarineServerSpec defines the desired submarine minio
+// SubmarineMinioSpec defines the desired submarine minio
 type SubmarineMinioSpec struct {
 	// Image is the submarine minio's docker image
 	Image string `json:"image,omitempty"`

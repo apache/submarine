@@ -86,6 +86,11 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 			Value: string(submarine.UID),
 		},
 	}
+	// extra envs
+	extraEnv := submarine.Spec.Server.Env
+	if extraEnv != nil {
+		operatorEnv = append(operatorEnv, extraEnv...)
+	}
 
 	deployment, err := ParseDeploymentYaml(serverYamlPath)
 	if err != nil {
