@@ -52,6 +52,34 @@ spec:
           spec:
             description: SubmarineSpec defines the desired state of Submarine
             properties:
+              common:
+                description: Common is the spec that defines some submarine common
+                  configurations
+                properties:
+                  image:
+                    description: Image is the basic image used in initcontainer in
+                      some submarine resources
+                    properties:
+                      busybox:
+                        description: BusyboxImage is the image used by the submarine
+                          service resource (server...) to check whether the minio
+                          is started in the initcontainer
+                        type: string
+                      mc:
+                        description: McImage is the image used by the submarine service
+                          resource (server...) to check whether the minio is started
+                          in the initcontainer
+                        type: string
+                      pullSecrets:
+                        description: PullSecrets is a specified array of imagePullSecrets.
+                          This secrets must be manually created in the namespace.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                required:
+                - image
+                type: object
               database:
                 description: Database is the spec that defines the submarine database
                 properties:
@@ -66,7 +94,6 @@ spec:
                     description: StorageSize is the storage size of the database
                     type: string
                 required:
-                - image
                 - mysqlRootPasswordSecret
                 - storageSize
                 type: object
@@ -76,6 +103,9 @@ spec:
                   enabled:
                     description: Enabled defines whether to enable minio or not
                     type: boolean
+                  image:
+                    description: Image is the submarine minio's docker image
+                    type: string
                   storageSize:
                     description: StorageSize defines the storage size of minio
                     type: string
@@ -89,6 +119,9 @@ spec:
                   enabled:
                     description: Enabled defines whether to enable mlflow or not
                     type: boolean
+                  image:
+                    description: Image is the submarine mlflow's docker image
+                    type: string
                   storageSize:
                     description: StorageSize defines the storage size of mlflow
                     type: string
@@ -108,7 +141,6 @@ spec:
                     minimum: 1
                     type: integer
                 required:
-                - image
                 - replicas
                 type: object
               tensorboard:
@@ -118,6 +150,9 @@ spec:
                     description: Enabled defines whether to enable tensorboard or
                       not
                     type: boolean
+                  image:
+                    description: Image is the submarine tensorboard's docker image
+                    type: string
                   storageSize:
                     description: StorageSize defines the storage size of tensorboard
                     type: string
@@ -151,7 +186,6 @@ spec:
             - server
             - tensorboard
             - version
-            - virtualservice
             type: object
           status:
             description: SubmarineStatus defines the observed state of Submarine

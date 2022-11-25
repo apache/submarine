@@ -57,9 +57,17 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 		r.Log.Error(err, "Set Stateful Set ControllerReference")
 	}
 
+	// database image
 	databaseImage := submarine.Spec.Database.Image
 	if databaseImage != "" {
 		statefulset.Spec.Template.Spec.Containers[0].Image = databaseImage
+	} else {
+		statefulset.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:database-%s", submarine.Spec.Version)
+	}
+	// pull secrets
+	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	if pullSecrets != nil {
+		statefulset.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
 
 	return statefulset

@@ -55,6 +55,18 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
 	}
+
+	// tensorboard image
+	tensorboardImage := submarine.Spec.Tensorboard.Image
+	if tensorboardImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = tensorboardImage
+	}
+	// pull secrets
+	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+
 	return deployment
 }
 

@@ -1,18 +1,19 @@
 /*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package v1alpha1
 
@@ -47,19 +48,21 @@ type SubmarineSpec struct {
 	// Database is the spec that defines the submarine database
 	Database *SubmarineDatabaseSpec `json:"database"`
 	// Virtualservice is the spec that defines the submarine virtualservice
-	Virtualservice *SubmarineVirtualserviceSpec `json:"virtualservice"`
+	Virtualservice *SubmarineVirtualserviceSpec `json:"virtualservice,omitempty"`
 	// Tensorboard is the spec that defines the submarine tensorboard
 	Tensorboard *SubmarineTensorboardSpec `json:"tensorboard"`
 	// Mlflow is the spec that defines the submarine mlflow
 	Mlflow *SubmarineMlflowSpec `json:"mlflow"`
 	// Minio is the spec that defines the submarine minio
 	Minio *SubmarineMinioSpec `json:"minio"`
+	// Common is the spec that defines some submarine common configurations
+	Common *SubmarineCommon `json:"common,omitempty"`
 }
 
 // SubmarineServerSpec defines the desired submarine server
 type SubmarineServerSpec struct {
 	// Image is the submarine server's docker image
-	Image string `json:"image"`
+	Image string `json:"image,omitempty"`
 	// Replicas is the number of submarine server's replica
 	// +kubebuilder:validation:Minimum=1
 	Replicas *int32 `json:"replicas"`
@@ -68,7 +71,7 @@ type SubmarineServerSpec struct {
 // SubmarineServerSpec defines the desired submarine database
 type SubmarineDatabaseSpec struct {
 	// Image is the submarine database's docker image
-	Image string `json:"image"`
+	Image string `json:"image,omitempty"`
 	// StorageSize is the storage size of the database
 	StorageSize string `json:"storageSize"`
 	// MysqlRootPasswordSecret is the mysql root password secret
@@ -85,6 +88,8 @@ type SubmarineVirtualserviceSpec struct {
 
 // SubmarineServerSpec defines the desired submarine tensorboard
 type SubmarineTensorboardSpec struct {
+	// Image is the submarine tensorboard's docker image
+	Image string `json:"image,omitempty"`
 	// Enabled defines whether to enable tensorboard or not
 	Enabled *bool `json:"enabled"`
 	// StorageSize defines the storage size of tensorboard
@@ -93,6 +98,8 @@ type SubmarineTensorboardSpec struct {
 
 // SubmarineServerSpec defines the desired submarine mlflow
 type SubmarineMlflowSpec struct {
+	// Image is the submarine mlflow's docker image
+	Image string `json:"image,omitempty"`
 	// Enabled defines whether to enable mlflow or not
 	Enabled *bool `json:"enabled"`
 	// StorageSize defines the storage size of mlflow
@@ -101,10 +108,28 @@ type SubmarineMlflowSpec struct {
 
 // SubmarineServerSpec defines the desired submarine minio
 type SubmarineMinioSpec struct {
+	// Image is the submarine minio's docker image
+	Image string `json:"image,omitempty"`
 	// Enabled defines whether to enable minio or not
 	Enabled *bool `json:"enabled"`
 	// StorageSize defines the storage size of minio
 	StorageSize string `json:"storageSize"`
+}
+
+// SubmarineCommon defines the observed common configuration
+type SubmarineCommon struct {
+	// Image is the basic image used in initcontainer in some submarine resources
+	Image CommonImage `json:"image"`
+}
+
+// CommonImage defines the observed common image info
+type CommonImage struct {
+	// McImage is the image used by the submarine service resource (server...) to check whether the minio is started in the initcontainer
+	McImage string `json:"mc,omitempty"`
+	// BusyboxImage is the image used by the submarine service resource (server...) to check whether the minio is started in the initcontainer
+	BusyboxImage string `json:"busybox,omitempty"`
+	// PullSecrets is a specified array of imagePullSecrets. This secrets must be manually created in the namespace.
+	PullSecrets []string `json:"pullSecrets,omitempty"`
 }
 
 // SubmarineStatus defines the observed state of Submarine

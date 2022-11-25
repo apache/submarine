@@ -55,6 +55,18 @@ func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, s
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
 	}
+
+	// minio/mc image
+	minoImage := submarine.Spec.Minio.Image
+	if minoImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = minoImage
+	}
+	// pull secrets
+	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+
 	return deployment
 }
 

@@ -99,6 +99,24 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 	deployment.Spec.Replicas = &serverReplicas
 	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, operatorEnv...)
 
+	// server image
+	serverImage := submarine.Spec.Server.Image
+	if serverImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = serverImage
+	} else {
+		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:server-%s", submarine.Spec.Version)
+	}
+	// minio/mc image
+	mcImage := submarine.Spec.Common.Image.McImage
+	if mcImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[0].Image = mcImage
+	}
+	// pull secrets
+	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+
 	return deployment
 }
 

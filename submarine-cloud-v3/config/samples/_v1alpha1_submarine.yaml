@@ -29,10 +29,15 @@ spec:
     storageSize: "1Gi"
     mysqlRootPasswordSecret: "root-pass-secret"
   virtualservice:
-    hosts: 
-    #   - "yourHost" # configure when using custom hosts
-    gateways:
-    #   - "yourNamespace/submarine-gateway" # configure when installing Helm in a different namespace
+    # configure when using custom hosts, default is "*"
+    hosts: []
+    # hosts:
+    # - "yourHost"
+
+    # configure when installing Helm in a different namespace, default is "submarine/submarine-gateway"
+    gateways: []
+    # gateways:
+    # - "yourNamespace/submarine-gateway"
   tensorboard:
     enabled: true
     storageSize: "10Gi"

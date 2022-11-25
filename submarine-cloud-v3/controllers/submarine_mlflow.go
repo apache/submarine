@@ -55,6 +55,30 @@ func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, 
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
 	}
+
+	// mlflow image
+	mlflowImage := submarine.Spec.Mlflow.Image
+	if mlflowImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = mlflowImage
+	} else {
+		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:mlflow-%s", submarine.Spec.Version)
+	}
+	// busybox image
+	busyboxImage := submarine.Spec.Common.Image.BusyboxImage
+	if busyboxImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[0].Image = busyboxImage
+	}
+	// minio/mc image
+	mcImage := submarine.Spec.Common.Image.McImage
+	if mcImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[1].Image = mcImage
+	}
+	// pull secrets
+	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+	
 	return deployment
 }
 
