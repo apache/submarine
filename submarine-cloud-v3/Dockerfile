@@ -51,4 +51,4 @@ RUN adduser -u 1000 -S submarine -G submarine
 USER submarine
 
 # CMD ls
-CMD /usr/src/manager
+CMD /usr/src/manager -leader-elect=${SUBMARINE_LEADER_ELECT:-false} -clustertype=${SUBMARINE_CLUSTER_TYPE:kubernetes} -createpsp=${SUBMARINE_POD_SECURITY_POLICY_ENABLE:-true}
