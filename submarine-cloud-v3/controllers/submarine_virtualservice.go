@@ -71,11 +71,14 @@ func (r *SubmarineReconciler) createVirtualService(ctx context.Context, submarin
 
 	virtualService := &istiov1alpha3.VirtualService{}
 	err := r.Get(ctx, types.NamespacedName{Name: virtualServiceName, Namespace: submarine.Namespace}, virtualService)
+	virtualService = r.newSubmarineVirtualService(ctx, submarine)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		virtualService = r.newSubmarineVirtualService(ctx, submarine)
 		err = r.Create(ctx, virtualService)
 		r.Log.Info("Create VirtualService", "name", virtualService.Name)
+	} else {
+		err = r.Update(ctx, virtualService)
+		r.Log.Info("Update VirtualService", "name", virtualService.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
