@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.ServiceAccount {
-	serviceAccount, err := ParseServiceAccountYaml(serverYamlPath)
+	serviceAccount, err := util.ParseServiceAccountYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Conte
 }
 
 func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(serverYamlPath)
+	service, err := util.ParseServiceYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}
@@ -92,7 +93,7 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 		operatorEnv = append(operatorEnv, extraEnv...)
 	}
 
-	deployment, err := ParseDeploymentYaml(serverYamlPath)
+	deployment, err := util.ParseDeploymentYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -111,13 +112,14 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 	} else {
 		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:server-%s", submarine.Spec.Version)
 	}
+	commonImage := util.GetSubmarineCommonImage(submarine)
 	// minio/mc image
-	mcImage := submarine.Spec.Common.Image.McImage
+	mcImage := commonImage.McImage
 	if mcImage != "" {
 		deployment.Spec.Template.Spec.InitContainers[0].Image = mcImage
 	}
 	// pull secrets
-	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	pullSecrets := commonImage.PullSecrets
 	if pullSecrets != nil {
 		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}

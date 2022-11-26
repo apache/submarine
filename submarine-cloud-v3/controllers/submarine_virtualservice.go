@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 
@@ -34,7 +35,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *istiov1alpha3.VirtualService {
-	virtualService, err := ParseVirtualService(virtualServiceYamlPath)
+	virtualService, err := util.ParseVirtualService(virtualServiceYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseVirtualService")
 	}

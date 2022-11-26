@@ -68,7 +68,7 @@ type SubmarineServerSpec struct {
 	// +kubebuilder:validation:Minimum=1
 	Replicas *int32 `json:"replicas"`
 	// Envs is the extra environments that submarine server requires
-	Env []corev1.EnvVar `json:"env"`
+	Env []corev1.EnvVar `json:"env,omitempty"`
 }
 
 // SubmarineDatabaseSpec defines the desired submarine database

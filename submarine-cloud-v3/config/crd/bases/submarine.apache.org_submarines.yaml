@@ -258,7 +258,6 @@ spec:
                     minimum: 1
                     type: integer
                 required:
-                - env
                 - replicas
                 type: object
               tensorboard:

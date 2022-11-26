@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(mlflowYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx contex
 }
 
 func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
-	deployment, err := ParseDeploymentYaml(mlflowYamlPath)
+	deployment, err := util.ParseDeploymentYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -63,27 +64,28 @@ func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, 
 	} else {
 		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:mlflow-%s", submarine.Spec.Version)
 	}
+	commonImage := util.GetSubmarineCommonImage(submarine)
 	// busybox image
-	busyboxImage := submarine.Spec.Common.Image.BusyboxImage
+	busyboxImage := commonImage.BusyboxImage
 	if busyboxImage != "" {
 		deployment.Spec.Template.Spec.InitContainers[0].Image = busyboxImage
 	}
 	// minio/mc image
-	mcImage := submarine.Spec.Common.Image.McImage
+	mcImage := commonImage.McImage
 	if mcImage != "" {
 		deployment.Spec.Template.Spec.InitContainers[1].Image = mcImage
 	}
 	// pull secrets
-	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	pullSecrets := commonImage.PullSecrets
 	if pullSecrets != nil {
 		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
-	
+
 	return deployment
 }
 
 func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(mlflowYamlPath)
+	service, err := util.ParseServiceYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}

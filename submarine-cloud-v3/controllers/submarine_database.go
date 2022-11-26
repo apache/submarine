@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(databaseYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx cont
 }
 
 func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.StatefulSet {
-	statefulset, err := ParseStatefulSetYaml(databaseYamlPath)
+	statefulset, err := util.ParseStatefulSetYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseStatefulSetYaml")
 	}
@@ -65,7 +66,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 		statefulset.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:database-%s", submarine.Spec.Version)
 	}
 	// pull secrets
-	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	pullSecrets := util.GetSubmarineCommonImage(submarine).PullSecrets
 	if pullSecrets != nil {
 		statefulset.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
@@ -74,7 +75,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 }
 
 func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(databaseYamlPath)
+	service, err := util.ParseServiceYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}

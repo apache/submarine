@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(tensorboardYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx c
 }
 
 func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
-	deployment, err := ParseDeploymentYaml(tensorboardYamlPath)
+	deployment, err := util.ParseDeploymentYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -62,7 +63,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 		deployment.Spec.Template.Spec.Containers[0].Image = tensorboardImage
 	}
 	// pull secrets
-	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	pullSecrets := util.GetSubmarineCommonImage(submarine).PullSecrets
 	if pullSecrets != nil {
 		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
@@ -71,7 +72,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 }
 
 func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(tensorboardYamlPath)
+	service, err := util.ParseServiceYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}

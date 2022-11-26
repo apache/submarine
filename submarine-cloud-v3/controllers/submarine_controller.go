@@ -60,6 +60,7 @@ const (
 	artifactPath           = "./artifacts/"
 	databaseYamlPath       = artifactPath + "submarine-database.yaml"
 	minioYamlPath          = artifactPath + "submarine-minio.yaml"
+	serveYamlPath          = artifactPath + "submarine-serve.yaml"
 	mlflowYamlPath         = artifactPath + "submarine-mlflow.yaml"
 	serverYamlPath         = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath    = artifactPath + "submarine-tensorboard.yaml"
@@ -328,6 +329,11 @@ func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *su
 	}
 
 	err = r.createSubmarineMinio(ctx, submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = r.createSubmarineServe(ctx, submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}

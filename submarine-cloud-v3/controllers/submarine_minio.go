@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineMinioPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(minioYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineMinioPersistentVolumeClaim(ctx context
 }
 
 func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
-	deployment, err := ParseDeploymentYaml(minioYamlPath)
+	deployment, err := util.ParseDeploymentYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -62,7 +63,7 @@ func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, s
 		deployment.Spec.Template.Spec.Containers[0].Image = minoImage
 	}
 	// pull secrets
-	pullSecrets := submarine.Spec.Common.Image.PullSecrets
+	pullSecrets := util.GetSubmarineCommonImage(submarine).PullSecrets
 	if pullSecrets != nil {
 		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
@@ -71,7 +72,7 @@ func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, s
 }
 
 func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(minioYamlPath)
+	service, err := util.ParseServiceYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}
@@ -85,17 +86,17 @@ func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, subm
 
 // newSubmarineSeldonSecret is a function to create seldon secret which stores minio connection configurations
 func (r *SubmarineReconciler) newSubmarineMinoSecret(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Secret {
-	secret, err := ParseSecretYaml(minioYamlPath)
+	secret, err := util.ParseSecretYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseSecretYaml")
 	}
 	secret.Namespace = submarine.Namespace
 	err = controllerutil.SetControllerReference(submarine, secret, r.Scheme)
 	if err != nil {
-		r.Log.Error(err, "Set Service ControllerReference")
+		r.Log.Error(err, "Set Secret ControllerReference")
 	}
 
-	// Process access_ey and secret_key
+	// access_ey and secret_key
 	accessKey := submarine.Spec.Minio.AccessKey
 	if accessKey != "" {
 		secret.StringData["MINIO_ACCESS_KEY"] = accessKey
