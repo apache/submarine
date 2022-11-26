@@ -55,7 +55,7 @@ func (r *SubmarineReconciler) newSubmarineSeldonSecret(ctx context.Context, subm
 	return secret
 }
 
-// createSubmarineServe is a function to create submarine-minio.
+// createSubmarineServe is a function to create submarine-serve.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-serve.yaml
 func (r *SubmarineReconciler) createSubmarineServe(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
 	r.Log.Info("Enter createSubmarineServe")
