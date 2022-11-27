@@ -140,14 +140,20 @@ func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarin
 	// Step 2: Create Minio Secret
 	secret := &corev1.Secret{}
 	err = r.Get(ctx, types.NamespacedName{Name: "submarine-minio-secret", Namespace: submarine.Namespace}, secret)
-	secret = r.newSubmarineMinoSecret(ctx, submarine)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
+		secret = r.newSubmarineMinoSecret(ctx, submarine)
 		err = r.Create(ctx, secret)
 		r.Log.Info("Create Minio Secret", "name", secret.Name)
 	} else {
-		err = r.Update(ctx, secret)
-		r.Log.Info("Update Minio Secret", "name", secret.Name)
+		newSecret := r.newSubmarineMinoSecret(ctx, submarine)
+		// compare if there are same
+		if !util.CompareSecret(secret, newSecret) {
+			// update meta with uid
+			newSecret.ObjectMeta = secret.ObjectMeta
+			err = r.Update(ctx, newSecret)
+			r.Log.Info("Update Minio Secret", "name", secret.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can

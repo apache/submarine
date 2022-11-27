@@ -114,6 +114,7 @@ type SubmarineReconciler struct {
 	Log      logr.Logger
 	Recorder record.EventRecorder
 	// Fields required by submarine
+	Namespace               string
 	ClusterType             string
 	CreatePodSecurityPolicy bool
 }
@@ -200,6 +201,8 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			r.recordSubmarineEvent(submarineCopy)
 		}
 	case submarineapacheorgv1alpha1.CreatingState:
+	// If an event is performed in a failed state, we also need to process it
+	case submarineapacheorgv1alpha1.FailedState:
 		if err := r.createSubmarine(ctx, submarineCopy); err != nil {
 			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
@@ -213,6 +216,7 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		}
 		if ok {
 			submarineCopy.Status.State = submarineapacheorgv1alpha1.RunningState
+			submarineCopy.Status.ErrorMessage = ""
 			r.recordSubmarineEvent(submarineCopy)
 		}
 	case submarineapacheorgv1alpha1.RunningState:
@@ -226,7 +230,9 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Update STATUS of Submarine
 	err = r.updateSubmarineStatus(ctx, submarine, submarineCopy)
 	if err != nil {
-		return ctrl.Result{}, err
+		submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+		submarineCopy.Status.ErrorMessage = err.Error()
+		r.recordSubmarineEvent(submarineCopy)
 	}
 
 	// Re-run Reconcile regularly
@@ -240,22 +246,18 @@ func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submari
 	serverDeployment := &appsv1.Deployment{}
 	err := r.Get(ctx, types.NamespacedName{Name: serverName, Namespace: submarine.Namespace}, serverDeployment)
 	if err != nil {
-		if errors.IsNotFound(err) {
-			submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
-		} else {
-			return err
-		}
+		return err
+	} else {
+		submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
 	}
 
 	// Update database replicas
 	statefulset := &appsv1.StatefulSet{}
 	err = r.Get(ctx, types.NamespacedName{Name: databaseName, Namespace: submarine.Namespace}, statefulset)
 	if err != nil {
-		if errors.IsNotFound(err) {
-			submarineCopy.Status.AvailableDatabaseReplicas = statefulset.Status.ReadyReplicas
-		} else {
-			return err
-		}
+		return err
+	} else {
+		submarineCopy.Status.AvailableDatabaseReplicas = statefulset.Status.ReadyReplicas
 	}
 
 	// Skip update if nothing changed.

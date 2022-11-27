@@ -190,6 +190,15 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 		deployment = r.newSubmarineServerDeployment(ctx, submarine)
 		err = r.Create(ctx, deployment)
 		r.Log.Info("Create Deployment", "name", deployment.Name)
+	} else {
+		newDeployment := r.newSubmarineServerDeployment(ctx, submarine)
+		// compare if there are same
+		if !CompareServerDeployment(deployment, newDeployment) {
+			// update meta with uid
+			newDeployment.ObjectMeta = deployment.ObjectMeta
+			err = r.Update(ctx, newDeployment)
+			r.Log.Info("Update Deployment", "name", deployment.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -222,4 +231,38 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 	}
 
 	return nil
+}
+
+// CompareServerDeployment will determine if two Deployments are equal
+func CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+	// spec.replicas
+	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
+		return false
+	}
+	if len(oldDeployment.Spec.Template.Spec.Containers) == 0 {
+		return false
+	}
+	// spec.template.spec.containers[0].env
+	if !util.CompareEnv(oldDeployment.Spec.Template.Spec.Containers[0].Env, newDeployment.Spec.Template.Spec.Containers[0].Env) {
+		return false
+	}
+	// spec.template.spec.containers[0].image
+	if oldDeployment.Spec.Template.Spec.Containers[0].Image != newDeployment.Spec.Template.Spec.Containers[0].Image {
+		return false
+	}
+	// spec.template.spec.initContainers[0].image
+	if len(oldDeployment.Spec.Template.Spec.InitContainers) == 0 {
+		return false
+	}
+	if oldDeployment.Spec.Template.Spec.InitContainers[0].Image != newDeployment.Spec.Template.Spec.InitContainers[0].Image {
+		return false
+	}
+	if !util.CompareSlice(oldDeployment.Spec.Template.Spec.InitContainers[0].Command, newDeployment.Spec.Template.Spec.InitContainers[0].Command) {
+		return false
+	}
+	// spec.template.spec.imagePullSecrets
+	if !util.ComparePullSecrets(oldDeployment.Spec.Template.Spec.ImagePullSecrets, newDeployment.Spec.Template.Spec.ImagePullSecrets) {
+		return false
+	}
+	return true
 }

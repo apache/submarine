@@ -21,6 +21,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
+	"reflect"
 
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 
@@ -54,7 +55,11 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 		if virtualserviceGateways != nil {
 			// Use `Gateways` defined in submarine spec
 			virtualService.Spec.Gateways = virtualserviceGateways
+		} else {
+			virtualService.Spec.Gateways[0] = fmt.Sprintf("%s/submarine-gateway", r.Namespace)
 		}
+	} else {
+		virtualService.Spec.Gateways[0] = fmt.Sprintf("%s/submarine-gateway", r.Namespace)
 	}
 
 	err = controllerutil.SetControllerReference(submarine, virtualService, r.Scheme)
@@ -71,14 +76,20 @@ func (r *SubmarineReconciler) createVirtualService(ctx context.Context, submarin
 
 	virtualService := &istiov1alpha3.VirtualService{}
 	err := r.Get(ctx, types.NamespacedName{Name: virtualServiceName, Namespace: submarine.Namespace}, virtualService)
-	virtualService = r.newSubmarineVirtualService(ctx, submarine)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
+		virtualService = r.newSubmarineVirtualService(ctx, submarine)
 		err = r.Create(ctx, virtualService)
 		r.Log.Info("Create VirtualService", "name", virtualService.Name)
 	} else {
-		err = r.Update(ctx, virtualService)
-		r.Log.Info("Update VirtualService", "name", virtualService.Name)
+		newVirtualService := r.newSubmarineVirtualService(ctx, submarine)
+		// compare if there are same
+		if !CompareVirtualService(virtualService, newVirtualService) {
+			// update meta with uid
+			newVirtualService.ObjectMeta = virtualService.ObjectMeta
+			err = r.Update(ctx, newVirtualService)
+			r.Log.Info("Update VirtualService", "name", virtualService.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -95,4 +106,21 @@ func (r *SubmarineReconciler) createVirtualService(ctx context.Context, submarin
 	}
 
 	return nil
+}
+
+// CompareVirtualService will determine if two VirtualServices are equal
+func CompareVirtualService(oldVirtualService, newVirtualService *istiov1alpha3.VirtualService) bool {
+	// spec.hosts
+	if !util.CompareSlice(oldVirtualService.Spec.Hosts, newVirtualService.Spec.Hosts) {
+		return false
+	}
+	// spec.gateways
+	if !util.CompareSlice(oldVirtualService.Spec.Gateways, newVirtualService.Spec.Gateways) {
+		return false
+	}
+	// spec.http
+	if !reflect.DeepEqual(oldVirtualService.Spec.Http, newVirtualService.Spec.Http) {
+		return false
+	}
+	return true
 }

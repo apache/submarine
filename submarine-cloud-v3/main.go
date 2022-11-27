@@ -128,6 +128,7 @@ func main() {
 		Scheme:                  mgr.GetScheme(),
 		Recorder:                mgr.GetEventRecorderFor(controllerAgentName),
 		Log:                     ctrl.Log.WithName(controllerAgentName),
+		Namespace:               namespace,
 		ClusterType:             clusterType,
 		CreatePodSecurityPolicy: createPodSecurityPolicy,
 	}).SetupWithManager(mgr); err != nil {

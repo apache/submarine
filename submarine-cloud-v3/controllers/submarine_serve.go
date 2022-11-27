@@ -63,14 +63,20 @@ func (r *SubmarineReconciler) createSubmarineServe(ctx context.Context, submarin
 	// Step 1: Create Seldon Secret
 	secret := &corev1.Secret{}
 	err := r.Get(ctx, types.NamespacedName{Name: "submarine-serve-secret", Namespace: submarine.Namespace}, secret)
-	secret = r.newSubmarineSeldonSecret(ctx, submarine)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
+		secret = r.newSubmarineSeldonSecret(ctx, submarine)
 		err = r.Create(ctx, secret)
 		r.Log.Info("Create Seldon Secret", "name", secret.Name)
 	} else {
-		err = r.Update(ctx, secret)
-		r.Log.Info("Update Seldon Secret", "name", secret.Name)
+		newSecret := r.newSubmarineSeldonSecret(ctx, submarine)
+		// compare if there are same
+		if !util.CompareSecret(secret, newSecret) {
+			// update meta with uid
+			newSecret.ObjectMeta = secret.ObjectMeta
+			err = r.Update(ctx, secret)
+			r.Log.Info("Update Seldon Secret", "name", secret.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can

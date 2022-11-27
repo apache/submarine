@@ -19,6 +19,8 @@ package util
 
 import (
 	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
+	"reflect"
 )
 
 // GetSubmarineCommon will get `spec.common` and initialize it if it is nil to prevent NPE
@@ -38,4 +40,92 @@ func GetSubmarineCommonImage(submarine *submarineapacheorgv1alpha1.Submarine) *s
 		image = &submarineapacheorgv1alpha1.CommonImage{}
 	}
 	return image
+}
+
+// CompareSlice will determine if two slices are equal
+func CompareSlice(a, b []string) bool {
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for key, value := range a {
+		if value != b[key] {
+			return false
+		}
+	}
+	return true
+}
+
+// CompareMap will determine if two maps are equal
+func CompareMap(a, b map[string]string) bool {
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for k, v := range a {
+		if w, ok := b[k]; !ok || v != w {
+			return false
+		}
+	}
+	return true
+}
+
+// ComparePullSecrets will determine if two LocalObjectReferences are equal
+func ComparePullSecrets(a, b []corev1.LocalObjectReference) bool {
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for key, value := range a {
+		if value.Name != b[key].Name {
+			return false
+		}
+	}
+	return true
+}
+
+// CompareEnv will determine if two EnvVars are equal
+func CompareEnv(a, b []corev1.EnvVar) bool {
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for key, value := range a {
+		cv := b[key]
+		if value.Name != cv.Name || value.Value != cv.Value || !reflect.DeepEqual(value.ValueFrom, cv.ValueFrom) {
+			return false
+		}
+	}
+	return true
+}
+
+// GetSecretData will return secret data ( map[string]string )
+func GetSecretData(secret *corev1.Secret) map[string]string {
+	if secret.StringData != nil {
+		return secret.StringData
+	} else {
+		var parsedData map[string]string
+		parsedData = make(map[string]string)
+		for key, value := range secret.Data {
+			parsedData[key] = string(value)
+		}
+		return parsedData
+	}
+}
+
+// CompareSecret will determine if two Secrets are equal
+func CompareSecret(oldSecret, newSecret *corev1.Secret) bool {
+	return CompareMap(GetSecretData(oldSecret), GetSecretData(newSecret))
 }
