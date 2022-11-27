@@ -14,7 +14,12 @@
 
 # Submarine Operator Deployment Guide
 
-Debug for test
+- Installs the Cloud Native Machine Learning Platform [Apache Submarine](https://submarine.apache.org/)
+
+## Debugging the Chart
+
+To debug the chart with the release name `submarine`:
+
 ```shell
 # lint
 helm lint ./helm-charts/submarine
@@ -24,7 +29,10 @@ helm install --dry-run --debug submarine ./helm-charts/submarine -n submarine
 helm template --debug submarine ./helm-charts/submarine -n submarine
 ```
 
-Prod/Dev install
+## Installing the Chart
+
+To install the chart with the release name `submarine`:
+
 ```shell
 # We have also integrated seldon-core install by helm, thus we need to update our dependency.
 helm dependency update ./helm-charts/submarine
@@ -32,3 +40,51 @@ helm dependency update ./helm-charts/submarine
 helm install submarine ./helm-charts/submarine -n submarine
 ```
 
+## Upgrading the Chart
+
+To upgrade the chart with the release name `submarine`:
+
+```shell
+helm upgrade submarine ./helm-charts/submarine -n submarine
+```
+
+## Uninstalling the Chart
+
+To uninstall/delete the `subamrine` deployment:
+
+```shell
+helm uninstall subamrine -n submarine
+```
+
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.8.0 -> v1.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 0.8.0
+
+This version requires Helm >= 3.1.0.  
+This version is a major change, we migrated `traefik` to `istio` and upgraded the `operator`. You need to backup the database and redeploy.
+
+## Configuration
+
+The following table lists the configurable parameters of the MySQL chart and their default values.
+
+| Parameter                        | Description                                                                                                                                   | Default                                    |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `name`                           | Submarine operator deployment name.                                                                                                           | `submarine-operator`                       |
+| `replicas`                       | Number of operators                                                                                                                           | `1`                                        |
+| `image`                          | Submarine operator deployment image                                                                                                           | `apache/submarine:operator-0.8.0-SNAPSHOT` |
+| `imagePullSecrets`               | Image pull secrets                                                                                                                            | `[]`                                       |
+| `dev`                            | Tell helm to install submarine-operator or not in dev mode                                                                                    | `false`                                    |
+| `storageClass.reclaimPolicy`     | Determine the action after the persistent volume is released                                                                                  | `Delete`                                   |
+| `storageClass.volumeBindingMode` | Control when volume binding and dynamically provisioning should occur                                                                         | `Immediate`                                |
+| `storageClass.provisioner`       | Determine what volume plugin is used for provisioning PVs                                                                                     | `k8s.io/minikube-hostpath`                 |
+| `storageClass.parameters`        | Describe volumes belonging to the storage class                                                                                               | `{}`                                       |
+| `clusterType`                    | k8s cluster type. can be: kubernetes or openshift                                                                                             | `kubernetes`                               |
+| `podSecurityPolicy.create`       | pecifies whether a PodSecurityPolicy should be created, this configuration enables the database/minio/server to set securityContext.runAsUser | `true`                                     |
+| `istio.enabled`                  | Use istio to expose the service                                                                                                               | `true`                                     |
+| `istio.gatewaySelector`          | Gateway label selector                                                                                                                        | `istio: ingressgateway`                    |
+| `training-operator.enabled`      | If we need to deploye a kubeflow training operator in this helm                                                                               | `true`                                     |
+| `notebook-controller.enabled`    | If we need to deploye a kubeflow notebook controller in this helm                                                                             | `true`                                     |
+| `seldon-core-operator.enabled`   | If we need to deploye a seldon core operator in this helm                                                                                     | `true`                                     |

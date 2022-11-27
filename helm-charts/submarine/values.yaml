@@ -48,7 +48,11 @@ podSecurityPolicy:
 # Istio configuration
 istio:
   enabled: true
-  gatewaySelector: ingressgateway
+  # Use Istio default gateway implementation,
+  # you can find the specified gateway service with this labels by the command:
+  # kubectl get service -n istio-system -l istio=ingressgateway
+  gatewaySelector: 
+    istio: ingressgateway
 
 # training operator
 training-operator:

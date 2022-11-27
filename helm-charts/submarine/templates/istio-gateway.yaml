@@ -20,9 +20,12 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: submarine-gateway
+  namespace: {{ .Release.Namespace }}
 spec:
+  {{- with .Values.istio.gatewaySelector }}
   selector:
-    istio: {{ .Values.istio.gatewaySelector }}
+  {{ toYaml . | indent 2 }}
+  {{- end }}
   servers:
     - port:
         number: 80
