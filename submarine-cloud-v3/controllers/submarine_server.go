@@ -217,19 +217,6 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 		return fmt.Errorf(msg)
 	}
 
-	// Update the replicas of the server deployment if it is not equal to spec
-	if submarine.Spec.Server.Replicas != nil && *submarine.Spec.Server.Replicas != *deployment.Spec.Replicas {
-		msg := fmt.Sprintf("Submarine %s server spec replicas", submarine.Name)
-		r.Log.Info(msg, "server spec", *submarine.Spec.Server.Replicas, "actual", *deployment.Spec.Replicas)
-
-		deployment = r.newSubmarineServerDeployment(ctx, submarine)
-		err = r.Update(ctx, deployment)
-	}
-
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -239,7 +226,7 @@ func CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bo
 	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
 		return false
 	}
-	if len(oldDeployment.Spec.Template.Spec.Containers) == 0 {
+	if len(oldDeployment.Spec.Template.Spec.Containers) != 1 {
 		return false
 	}
 	// spec.template.spec.containers[0].env
@@ -251,12 +238,13 @@ func CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bo
 		return false
 	}
 	// spec.template.spec.initContainers[0].image
-	if len(oldDeployment.Spec.Template.Spec.InitContainers) == 0 {
+	if len(oldDeployment.Spec.Template.Spec.InitContainers) != 1 {
 		return false
 	}
 	if oldDeployment.Spec.Template.Spec.InitContainers[0].Image != newDeployment.Spec.Template.Spec.InitContainers[0].Image {
 		return false
 	}
+	// spec.template.spec.initContainers[0].command
 	if !util.CompareSlice(oldDeployment.Spec.Template.Spec.InitContainers[0].Command, newDeployment.Spec.Template.Spec.InitContainers[0].Command) {
 		return false
 	}
