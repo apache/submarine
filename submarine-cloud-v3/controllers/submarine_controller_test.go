@@ -221,7 +221,7 @@ var _ = Describe("Submarine controller", func() {
 			// The default value for host is *
 			Expect(createdVirtualService.Spec.Hosts[0]).To(Equal("*"))
 			// The default value for gateway is ${namespace}/submarine-gateway
-			Expect(createdVirtualService.Spec.Gateways[0]).To(Equal(fmt.Sprintf("%s/submarine-gateway", submarineNamespaceDefaultCR)))
+			Expect(createdVirtualService.Spec.Gateways[0]).To(Equal("submarine-cloud-v3-system/submarine-gateway"))
 		})
 		It(fmt.Sprintf("Hosts and Gateways should have custom values In %s", submarineNamespaceCustomCR), func() {
 			By(fmt.Sprintf("Getting Virtual Service In %s", submarineNamespaceCustomCR))
