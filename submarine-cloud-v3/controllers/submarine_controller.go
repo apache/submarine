@@ -200,9 +200,8 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			submarineCopy.Status.State = submarineapacheorgv1alpha1.CreatingState
 			r.recordSubmarineEvent(submarineCopy)
 		}
-	case submarineapacheorgv1alpha1.CreatingState:
 	// If an event is performed in a failed state, we also need to process it
-	case submarineapacheorgv1alpha1.FailedState:
+	case submarineapacheorgv1alpha1.CreatingState, submarineapacheorgv1alpha1.FailedState:
 		if err := r.createSubmarine(ctx, submarineCopy); err != nil {
 			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
@@ -246,7 +245,11 @@ func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submari
 	serverDeployment := &appsv1.Deployment{}
 	err := r.Get(ctx, types.NamespacedName{Name: serverName, Namespace: submarine.Namespace}, serverDeployment)
 	if err != nil {
-		return err
+		if errors.IsNotFound(err) {
+			submarineCopy.Status.AvailableServerReplicas = 0
+		} else {
+			return err
+		}
 	} else {
 		submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
 	}
@@ -255,7 +258,11 @@ func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submari
 	statefulset := &appsv1.StatefulSet{}
 	err = r.Get(ctx, types.NamespacedName{Name: databaseName, Namespace: submarine.Namespace}, statefulset)
 	if err != nil {
-		return err
+		if errors.IsNotFound(err) {
+			submarineCopy.Status.AvailableDatabaseReplicas = 0
+		} else {
+			return err
+		}
 	} else {
 		submarineCopy.Status.AvailableDatabaseReplicas = statefulset.Status.ReadyReplicas
 	}
