@@ -22,6 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelService } from '@submarine/services/model.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'model-form',
@@ -40,8 +41,10 @@ export class ModelFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modelService: ModelService,
-    private nzMessageService: NzMessageService
-  ) {}
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit(): void {
     this.modelForm = this.fb.group({
@@ -95,13 +98,13 @@ export class ModelFormComponent implements OnInit {
     }
     this.modelService.createModel(modelInfo).subscribe({
       next: (result) => {
-        this.nzMessageService.success('Create Model Registry Success!');
+        this.nzMessageService.success(this.translate.instant('Create Model Registry Success!'));
         this.closeModal();
         // refresh model card list
         this.fetchModelCards();
       },
       error: (msg) => {
-        this.nzMessageService.error(`Model registry with name: ${modelInfo.name} is exist.`, {
+        this.nzMessageService.error(this.translate.instant('Model registry with name') + `: ${modelInfo.name} ` + this.translate.instant('is exist.'), {
           nzPauseOnHover: true
         });
       }

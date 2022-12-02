@@ -26,7 +26,7 @@ import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
 import {humanizeTime} from '@submarine/pages/workbench/utils/humanize-time'
 import { ModelServeService } from '@submarine/services/model-serve.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-model-info',
@@ -49,7 +49,9 @@ export class ModelInfoComponent implements OnInit {
     private modelService: ModelService,
     private modelServeService: ModelServeService,
     private nzMessageService: NzMessageService,
-  ) {}
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit(): void {
     this.modelName = this.route.snapshot.params.name;
@@ -81,12 +83,12 @@ export class ModelInfoComponent implements OnInit {
   onCreateServe = (id: number, version: number) => {
     this.modelServeService.createServe(id, this.modelName, version).subscribe({
       next: (result) => {
-        this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is created.`)
+        this.nzMessageService.success(this.translate.instant('The model serve with name') + `: ${this.modelName} ` + this.translate.instant('and version') + `: ${version} ` + this.translate.instant('is created.'))
         // refresh model version status after created serve
         this.fetchModelAllVersions();
       },
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },
@@ -96,12 +98,12 @@ export class ModelInfoComponent implements OnInit {
   onDeleteServe = (id: number, version: number) => {
     this.modelServeService.deleteServe(id, this.modelName, version).subscribe({
       next: (result) => {
-        this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is deleted.`)
+        this.nzMessageService.success(this.translate.instant('The model serve with name') + `: ${this.modelName} ` + this.translate.instant('and version') + `: ${version} ` + this.translate.instant('is deleted.'))
         // refresh model version status after deleted serve
         this.fetchModelAllVersions();
       },
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },
@@ -111,10 +113,10 @@ export class ModelInfoComponent implements OnInit {
   onDeleteModelVersion = (version:number) => {
     this.modelVersionService.deleteModelVersion(this.modelName, version).subscribe({
       next: (result) => {
-        this.nzMessageService.success(`The model with name: ${this.modelName} and version: ${version} is deleted.`)
+        this.nzMessageService.success(this.translate.instant('The model with name') + `: ${this.modelName} ` + this.translate.instant('and version') + `: ${version} ` + this.translate.instant('is deleted.'))
       },
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },

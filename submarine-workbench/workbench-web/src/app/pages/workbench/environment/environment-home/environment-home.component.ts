@@ -22,6 +22,7 @@ import { EnvironmentInfo } from '@submarine/interfaces/environment-interfaces/en
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { EnvironmentFormComponent } from './environment-form/environment-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-environment-home',
@@ -33,7 +34,12 @@ export class EnvironmentHomeComponent implements OnInit {
 
   @ViewChild('form', { static: true }) form: EnvironmentFormComponent;
 
-  constructor(private environmentService: EnvironmentService, private nzMessageService: NzMessageService) {}
+  constructor(
+    private environmentService: EnvironmentService,
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+    ) {
+    }
 
   ngOnInit() {
     this.fetchEnvironmentList();
@@ -53,7 +59,7 @@ export class EnvironmentHomeComponent implements OnInit {
     this.environmentService.deleteEnvironment(name).subscribe(
       () => {
         this.fetchEnvironmentList();
-        this.nzMessageService.success(`Delete ${name} Success!`);
+        this.nzMessageService.success(this.translate.instant('Delete') + ` ${name} ` + this.translate.instant('Success!'));
       },
       (err) => {
         this.nzMessageService.error(err);

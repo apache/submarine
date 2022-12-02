@@ -19,41 +19,41 @@
 <div style="margin: 15px; padding: 15px; background-color: white">
   <nz-spin [nzSpinning]="isLoading">
     <article nz-typography>
-      <h3 nz-typography>Version {{ modelVersion }}</h3>
+      <h3 nz-typography>{{ 'Version' | translate }} {{ modelVersion }}</h3>
       <p nz-typography>
-        <span><strong>Stage: </strong></span>
+        <span><strong>{{ 'Stage' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.currentStage }}
       </p>
       <p nz-typography>
-        <span><strong>User id: </strong></span>
+        <span><strong>{{ 'User id' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.userId }}
       </p>
       <p nz-typography>
-        <span><strong>Experiment id: </strong></span>
+        <span><strong>{{ 'Experiment id' | translate }}: </strong></span>
         <span *ngIf="!isLoading">
           <a href="/workbench/experiment/info/{{modelVersionInfo.experimentId}}">{{ modelVersionInfo.experimentId }}</a>
         </span>
       </p>
       <p nz-typography>
-        <span><strong>Dataset: </strong></span>
+        <span><strong>{{ 'Dataset' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.dataset }}
       </p>
       <p nz-typography>
-        <span><strong>Created: </strong></span>
+        <span><strong>{{ 'Create Time' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.creationTime }}
       </p>
       <p nz-typography>
-        <span><strong>Updated: </strong></span>
+        <span><strong>{{ 'Last Updated' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.lastUpdatedTime }}
       </p>
       <p nz-typography>
-        <span><strong>Tags: </strong></span>
+        <span><strong>{{ 'Tags' | translate }}: </strong></span>
         <span  *ngIf="!isLoading">
           <submarine-model-tags [modelName]="modelName" [modelVersion]="modelVersion" [tags]="modelVersionInfo.tags" [useVersionTags]="true"></submarine-model-tags>
         </span>
       </p>
       <p nz-typography>
-        <span><strong>Description: </strong></span>
+        <span><strong>{{ 'Description' | translate }}: </strong></span>
         {{ isLoading ? null : modelVersionInfo.description }}
       </p>
     </article>

@@ -21,28 +21,28 @@
     <article nz-typography>
       <h3 nz-typography>{{modelName}}</h3>
       <p nz-typography>
-        <span><strong>Creation Time: </strong></span>
+        <span><strong>{{ 'Create Time' | translate }}: </strong></span>
         {{ isModelInfoLoading ? null : humanizedCreationTime }}
       </p>
       <p nz-typography>
-        <span><strong>Last Updated Time: </strong></span>
+        <span><strong>{{ 'Last Updated' | translate }}: </strong></span>
         {{ isModelInfoLoading ? null : humanizedLastUpdatedTime }}
       </p>
       <p nz-typography>
-        <span><strong>Tags: </strong></span>
+        <span><strong>{{ 'Tags' | translate }}: </strong></span>
         <span *ngIf="!isModelInfoLoading">
           <submarine-model-tags [modelName]="modelName" [tags]="selectedModelInfo.tags" [useVersionTags]="false" ></submarine-model-tags>
         </span>
       </p>
       <p nz-typography>
-        <span><strong>Description: </strong></span>
+        <span><strong>{{ 'Description' | translate }}: </strong></span>
         {{ isModelInfoLoading ? null : selectedModelInfo.description }}
       </p>
     </article>
   </nz-spin>
   <nz-divider [nzText]="text" nzOrientation="left">
     <ng-template #text>
-      Model Versions
+      {{ 'Model Versions' | translate }}
       <i nz-icon nzType="form"></i>
     </ng-template>
   </nz-divider>
@@ -51,18 +51,18 @@
     nzBordered
     #basicTable
     [nzData]="modelVersions"
-    [nzNoResult]="'No data'"
+    [nzNoResult]="'No data' | translate"
     [nzLoading]="isModelVersionsLoading"
   >
     <thead>
       <tr>
-        <th>Version</th>
-        <th>Stage</th>
-        <th>Created</th>
-        <th>Updated</th>
-        <th>Tags</th>
-        <th>Description</th>
-        <th>Action</th>
+        <th>{{ 'Version' | translate }}</th>
+        <th>{{ 'Stage' | translate }}</th>
+        <th>{{ 'Create Time' | translate }}</th>
+        <th>{{ 'Last Updated' | translate }}</th>
+        <th>{{ 'Tags' | translate }}</th>
+        <th>{{ 'Description' | translate }}</th>
+        <th>{{ 'Action' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -82,9 +82,9 @@
             class="icon-link"
             nz-popconfirm
             nzPlacement="left"
-            nzTitle="Are you sure you want to serve the model?"
-            nzCancelText="Cancel"
-            nzOkText="Ok"
+            nzTitle="{{ 'Are you sure you want to serve the model?' | translate }}"
+            nzCancelText="{{ 'Cancel' | translate }}"
+            nzOkText="{{ 'Ok' | translate }}"
             (nzOnConfirm)="onCreateServe(data.modelVersionId, data.version)"
             (click)="preventEvent($event)"
           >
@@ -96,9 +96,9 @@
             class="icon-link"
             nz-popconfirm
             nzPlacement="left"
-            nzTitle="Are you sure you want to delete the model serve?"
-            nzCancelText="Cancel"
-            nzOkText="Ok"
+            nzTitle="{{ 'Are you sure you want to delete the model serve?' | translate }}"
+            nzCancelText="{{ 'Cancel' | translate }}"
+            nzOkText="{{ 'Ok' | translate }}"
             (nzOnConfirm)="onDeleteServe(data.modelVersionId, data.version)"
             (click)="preventEvent($event)"
           >
@@ -111,9 +111,9 @@
             class="icon-link"
             nz-popconfirm
             nzPlacement="left"
-            nzTitle="Are you sure you want to delete the model?"
-            nzCancelText="Cancel"
-            nzOkText="Ok"
+            nzTitle="{{ 'Are you sure you want to delete the model?' | translate }}"
+            nzCancelText="{{ 'Cancel' | translate }}"
+            nzOkText="{{ 'Ok' | translate }}"
             (nzOnConfirm)="onDeleteModelVersion(data.version)"
             (click)="preventEvent($event)"
           >
@@ -123,7 +123,7 @@
             id="anchor-preview{{ i }}"
             *ngIf="data.currentStage==='Production'"
             class="icon-link"
-            nzTooltipTitle='The model is in "Production" stage. It cannot be deleted.'
+            nzTooltipTitle='{{ "The model is in \"Production\" stage. It cannot be deleted." | translate }}'
             nz-tooltip
             (click)="preventEvent($event)"
           >

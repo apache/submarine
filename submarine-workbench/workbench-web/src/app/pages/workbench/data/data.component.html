@@ -84,7 +84,7 @@
                   nzBordered
                   [nzFrontPagination]="false"
                   [nzData]="listData"
-                  [nzNoResult]="'No data'"
+                  [nzNoResult]="'No data' | translate"
                   [nzTitle]="addColButton"
                 >
                   <thead>
@@ -330,7 +330,7 @@
                 nzBordered
                 [nzFrontPagination]="false"
                 [nzData]="listCreateData"
-                [nzNoResult]="'No data'"
+                [nzNoResult]="'No data' | translate"
                 [nzTitle]="addCreateColButton"
               >
                 <thead>

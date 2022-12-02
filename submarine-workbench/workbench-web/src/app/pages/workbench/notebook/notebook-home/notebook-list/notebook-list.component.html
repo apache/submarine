@@ -22,12 +22,12 @@
   <thead>
     <tr>
       <th></th>
-      <th>Name</th>
-      <th>Environment</th>
-      <th>Docker Image</th>
-      <th>Resources</th>
-      <th>Status</th>
-      <th>Action</th>
+      <th>{{ 'Name' | translate }}</th>
+      <th>{{ 'Environment' | translate }}</th>
+      <th>{{ 'Docker Image' | translate }}</th>
+      <th>{{ 'Resources' | translate }}</th>
+      <th>{{ 'Status' | translate }}</th>
+      <th>{{ 'Action' | translate }}</th>
     </tr>
   </thead>
   <tbody>
@@ -57,7 +57,7 @@
       </td>
       <td>
         <a (click)="showReason(data.reason)">
-          <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+          <nz-tag [nzColor]="statusColor[data.status]">{{ data.status | translate }}</nz-tag>
         </a>
       </td>
       <td>
@@ -65,12 +65,12 @@
           id="btn-deleteNotebook{{ i }}"
           nz-popconfirm
           nzPlacement="left"
-          nzTitle="Are you sure you want to delete?"
-          nzCancelText="Cancel"
-          nzOkText="Ok"
+          nzTitle="{{ 'Are you sure you want to delete?' | translate }}"
+          nzCancelText="{{ 'Cancel' | translate }}"
+          nzOkText="{{ 'Ok' | translate }}"
           (nzOnConfirm)="onDeleteNotebook(data.notebookId)"
         >
-          Delete
+          {{ 'Delete' | translate }}
         </a>
       </td>
     </tr>

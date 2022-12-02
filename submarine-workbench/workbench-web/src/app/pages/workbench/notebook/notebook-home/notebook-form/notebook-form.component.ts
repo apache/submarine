@@ -24,6 +24,7 @@ import { EnvironmentService } from '@submarine/services/environment-services/env
 import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
 import { UserService } from '@submarine/services/user.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-notebook-form',
@@ -54,8 +55,10 @@ export class NotebookFormComponent implements OnInit {
     private environmentService: EnvironmentService,
     private notebookService: NotebookService,
     private userService: UserService,
-    private nzMessageService: NzMessageService
-  ) {}
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit() {
     this.userService.fetchUserInfo().subscribe((res) => {
@@ -206,12 +209,12 @@ export class NotebookFormComponent implements OnInit {
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
       next: (result) => {},
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },
       complete: () => {
-        this.nzMessageService.info(`Notebook Creating`, {
+        this.nzMessageService.info(this.translate.instant(`Notebook Creating`), {
           nzPauseOnHover: true,
         });
         this.isVisible = false;

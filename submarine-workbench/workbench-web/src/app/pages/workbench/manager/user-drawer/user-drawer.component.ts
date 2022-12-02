@@ -26,6 +26,7 @@ import { SystemUtilsService, SysDictCode } from '@submarine/services';
 import { format } from 'date-fns';
 import { zip, Observable, Observer } from 'rxjs';
 import { filter, map, startWith, take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-user-drawer',
@@ -47,7 +48,12 @@ export class UserDrawerComponent implements OnInit, OnChanges {
   statusDictSelect: SysDictItem[] = [];
   title = 'Add';
 
-  constructor(private fb: FormBuilder, private systemUtilsService: SystemUtilsService) {}
+  constructor(
+    private fb: FormBuilder,
+    private systemUtilsService: SystemUtilsService,
+    private translate: TranslateService
+    ) {
+    }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -167,11 +173,11 @@ export class UserDrawerComponent implements OnInit, OnChanges {
 
   generateTitle(): string {
     if (this.readonly) {
-      return 'Details';
+      return this.translate.instant('Details');
     } else if (this.sysUser && this.sysUser.id) {
-      return 'Edit';
+      return this.translate.instant('Edit');
     } else {
-      return 'Add';
+      return this.translate.instant('Add');
     }
   }
 

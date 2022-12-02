@@ -23,6 +23,7 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelVersionService } from '@submarine/services/model-version.service';
 import { ModelService } from '@submarine/services/model.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-model-card',
@@ -35,8 +36,13 @@ export class ModelCardComponent implements OnInit {
   @Output() private refreshCards = new EventEmitter<boolean>();
   description: string;
 
-  constructor(private modelService: ModelService, private modelVersionService: ModelVersionService,
-    private nzMessageService: NzMessageService) {}
+  constructor(
+    private modelService: ModelService,
+    private modelVersionService: ModelVersionService,
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+    ) {
+    }
 
   ngOnInit() {
     if (this.card.description && this.card.description.length > 15) {
@@ -50,7 +56,7 @@ export class ModelCardComponent implements OnInit {
   onDeleteModelRegistry(modelName: string){
     this.modelService.deleteModel(modelName).subscribe({
       next: (result) => {
-        this.nzMessageService.success('Delete registered model success!');
+        this.nzMessageService.success(this.translate.instant('Delete registered model success!'));
         // send EventEmitter true to refresh cards
         this.refreshCards.emit(true)
       },

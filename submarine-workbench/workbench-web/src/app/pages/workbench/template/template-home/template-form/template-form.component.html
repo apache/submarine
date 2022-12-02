@@ -17,7 +17,7 @@
   ~ under the License.
   -->
 
-<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="Create Template" [nzWidth]="1000">
+<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="{{ 'Create Template' | translate }}" [nzWidth]="1000">
   <div [ngSwitch]="step">
     <div *nzModalFooter>
       <button
@@ -28,9 +28,9 @@
         (click)="step = step - 1"
         *ngIf="step !== 0"
       >
-        Pre Step
+        {{ 'Pre Step' | translate }}
       </button>
-      <button nz-button id="btn-tp-form-cancel" nzType="default" (click)="onCancel()">Cancel</button>
+      <button nz-button id="btn-tp-form-cancel" nzType="default" (click)="onCancel()">{{ 'Cancel' | translate }}</button>
       <button
         nz-button
         id="btn-tp-form-page0"
@@ -39,7 +39,7 @@
         (click)="step = step + 1"
         *ngIf="step === 0"
       >
-        Next to experiment spec
+        {{ 'Next to experiment spec' | translate }}
       </button>
       <button
         nz-button
@@ -49,7 +49,7 @@
         (click)="step = step + 1"
         *ngIf="step === 1"
       >
-        Next to resource spec
+        {{ 'Next to resource spec' | translate }}
       </button>
       <button
         nz-button
@@ -59,14 +59,14 @@
         (click)="createTemplate()"
         *ngIf="step === 2"
       >
-        Creat
+        {{ 'Create' | translate }}
       </button>
     </div>
     <form nz-form [formGroup]="templateForm" nzLayout="horizontal">
       <div *ngSwitchCase="0" style="margin-top: 10px">
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="templateName">Template Name</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input template name!">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="templateName">{{ 'Template Name' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{ 'Please input template name!' | translate }}">
             <input
               required
               nz-input
@@ -74,27 +74,27 @@
               name="templateName"
               id="templateName"
               formControlName="templateName"
-              placeholder="Name of template."
+              placeholder="{{ 'Name of template.' | translate }}"
             />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="description">Description</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input description for this template!">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="description">{{ 'Description' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{ 'Please input description for this template!' | translate }}">
             <textarea
               nz-input
               [nzAutosize]="{ minRows: 1, maxRows: 4 }"
               name="description"
               formControlName="description"
               id="description"
-              placeholder="Description for this template."
+              placeholder="{{ 'Description for this template.' | translate }}"
             ></textarea>
           </nz-form-control>
         </nz-form-item>
         <div formArrayName="parameters">
           <ng-container *ngFor="let param of parameters.controls; index as i">
             <nz-form-item>
-              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Param{{ i + 1 }}</nz-form-label>
+              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">{{ 'Param' | translate }}{{ i + 1 }}</nz-form-label>
               <div [formGroupName]="i">
                 <div nz-col nzSpan="12">
                   <input
@@ -103,7 +103,7 @@
                     required
                     id="name{{ i }}"
                     name="name{{ i }}"
-                    placeholder="Name"
+                    placeholder="{{ 'Name' | translate }}"
                     formControlName="name"
                   />
                   <input
@@ -112,7 +112,7 @@
                     required
                     id="value{{ i }}"
                     name="value{{ i }}"
-                    placeholder="Value"
+                    placeholder="{{ 'Value' | translate }}"
                     formControlName="value"
                   />
                   <i
@@ -129,7 +129,7 @@
                     required
                     id="description{{ i }}"
                     name="description{{ i }}"
-                    placeholder="Description"
+                    placeholder="{{ 'Description' | translate }}"
                     formControlName="description"
                   />
                 </div>
@@ -144,13 +144,13 @@
           type="default"
           (click)="onCreateParam()"
         >
-          Add Param
+          {{ 'Add Param' | translate }}
         </button>
       </div>
       <div *ngSwitchCase="1" style="margin-top: 10px">
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="image">Image</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input image!">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="image">{{ 'Image' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{ 'Please input image!' | translate }}">
             <input
               required
               nz-input
@@ -158,31 +158,31 @@
               name="image"
               id="image"
               formControlName="image"
-              placeholder="Image for experiment."
+              placeholder="{{ 'Image for experiment.' | translate }}"
             />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cmd">Command</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input command for this template!">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cmd">{{ 'Command' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{ 'Please input command for this template!' | translate }}">
             <textarea
               nz-input
               [nzAutosize]="{ minRows: 1, maxRows: 4 }"
               name="cmd"
               formControlName="cmd"
               id="cmd"
-              placeholder="Command for this template."
+              placeholder="{{ 'Command for this template.' | translate }}"
             ></textarea>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="tags">Tags</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input tags for this template!">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="tags">{{ 'Tags' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{ 'Please input tags for this template!' | translate }}">
             <nz-select
             formControlName="tags"
             nzMode="tags"
             [nzTokenSeparators]="[',']"
-            nzPlaceHolder="AutoEncoder"
+            nzPlaceHolder="{{ 'AutoEncoder' | translate }}"
             >
             <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
           </nz-select>
@@ -191,7 +191,7 @@
         <div formArrayName="envVars">
           <ng-container *ngFor="let env of envVars.controls; index as i">
             <nz-form-item>
-              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Env Var{{ i + 1 }}</nz-form-label>
+              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">{{ 'EnvVar' | translate }}{{ i + 1 }}</nz-form-label>
               <div [formGroupName]="i">
                 <div nz-col nzSpan="12">
                   <input
@@ -200,7 +200,7 @@
                     required
                     id="key{{ i }}"
                     name="key{{ i }}"
-                    placeholder="key"
+                    placeholder="{{ 'Key' | translate }}"
                     formControlName="key"
                   />
                   <input
@@ -209,7 +209,7 @@
                     required
                     id="value{{ i }}"
                     name="value{{ i }}"
-                    placeholder="Value"
+                    placeholder="{{ 'Value' | translate }}"
                     formControlName="value"
                   />
                   <i
@@ -225,23 +225,23 @@
           </ng-container>
         </div>
         <button nz-button style="display: block; margin: auto" id="btn-addEnv" type="default" (click)="onCreateEnv()">
-          Add New Environment Variable
+          {{ 'Add new environment variable' | translate }}
         </button>
       </div>
       <div *ngSwitchCase="2" style="margin-top: 10px">
         <nz-radio-group [(ngModel)]="framework" [ngModelOptions]="{ standalone: true }">
           <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes = 'Distributed Tensorflow'">
-            Distributed Tensorflow
+            {{ 'Distributed Tensorflow' | translate }}
           </label>
           <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobType = 'Distributed Pytorch'">
-            Distributed PyTorch
+            {{ 'Distributed PyTorch' | translate }}
           </label>
           <label
             nz-radio
             nzValue="Standalone"
             (click)="deleteAllItem(specs); onCreateSpec(); jobType = 'Standalone Script'"
           >
-            Standalone Script
+            {{ 'Standalone Script' | translate }}
           </label>
         </nz-radio-group>
         <br />
@@ -253,13 +253,13 @@
           style="margin-top: 10px"
           (click)="onCreateSpec()"
         >
-          Add new spec
+          {{ 'Add new spec' | translate }}
         </button>
         <ul formArrayName="specs" class="list-container">
           <ng-container *ngFor="let spec of specs.controls; index as i">
             <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
               <div id="spec{{ i }}" *ngIf="framework !== 'Standalone'">
-                <label>Spec name</label>
+                <label>{{ 'Spec name' | translate }}</label>
                 <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="framework">
                   <div *ngSwitchCase="'Tensorflow'">
                     <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
@@ -270,32 +270,32 @@
                 </nz-select>
               </div>
               <div *ngIf="framework !== 'Standalone'">
-                <label>Number of Replica</label>
+                <label>{{ 'Number of Replica' | translate }}</label>
                 <input
                   nz-input
                   name="replica{{ i }}"
                   type="number"
-                  placeholder="number of replica"
+                  placeholder="{{ 'number of replica' | translate }}"
                   formControlName="replicas"
                 />
               </div>
               <div>
-                <label>Number of cpu</label>
-                <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+                <label>{{ 'Number of cpu' | translate }}</label>
+                <input nz-input name="cpu{{ i }}" type="number" placeholder="{{ 'number of cpu' | translate }}" formControlName="cpus" />
               </div>
               <div>
-                <label>Number of gpu</label>
-                <input nz-input name="gpu{{ i }}" type="number" placeholder="number of gpu" formControlName="gpus" />
+                <label>{{ 'Number of gpu' | translate }}</label>
+                <input nz-input name="gpu{{ i }}" type="number" placeholder="{{ 'number of gpu' | translate }}" formControlName="gpus" />
               </div>
               <div id="memory{{ i }}">
-                <label>Memory</label>
+                <label>{{ 'Memory' | translate }}</label>
                 <div formGroupName="memory" class="memory-input-group">
                   <input
                     nz-input
                     name="memory{{ i }}"
                     type="number"
                     step="1024"
-                    placeholder="Enter number"
+                    placeholder="{{ 'Enter number' | translate }}"
                     formControlName="num"
                   />
                   <nz-select formControlName="unit">

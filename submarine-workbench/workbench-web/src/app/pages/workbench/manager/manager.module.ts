@@ -33,6 +33,9 @@ import { UserDrawerComponent } from './user-drawer/user-drawer.component';
 import { UserPasswordModalComponent } from './user-password-modal/user-password-modal.component';
 import { UserComponent } from './user/user.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   declarations: [
     UserComponent,
@@ -44,6 +47,14 @@ import { UserComponent } from './user/user.component';
     DataDictConfigModalComponent,
     DepartmentComponent
   ],
-  imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
+  imports: [
+    CommonModule,
+    ManagerRoutingModule,
+    NgZorroAntdModule,
+    ComponentsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
+  ]
 })
 export class ManagerModule {}

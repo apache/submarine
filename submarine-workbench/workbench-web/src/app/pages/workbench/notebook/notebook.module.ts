@@ -31,6 +31,9 @@ import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
 import { NotebookListComponent } from './notebook-home/notebook-list/notebook-list.component';
 import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-form.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -40,6 +43,7 @@ import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-fo
     PipeSharedModule,
     NgZorroAntdModule,
     NotebookRoutingModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
   ],
   providers: [NotebookService],
   declarations: [NotebookComponent, NotebookHomeComponent, NotebookListComponent, NotebookFormComponent],

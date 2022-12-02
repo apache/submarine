@@ -23,16 +23,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import en from '@angular/common/locales/en';
+import zh from '@angular/common/locales/zh'
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiTokenInjector } from "@submarine/core/auth/api-token-injector";
 import { LocalStorageService } from '@submarine/services';
-import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+import { en_US, zh_CN, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 
 registerLocaleData(en);
+registerLocaleData(zh);
 
 @NgModule({
   declarations: [AppComponent],

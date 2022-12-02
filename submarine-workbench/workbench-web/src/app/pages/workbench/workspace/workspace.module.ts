@@ -29,6 +29,9 @@ import { SharedComponent } from './shared/shared.component';
 import { TeamComponent } from './team/team.component';
 import { TrainingComponent } from './training/training.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   declarations: [
     ProjectComponent,
@@ -38,7 +41,14 @@ import { TrainingComponent } from './training/training.component';
     SharedComponent,
     NewProjectPageComponent
   ],
-  imports: [CommonModule, ComponentsModule, NgZorroAntdModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ComponentsModule,
+    NgZorroAntdModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
+  ],
   exports: [
     ProjectComponent,
     ReleaseComponent,

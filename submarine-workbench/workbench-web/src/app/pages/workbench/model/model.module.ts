@@ -36,6 +36,9 @@ import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelFormComponent } from './model-home/model-form/model-form.component';
 import { ModelFormTagsComponent } from './model-home/model-form/model-form-tags/model-form-tags.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   declarations: [
     ModelComponent,
@@ -58,6 +61,7 @@ import { ModelFormTagsComponent } from './model-home/model-form/model-form-tags/
     RouterModule,
     ModelRoutingModule,
     PipeSharedModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
   ],
   providers: [],
   exports: [ModelComponent, ModelVersionTagComponent],

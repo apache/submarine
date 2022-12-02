@@ -1,4 +1,5 @@
 export function humanizeTime(time: string){
+    //TODO:Translate "unit ago"
     let time_ = time.split(/[\s-:]+/).map(Number);
     let date = new Date(time_[0], time_[1]-1, time_[2], time_[3], time_[4], time_[5]);
     let now = new Date;

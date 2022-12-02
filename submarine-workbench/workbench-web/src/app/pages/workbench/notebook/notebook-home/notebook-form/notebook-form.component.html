@@ -17,25 +17,25 @@
   ~ under the License.
   -->
 
-<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="Create Notebook" [nzWidth]="700">
+<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="{{ 'Create Notebook' | translate }}" [nzWidth]="700">
   <div *nzModalFooter>
-    <button nz-button id="nb-form-btn-cancel" nzType="default" (click)="isVisible = false">Cancel</button>
+    <button nz-button id="nb-form-btn-cancel" nzType="default" (click)="isVisible = false">{{ 'Cancel' | translate }}</button>
     <button nz-button id="nb-form-btn-create" nzType="primary" [disabled]="checkStatus()" (click)="submitForm()">
-      Create
+      {{ 'Create' | translate }}
     </button>
   </div>
   <form [formGroup]="notebookForm">
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="notebookName">Notebook Name</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="notebookName">{{ 'Notebook Name' | translate }}</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <input nz-input required type="text" name="notebookName" id="notebookName" formControlName="notebookName" />
       </nz-form-control>
       <div class="alert-message" *ngIf="notebookForm.get('notebookName').hasError('pattern')">
-        Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start with numbers/hyphens or end with hyphens.
+        {{ 'Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can\'t start with numbers/hyphens or end with hyphens.' | translate }}
       </div>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="environment">Environment</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="environment">{{ 'Environment' | translate }}</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <nz-select required name="select-envName" formControlName="envName">
           <nz-option
@@ -60,10 +60,10 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memoryNum">Memory</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memoryNum">{{ 'Memory' | translate }}</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <div nz-col nzSpan="6">
-          <input nz-input required name="memoryNum" placeholder="EX:1024" formControlName="memoryNum" />
+          <input nz-input required name="memoryNum" placeholder="{{ 'EX' | translate }}:1024" formControlName="memoryNum" />
         </div>
         <div nz-col nzSpan="6" style="margin-left: 5px">
           <nz-select formControlName="unit">
@@ -75,7 +75,7 @@
     <div formArrayName="envVars">
       <ng-container *ngFor="let envVar of envVars.controls; index as i">
         <nz-form-item>
-          <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">EnvVar{{ i + 1 }}</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">{{ 'EnvVar' | translate }}{{ i + 1 }}</nz-form-label>
           <div [formGroupName]="i">
             <div nz-col nzSpan="12">
               <input
@@ -84,7 +84,7 @@
                 required
                 id="key{{ i }}"
                 name="key{{ i }}"
-                placeholder="Key"
+                placeholder="{{ 'Key' | translate }}"
                 formControlName="key"
               />
               <input
@@ -93,7 +93,7 @@
                 required
                 id="value{{ i }}"
                 name="value{{ i }}"
-                placeholder="Value"
+                placeholder="{{ 'Value' | translate }}"
                 formControlName="value"
               />
               <i
@@ -109,7 +109,7 @@
       </ng-container>
     </div>
     <button nz-button style="display: block; margin: auto" id="envVar-btn" type="default" (click)="onCreateEnvVar()">
-      New EnvVar
+      {{ 'New EnvVar' | translate }}
     </button>
   </form>
 </nz-modal>

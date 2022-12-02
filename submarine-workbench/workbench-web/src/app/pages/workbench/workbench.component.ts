@@ -141,6 +141,7 @@ export class WorkbenchComponent implements OnInit {
     console.log(`change language to ${lang}`)
     // save to localStorage in order to refresh the page can correctly display the language
     localStorage.setItem('translate', lang);
+    //TODO:Set @NgModule in app.module.ts
   }
 
   ngOnInit() {
