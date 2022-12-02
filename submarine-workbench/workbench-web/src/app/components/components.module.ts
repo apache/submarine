@@ -22,10 +22,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { PageLayoutComponent } from './page-layout/page-layout.component';
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
 
 @NgModule({
   declarations: [PageLayoutComponent],
-  imports: [CommonModule, RouterModule, NgZorroAntdModule],
+  imports: [CommonModule, RouterModule, NgZorroAntdModule, TranslateModule.forChild(TRANSLATE_CONFIG)],
   exports: [PageLayoutComponent]
 })
 export class ComponentsModule {}

@@ -225,5 +225,15 @@
   "is deleted.": "已删除。",
   "User id": "用户id",
   "Experiment id": "实验id",
-  "Dataset": "数据集"
+  "Dataset": "数据集",
+  "second ago": "秒前",
+  "seconds ago": "秒前",
+  "year ago": "年前",
+  "years ago": "年前",
+  "day ago": "天前",
+  "days ago": "天前",
+  "hour ago": "时前",
+  "hours ago": "时前",
+  "minute ago": "分前",
+  "minutes ago": "分前"
 }

@@ -225,5 +225,15 @@
   "is deleted.": "is deleted.",
   "User id": "User id",
   "Experiment id": "Experiment id",
-  "Dataset": "Dataset"
+  "Dataset": "Dataset",
+  "second ago": "second ago",
+  "seconds ago": "seconds ago",
+  "year ago": "year ago",
+  "years ago": "years ago",
+  "day ago": "day ago",
+  "days ago": "days ago",
+  "hour ago": "hour ago",
+  "hours ago": "hours ago",
+  "minute ago": "minute ago",
+  "minutes ago": "minutes ago"
 }

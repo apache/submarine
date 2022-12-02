@@ -64,8 +64,8 @@ export class ModelInfoComponent implements OnInit {
     this.modelService.querySpecificModel(this.modelName).subscribe(
       (res) => {
         this.selectedModelInfo = res;
-        this.humanizedCreationTime = humanizeTime(res.creationTime);
-        this.humanizedLastUpdatedTime = humanizeTime(res.lastUpdatedTime);
+        this.humanizedCreationTime = humanizeTime(res.creationTime, this.translate);
+        this.humanizedLastUpdatedTime = humanizeTime(res.lastUpdatedTime, this.translate);
         this.isModelInfoLoading = false;
       }
     )
