@@ -107,28 +107,25 @@ The field names and values are defined in the OpenID Connect Discovery Specifica
 
 ### Configuration
 
-|  Attribute   | Description  | Type | Default | Comment |
-|  ----  | ----  | ---- | ---- | ---- |
-| submarine.auth.type  | Supported authentication types, currently available are: none, simple, oauth2/oidc, ldap, kerberos, saml, cas | string | none | Only one authentication method can be supported at any one time |
-| submarine.auth.token.maxAge  | Expiry time of the token (minite) | int | 1 day | |
-| submarine.auth.refreshToken.maxAge  | Expiry time of the refresh token (minite) | int | 1 hour | |
-| submarine.auth.oauth2.client.id  | OAuth2 client id | string |  | |
-| submarine.auth.oauth2.client.secret  | OAuth2 client secret| string |  | |
-| submarine.auth.oauth2.client.flows  | OAuth2 flows, can be: authorizationCode, implicit, password or clientCredentials | string |  | |
-| submarine.auth.oauth2.scopes  | The available scopes for the OAuth2 security scheme. A map between the scope name and a short description for it. | string |  | |
-| submarine.auth.oauth2.token.uri  | OAuth2 access token uri | string |  | |
-| submarine.auth.oauth2.refresh.uri  | OAuth2 refresh token uri | string |  | |
-| submarine.auth.oauth2.authorization.uri  | OAuth2 authorization uri | string |  | |
-| submarine.auth.oauth2.logout.uri  | OAuth2 logout uri | string |  | |
-| submarine.auth.oidc.client.id  | OIDC client id | string |  | |
-| submarine.auth.oidc.client.secret  | OIDC client Secret| string |  | |
-| submarine.auth.oidc.client.scopes  | The available scopes for the OIDC security scheme. A map between the scope name and a short description for it.| string |  | |
-| submarine.auth.oidc.useNonce  | Whether to use nonce during login process | string |  | |
-| submarine.auth.oidc.discover.uri  | OIDC discovery uri | string |  | |
-| submarine.auth.oidc.logout.uri  | OIDC logout uri | string |  | |
-| submarine.auth.ladp.provider.uri  | LDAP provider uri | string |  | |
-| submarine.auth.ladp.baseDn  | LDAP base DN | string |  | base DN is the base LDAP distinguished name for your LDAP server. For example, ou=dev,dc=xyz,dc=com |
-| submarine.auth.ladp.domain  | LDAP AD domain | string |  | AD domain is the domain name of the AD server. For example, corp.domain.com |
+| Attribute                               | Description                                                                                                       | Type   | Default | Comment                                                                                             |
+|-----------------------------------------|-------------------------------------------------------------------------------------------------------------------|--------|---------|-----------------------------------------------------------------------------------------------------|
+| submarine.auth.type                     | Supported authentication types, currently available are: none, simple, oauth2/oidc, ldap, kerberos, saml, cas     | string | none    | Only one authentication method can be supported at any one time                                     |
+| submarine.auth.token.maxAge             | Expiry time of the token (minute)                                                                                 | int    | 1 day   |                                                                                                     |
+| submarine.auth.refreshToken.maxAge      | Expiry time of the refresh token (minute)                                                                         | int    | 1 hour  |                                                                                                     |
+| submarine.auth.oauth2.client.id         | OAuth2 client id                                                                                                  | string |         |                                                                                                     |
+| submarine.auth.oauth2.client.secret     | OAuth2 client secret                                                                                              | string |         |                                                                                                     |
+| submarine.auth.oauth2.client.flows      | OAuth2 flows, can be: authorizationCode, implicit, password or clientCredentials                                  | string |         |                                                                                                     |
+| submarine.auth.oauth2.scopes            | The available scopes for the OAuth2 security scheme. A map between the scope name and a short description for it. | string |         |                                                                                                     |
+| submarine.auth.oauth2.token.uri         | OAuth2 access token uri                                                                                           | string |         |                                                                                                     |
+| submarine.auth.oauth2.refresh.uri       | OAuth2 refresh token uri                                                                                          | string |         |                                                                                                     |
+| submarine.auth.oauth2.authorization.uri | OAuth2 authorization uri                                                                                          | string |         |                                                                                                     |
+| submarine.auth.oauth2.logout.uri        | OAuth2 logout uri                                                                                                 | string |         |                                                                                                     |
+| submarine.auth.oidc.client.id           | OIDC client id                                                                                                    | string |         |                                                                                                     |
+| submarine.auth.oidc.client.secret       | OIDC client Secret                                                                                                | string |         |                                                                                                     |
+| submarine.auth.oidc.discover.uri        | OIDC discovery uri                                                                                                | string |         |                                                                                                     |
+| submarine.auth.ladp.provider.uri        | LDAP provider uri                                                                                                 | string |         |                                                                                                     |
+| submarine.auth.ladp.baseDn              | LDAP base DN                                                                                                      | string |         | base DN is the base LDAP distinguished name for your LDAP server. For example, ou=dev,dc=xyz,dc=com |
+| submarine.auth.ladp.domain              | LDAP AD domain                                                                                                    | string |         | AD domain is the domain name of the AD server. For example, corp.domain.com                         |
 
 ### Design and implementation
 
@@ -147,10 +144,10 @@ Describe the design of relevant user tables, user registration/modification/dele
 and the processing logic associated with authenticated login
 (including the mapping of attributes for automatically registered users when integrating with other authentication platforms, etc.).
 
-We use `sys_user` table to store user information for submarines.  
-When `submarine.auth.type` is `simple`, the user's login operation will match `user_name` and `password` (encrypted) in `sys_user`. Only when the user name and password match will the login succeed.  
-When `submarine.auth.type` is `ldap`, the user's login will operation request the LDAP and verify that the username and password are correct. A new record will be added to the `sys_user` table if the logged-in user does not exist.  
-When logging in using other third-party authentication (OAuth2/OpenID Connect (OIDC), SAML, CAS etc.), the login page will automatically jump to the third-party service and revert back to the submarine after a successful login. A new record will be added to the `sys_user` table if the logged-in user does not exist.  
+We use `sys_user` table to store user information for submarines.
+When `submarine.auth.type` is `simple`, the user's login operation will match `user_name` and `password` (encrypted) in `sys_user`. Only when the user name and password match will the login succeed.
+When `submarine.auth.type` is `ldap`, the user's login will operation request the LDAP and verify that the username and password are correct. A new record will be added to the `sys_user` table if the logged-in user does not exist.
+When logging in using other third-party authentication (OAuth2/OpenID Connect (OIDC), SAML, CAS etc.), the login page will automatically jump to the third-party service and revert back to the submarine after a successful login. A new record will be added to the `sys_user` table if the logged-in user does not exist.
 
 #### Department
 [TODO]
