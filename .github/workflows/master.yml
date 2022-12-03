@@ -27,10 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    # Version updates for k8s can be found at https://kubernetes.io/releases/patch-releases/
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.18.20\", \"v1.19.16\", \"v1.20.15\", \"v1.21.14\"]"
+          echo "::set-output name=matrix::[\"v1.19.16\", \"v1.20.15\", \"v1.21.14\"]"
   submarine-operator-verify-codegen:
     runs-on: ubuntu-latest
     timeout-minutes: 10
