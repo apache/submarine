@@ -31,7 +31,7 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.19.16\", \"v1.20.15\", \"v1.21.14\", \"v1.22.15\"]"
+          echo "::set-output name=matrix::[\"v1.19.16\", \"v1.20.15\", \"v1.21.14\", \"v1.22.17\", \"v1.23.14\"]"
   submarine-operator-verify-codegen:
     runs-on: ubuntu-latest
     timeout-minutes: 10
