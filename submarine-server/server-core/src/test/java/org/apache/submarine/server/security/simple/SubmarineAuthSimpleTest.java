@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.security;
+package org.apache.submarine.server.security.simple;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +28,9 @@ import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.rest.workbench.LoginRestApi;
 import org.apache.submarine.server.rest.workbench.SysUserRestApi;
-import org.apache.submarine.server.security.simple.SimpleFilter;
+import org.apache.submarine.server.security.MockHttpServletRequest;
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.utils.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.utils.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.utils.response.JsonResponse;

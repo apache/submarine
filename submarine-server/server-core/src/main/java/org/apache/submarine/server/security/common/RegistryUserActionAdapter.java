@@ -18,6 +18,7 @@
  */
 
 package org.apache.submarine.server.security.common;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.database.workbench.service.SysUserService;
@@ -60,7 +61,7 @@ public class RegistryUserActionAdapter extends JEEHttpActionAdapter {
   /**
    * Create a user that does not exist
    */
-  protected void createUndefinedUser(UserProfile profile) {
+  public void createUndefinedUser(UserProfile profile) {
     LOG.trace("Check user if exists ...");
     try {
       // If the user does not exist then create

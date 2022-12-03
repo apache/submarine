@@ -146,6 +146,66 @@ public class UserInfo {
     }
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public String getTelephone() {
+    return telephone;
+  }
+
+  public String getLastLoginIp() {
+    return lastLoginIp;
+  }
+
+  public long getLastLoginTime() {
+    return lastLoginTime;
+  }
+
+  public String getCreatorId() {
+    return creatorId;
+  }
+
+  public long getCreateTime() {
+    return createTime;
+  }
+
+  public String getMerchantCode() {
+    return merchantCode;
+  }
+
+  public int getDeleted() {
+    return deleted;
+  }
+
+  public String getRoleId() {
+    return roleId;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
   @Override
   public String toString() {
     return "User{" +

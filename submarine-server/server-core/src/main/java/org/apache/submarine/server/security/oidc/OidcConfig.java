@@ -24,17 +24,17 @@ import org.apache.submarine.server.security.common.CommonConfig;
 
 public class OidcConfig extends CommonConfig {
 
-  private static final String CLIENT_ID_ENV = "SUBMARINE_AUTH_OIDC_CLIENT_ID";
-  private static final String CLIENT_ID_PROP = "submarine.auth.oidc.client.id";
+  public static final String CLIENT_ID_ENV = "SUBMARINE_AUTH_OIDC_CLIENT_ID";
+  public static final String CLIENT_ID_PROP = "submarine.auth.oidc.client.id";
 
-  private static final String CLIENT_SECRET_ENV = "SUBMARINE_AUTH_OIDC_CLIENT_SECRET";
-  private static final String CLIENT_SECRET_PROP = "submarine.auth.oidc.client.secret";
+  public static final String CLIENT_SECRET_ENV = "SUBMARINE_AUTH_OIDC_CLIENT_SECRET";
+  public static final String CLIENT_SECRET_PROP = "submarine.auth.oidc.client.secret";
 
-  private static final String DISCOVER_URI_ENV = "SUBMARINE_AUTH_OIDC_DISCOVER_URI";
-  private static final String DISCOVER_URI_PROP = "submarine.auth.oidc.discover.uri";
+  public static final String DISCOVER_URI_ENV = "SUBMARINE_AUTH_OIDC_DISCOVER_URI";
+  public static final String DISCOVER_URI_PROP = "submarine.auth.oidc.discover.uri";
 
-  private static final String LOGOUT_REDIRECT_URI_ENV = "SUBMARINE_AUTH_OIDC_LOGOUT_URI";
-  private static final String LOGOUT_REDIRECT_URI_PROP = "submarine.auth.oidc.logout.uri";
+  public static final String LOGOUT_REDIRECT_URI_ENV = "SUBMARINE_AUTH_OIDC_LOGOUT_URI";
+  public static final String LOGOUT_REDIRECT_URI_PROP = "submarine.auth.oidc.logout.uri";
 
   public static final String CLIENT_ID;
 
