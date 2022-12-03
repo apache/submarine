@@ -29,8 +29,6 @@ public class SeldonConstants {
 
   public static final String PLURAL = "seldondeployments";
 
-  public static final String STORAGE_INITIALIZER_IMAGE = "seldonio/rclone-storage-initializer:1.10.0";
-
   public static final String ENV_SECRET_REF_NAME = "submarine-serve-secret";
 
   public static final String SELDON_PROTOCOL = "seldon";
