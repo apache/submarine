@@ -53,7 +53,7 @@ helm upgrade submarine ./helm-charts/submarine -n submarine
 To uninstall/delete the `subamrine` deployment:
 
 ```shell
-helm uninstall subamrine -n submarine
+helm uninstall submarine -n submarine
 ```
 
 ## Upgrading an existing Release to a new major version
@@ -63,7 +63,7 @@ incompatible breaking change needing manual actions.
 
 ### To 0.8.0
 
-This version requires Helm >= 3.1.0.  
+This version requires Helm >= 3.1.0.
 This version is a major change, we migrated `traefik` to `istio` and upgraded the `operator`. You need to backup the database and redeploy.
 
 ## Configuration
