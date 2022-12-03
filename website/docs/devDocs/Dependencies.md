@@ -22,28 +22,23 @@ under the License.
 * These are the dependencies currently used by Apache Submarine.
 
 ## Kubernetes
-| Kubernetes Version   | Support?  |
-| ------------- |:-------------:|
-| 1.14.x (or earlier) | X |
-| 1.15.x - 1.21.x | √ |
-| 1.22.x (or later) | X |
+| Kubernetes Version  | Support?  |
+|---------------------|:-------------:|
+| 1.18.x (or earlier) | X |
+| 1.19.x - 1.21.x     | √ |
+| 1.22.x (or later)   | X |
 
 ## KinD
-| KinD Version   | Support?  |
-| ------------- |:-------------:|
+| KinD Version       | Support?  |
+|--------------------|:-------------:|
 | 0.5.x (or earlier) | X |
-| 0.6.x | √ |
-| 0.7.x | √ |
-| 0.8.x | √ |
-| 0.9.x | √ |
-| 0.10.x | √ |
-| 0.11.x | √ |
+| 0.6.x - 0.17.x     | √ |
 
 ## Java
 | JDK Version   | Support?  |
 | ------------- |:-------------:|
 | 8 | √ |
-| 11 | X |
+| 11 | √ |
 | 17 | X |
 
 ## Maven
@@ -59,11 +54,12 @@ under the License.
 * 14 (or later)
 
 ## Go
-| Go Version   | Support?  |
-| ------------- |:-------------:|
-| 1.15 | X |
-| 1.16 | √ |
-| 1.17 (or later) | To be verified |
+| Go Version      | Support?  |
+|-----------------|:-------------:|
+| 1.15            | X |
+| 1.16            | √ |
+| 1.17            | √ |
+| 1.18 (or later) | To be verified |
 
 ## Python
 
