@@ -40,9 +40,10 @@ If not, you can refer to https://istio.io/latest/docs/setup/install/
 # Create namespace
 export NAMESPACE=submarine
 kubectl create namespace ${NAMESPACE}
+
 # Add istio injection
 kubectl label namespace ${NAMESPACE} istio-injection=enabled
-# If istio support `meshConfig》discoverySelectors`, you will need to add this label:
+# If istio support `meshConfig.discoverySelectors`, you will need to add this label:
 kubectl label namespace ${NAMESPACE} istio-discovery=enabled
 
 # We have also integrated seldon-core install by helm, thus we need to update our dependency.
