@@ -14,27 +14,34 @@
 
 # Submarine Serve
 
-Submarine serve uses istio 1.6.8 and seldon-core 1.10.0 for serving.
+Submarine serve uses istio 1.13.+ (default) and seldon-core 1.10.0 for serving.
 
 ## Install
 
-- Install submarine first
+- Install istio first
+
+```bash
+# You can download the `istioctl` command by referring to the official website:
+# https://istio.io/latest/docs/setup/install/istioctl/
+istioctl install -y
+```
+
+- Install submarine
 
 ```bash
 cd submarine
+# We add seldon-core to helm, thus we need to update our dependency.
 helm dependency update ./helm-charts/submarine
-helm install submarine ./helm-charts/submarine
+# Install submarine chart
+helm install submarine ./helm-charts/submarine --set seldon-core-operator.istio.gateway=submarine/seldon-gateway -n submarine
 ```
 
-- Install submarine serve package istio and seldon-core
+### Uninstall Submarine
 
 ```bash
-./submarine-serve/installation/install.sh
-```
-
-### Uninstall Submarine Serve Package
-
-```bash
-kubectl delete ns istio-system
-kubectl delete ns seldon-system
+# Uninstall submarine
+helm uninstall submarine -n submarine
+# Uninstall istio
+# https://istio.io/latest/docs/setup/install/istioctl/#uninstall-istio
+istioctl uninstall --purge
 ```

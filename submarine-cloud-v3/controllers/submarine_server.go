@@ -86,6 +86,10 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 			Name:  "SUBMARINE_UID",
 			Value: string(submarine.UID),
 		},
+		{
+			Name:  "SUBMARINE_SELDON_GATEWAY",
+			Value: r.SeldonGateway,
+		},
 	}
 	// extra envs
 	extraEnv := submarine.Spec.Server.Env

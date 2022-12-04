@@ -59,6 +59,8 @@ spec:
             {{- else }}
               value: "false"
             {{- end }}
+            - name: SUBMARINE_SELDON_GATEWAY
+              value: {{ index .Values "seldon-core-operator" "istio" "gateway" | default "{{ .Release.Namespace }}/seldon-gateway" }}
       serviceAccountName: submarine-operator
 status: {}
 {{ end }}

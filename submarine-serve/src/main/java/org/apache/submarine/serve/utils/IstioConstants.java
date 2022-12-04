@@ -18,7 +18,14 @@
  */
 package org.apache.submarine.serve.utils;
 
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+
+/**
+ * Istio constants
+ */
 public class IstioConstants {
+
   public static final String API_VERSION = "networking.istio.io/v1beta1";
 
   public static final String KIND = "VirtualService";
@@ -29,14 +36,17 @@ public class IstioConstants {
 
   public static final String PLURAL = "virtualservices";
 
-  public static final String REWRITE_URL = "/"; 
+  public static final String REWRITE_URL = "/";
 
-  public static final String DEFAULT_NAMESPACE = "default";
-
-  public static final String DEFAULT_GATEWAY = "istio-system/seldon-gateway";
+  public static final String DEFAULT_GATEWAY;
 
   public static final Integer DEFAULT_SERVE_POD_PORT = 8000;
 
-  public static final String DEFAULT_INGRESS_HOST = "*"; 
+  public static final String DEFAULT_INGRESS_HOST = "*";
+
+  static {
+    final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    DEFAULT_GATEWAY = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_SELDON_GATEWAY);
+  }
 
 }
