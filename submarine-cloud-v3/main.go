@@ -19,6 +19,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"go.uber.org/zap/zapcore"
 	"k8s.io/client-go/tools/clientcmd"
 	"os"
@@ -54,6 +55,8 @@ var (
 	// kubeconfig string
 
 	// Flags of submarine
+	seldonGateway           string
+	submarineGateway        string
 	clusterType             string
 	createPodSecurityPolicy bool
 )
@@ -83,6 +86,8 @@ func main() {
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
 	// Flags of submarine
+	flag.StringVar(&seldonGateway, "seldongateway", "", "Seldon gateway, used for model serve")
+	flag.StringVar(&submarineGateway, "submarineateway", "", "Submarine gateway, used for server, minio, tensorboard, mlflow and notebook")
 	flag.StringVar(&clusterType, "clustertype", "kubernetes", "K8s cluster type, can be kubernetes or openshift")
 	flag.BoolVar(&createPodSecurityPolicy, "createpsp", true, "Specifies whether a PodSecurityPolicy should be created. This configuration enables the database/minio/server to set securityContext.runAsUser")
 
@@ -101,11 +106,24 @@ func main() {
 	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
 	namespace, _, err := kubeConfig.Namespace()
 
+	// if `seldonGateway` is empty, used ${namespace}/seldon-gateway
+	// By default, the operator and seldon-gateway will be under the same namespace when deployed with helm
+	if seldonGateway == "" {
+		seldonGateway = fmt.Sprintf("%s/seldon-gateway", namespace)
+	}
+	// if `submarineGateway` is empty, used ${namespace}/seldon-gateway
+	// By default, the operator and submarine-gateway will be under the same namespace when deployed with helm
+	if submarineGateway == "" {
+		submarineGateway = fmt.Sprintf("%s/submarine-gateway", namespace)
+	}
+
 	setupLog.Info("Starting submarine operator with ",
 		"metrics-bind-address", &metricsAddr,
 		"health-probe-bind-address", &probeAddr,
 		"leader-elect", &enableLeaderElection,
 		"namespace", namespace,
+		"seldongateway", &seldonGateway,
+		"submarineateway", &submarineGateway,
 		"clustertype", &clusterType,
 		"createpsp", &createPodSecurityPolicy,
 	)
@@ -129,6 +147,8 @@ func main() {
 		Recorder:                mgr.GetEventRecorderFor(controllerAgentName),
 		Log:                     ctrl.Log.WithName(controllerAgentName),
 		Namespace:               namespace,
+		SeldonGateway:           seldonGateway,
+		SubmarineGateway:        submarineGateway,
 		ClusterType:             clusterType,
 		CreatePodSecurityPolicy: createPodSecurityPolicy,
 	}).SetupWithManager(mgr); err != nil {

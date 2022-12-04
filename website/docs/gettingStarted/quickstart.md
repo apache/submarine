@@ -284,7 +284,7 @@ Metadata:
     ...
 Spec:
   Gateways:
-    istio-system/seldon-gateway
+    submarine/seldon-gateway
   Hosts:
     *
   Http:

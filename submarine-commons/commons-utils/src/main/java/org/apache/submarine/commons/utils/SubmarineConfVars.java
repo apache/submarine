@@ -72,8 +72,9 @@ public class SubmarineConfVars {
 
     SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", ""),
 
+    SUBMARINE_ISTIO_SUBMARINE_GATEWAY("submarine.istio.submarine.gateway", "submarine/submarine-gateway"),
     /* serve(seldon) config */
-    SUBMARINE_SELDON_GATEWAY("submarine.seldon.gateway", "submarine/seldon-gateway"),
+    SUBMARINE_ISTIO_SELDON_GATEWAY("submarine.istio.seldon.gateway", "submarine/seldon-gateway"),
 
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),

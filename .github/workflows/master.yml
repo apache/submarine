@@ -207,7 +207,7 @@ jobs:
           sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
           sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
           helm dependency update ./helm-charts/submarine
-          helm install --wait --set dev=true --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine -n submarine-cloud-v3-system
+          helm install --wait --set dev=true --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer --set seldon-core-operator.istio.gateway=submarine-cloud-v3-system/seldon-gateway submarine ./helm-charts/submarine -n submarine-cloud-v3-system
       - name: Run end-to-end test
         working-directory: submarine-cloud-v3
         run: go test ./controllers/ -v -ginkgo.v

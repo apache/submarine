@@ -38,7 +38,11 @@ public class IstioConstants {
 
   public static final String REWRITE_URL = "/";
 
-  public static final String DEFAULT_GATEWAY;
+  /* istio submarine gateway */
+  public static final String SUBMARINE_GATEWAY;
+
+  /* istio seldon gateway */
+  public static final String SELDON_GATEWAY;
 
   public static final Integer DEFAULT_SERVE_POD_PORT = 8000;
 
@@ -46,7 +50,8 @@ public class IstioConstants {
 
   static {
     final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    DEFAULT_GATEWAY = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_SELDON_GATEWAY);
+    SUBMARINE_GATEWAY = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_ISTIO_SUBMARINE_GATEWAY);
+    SELDON_GATEWAY = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_ISTIO_SELDON_GATEWAY);
   }
 
 }

@@ -87,8 +87,12 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 			Value: string(submarine.UID),
 		},
 		{
-			Name:  "SUBMARINE_SELDON_GATEWAY",
+			Name:  "SUBMARINE_ISTIO_SELDON_GATEWAY",
 			Value: r.SeldonGateway,
+		},
+		{
+			Name:  "SUBMARINE_ISTIO_SUBMARINE_GATEWAY",
+			Value: r.SubmarineGateway,
 		},
 	}
 	// extra envs

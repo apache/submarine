@@ -53,6 +53,7 @@ spec:
               value: "{{ .Values.podSecurityPolicy.create }}"
             - name: SUBMARINE_CLUSTER_TYPE
               value: {{ .Values.clusterType }}
+            - name: SUBMARINE_ISTIO_SELDON_GATEWAY
             - name: SUBMARINE_LEADER_ELECT
             {{- if gt .Values.replicas 1.0 }}
               value: "true"
@@ -61,6 +62,8 @@ spec:
             {{- end }}
             - name: SUBMARINE_SELDON_GATEWAY
               value: {{ index .Values "seldon-core-operator" "istio" "gateway" | default "{{ .Release.Namespace }}/seldon-gateway" }}
+            - name: SUBMARINE_ISTIO_SUBMARINE_GATEWAY
+              value: "{{ .Release.Namespace }}/submarine-gateway"
       serviceAccountName: submarine-operator
 status: {}
 {{ end }}
