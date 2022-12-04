@@ -33,11 +33,23 @@ helm template --debug submarine ./helm-charts/submarine -n submarine
 
 To install the chart with the release name `submarine`:
 
+Submarine requires istio to provide the ingress, we assume you have istio installed on K8s.   
+If not, you can refer to https://istio.io/latest/docs/setup/install/
+
 ```shell
+# Create namespace
+export NAMESPACE=submarine
+kubectl create namespace ${NAMESPACE}
+# Add istio injection
+kubectl label namespace ${NAMESPACE} istio-injection=enabled
+# If istio support `meshConfig》discoverySelectors`, you will need to add this label:
+kubectl label namespace ${NAMESPACE} istio-discovery=enabled
+
 # We have also integrated seldon-core install by helm, thus we need to update our dependency.
 helm dependency update ./helm-charts/submarine
-# install submarine operator
-helm install submarine ./helm-charts/submarine -n submarine
+
+# Install submarine operator in namespace submarine
+helm install submarine ./helm-charts/submarine --set seldon-core-operator.istio.gateway=${NAMESPACE}/seldon-gateway -n ${NAMESPACE}
 ```
 
 ## Upgrading the Chart
