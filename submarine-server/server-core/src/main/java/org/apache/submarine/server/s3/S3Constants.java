@@ -19,12 +19,20 @@
 
 package org.apache.submarine.server.s3;
 
+/**
+ * S3(Minio) Constants
+ */
 public class S3Constants {
-  public static final String ENDPOINT = "http://submarine-minio-service:9000";
 
-  public static final String ACCESSKEY = "submarine_minio";
+  /* default endpoint, it is the same as `submarine.s3.endpoint` */
+  public static final String DEFAULT_ENDPOINT = "http://submarine-minio-service:9000";
 
-  public static final String SECRETKEY = "submarine_minio";
+  /* default access key, it is the same as `submarine.s3.accessKeyId` */
+  public static final String DEFAULT_ACCESSKEY = "submarine_minio";
 
+  /* default secret key, it is the same as `submarine.s3.secretAccessKey` */
+  public static final String DEFAULT_SECRETKEY = "submarine_minio";
+
+  /* default bucket */
   public static final String BUCKET = "submarine";
 }

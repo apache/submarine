@@ -113,10 +113,15 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:server-%s", submarine.Spec.Version)
 	}
 	commonImage := util.GetSubmarineCommonImage(submarine)
+	// busybox image
+	busyboxImage := commonImage.BusyboxImage
+	if busyboxImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[0].Image = busyboxImage
+	}
 	// minio/mc image
 	mcImage := commonImage.McImage
 	if mcImage != "" {
-		deployment.Spec.Template.Spec.InitContainers[0].Image = mcImage
+		deployment.Spec.Template.Spec.InitContainers[1].Image = mcImage
 	}
 	// pull secrets
 	pullSecrets := commonImage.PullSecrets

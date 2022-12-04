@@ -65,6 +65,11 @@ public class SubmarineConfVars {
     METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
     METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
 
+    /* S3(Minio) config */
+    SUBMARINE_S3_ACCESS_KEY_ID("submarine.s3.accessKeyId", "submarine_minio"),
+    SUBMARINE_S3_SECRET_ACCESS_KEY("submarine.s3.secretAccessKey", "submarine_minio"),
+    SUBMARINE_S3_ENDPOINT("submarine.s3.endpoint", "http://submarine-minio-service:9000"),
+
     SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", ""),
 
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
