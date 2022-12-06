@@ -20,22 +20,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { registerLocaleData } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import en from '@angular/common/locales/en';
-import zh from '@angular/common/locales/zh'
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiTokenInjector } from "@submarine/core/auth/api-token-injector";
-import { localeDict } from '@submarine/pages/workbench/utils/locale-dict'
+import { getDefaultLang } from '@submarine/core/local-translate';
+import { localeDict, regLocales } from '@submarine/pages/workbench/utils/locale-dict'
 import { LocalStorageService } from '@submarine/services';
 import { NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 
-registerLocaleData(en);
-registerLocaleData(zh);
+regLocales();
 
 @NgModule({
   declarations: [AppComponent],
@@ -49,7 +46,7 @@ registerLocaleData(zh);
     BrowserAnimationsModule
   ],
   providers: [
-    { provide: NZ_I18N, useValue: localeDict[localStorage.getItem('translate')] },
+    { provide: NZ_I18N, useValue: localeDict[getDefaultLang()] },
     // add injector to set header a token when calling rest api
     { provide: HTTP_INTERCEPTORS, useClass: ApiTokenInjector, multi: true },
     LocalStorageService
