@@ -20,6 +20,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NotebookInfo } from '@submarine/interfaces/notebook-interfaces/notebook-info';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-notebook-list',
@@ -27,7 +28,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./notebook-list.component.scss'],
 })
 export class NotebookListComponent implements OnInit {
-  constructor(private nzNotificationService: NzNotificationService) {}
+  constructor(
+    private nzNotificationService: NzNotificationService,
+    private translate: TranslateService
+  ) {
+  }
 
   @Input() notebookList: NotebookInfo[];
 
@@ -43,7 +48,7 @@ export class NotebookListComponent implements OnInit {
   ngOnInit() {}
 
   showReason(reason: string) {
-    this.nzNotificationService.blank('Notebook Status', reason);
+    this.nzNotificationService.blank(this.translate.instant('Notebook Status'), this.translate.instant(reason));
   }
 
   onDeleteNotebook(id: string) {

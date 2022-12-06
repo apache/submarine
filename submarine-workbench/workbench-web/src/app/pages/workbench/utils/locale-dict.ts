@@ -17,17 +17,16 @@
  * under the License.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { PageLayoutComponent } from './page-layout/page-layout.component';
-import { TranslateModule } from '@ngx-translate/core';
-import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+import zh from '@angular/common/locales/zh';
+import {en_US, zh_CN} from 'ng-zorro-antd';
 
-@NgModule({
-  declarations: [PageLayoutComponent],
-  imports: [CommonModule, RouterModule, NgZorroAntdModule, TranslateModule.forChild(TRANSLATE_CONFIG)],
-  exports: [PageLayoutComponent]
-})
-export class ComponentsModule {}
+const locales = [en, zh];
+export const localeDict = {'en_US': en_US, 'zh_CN': zh_CN};
+
+export function regLocales() {
+  for (const locale of locales) {
+    registerLocaleData(locale);
+  }
+}

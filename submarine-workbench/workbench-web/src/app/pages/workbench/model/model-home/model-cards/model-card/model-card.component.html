@@ -20,20 +20,20 @@
   <a [routerLink]="[card.name]">
     <nz-list-item >
       <nz-card style="width:100%;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
-        <p>Created: {{card.creationTime}}</p>
-        <p>Last Updated: {{card.lastUpdatedTime}}</p>
-        <p>Tags: 
+        <p>{{ 'Create Time' | translate }}: {{card.creationTime}}</p>
+        <p>{{ 'Last Updated' | translate }}: {{card.lastUpdatedTime}}</p>
+        <p>{{ 'Tags' | translate }}: 
           <submarine-model-tag *ngFor="let tag of card.tags" [tag]="tag" [type]="'default'"></submarine-model-tag>
         </p>
-        <p>Description: {{description}}</p>
+        <p>{{ 'Description' | translate }}: {{description}}</p>
         <a
           id="anchor-preview{{ i }}"
           class="icon-link"
           nz-popconfirm
           nzPlacement="left"
-          nzTitle="Are you sure you want to delete the model registry?"
-          nzCancelText="Cancel"
-          nzOkText="Ok"
+          nzTitle="{{ 'Are you sure you want to delete the model registry?' | translate }}"
+          nzCancelText="{{ 'Cancel' | translate }}"
+          nzOkText="{{ 'Ok' | translate }}"
           (nzOnConfirm)="onDeleteModelRegistry(card.name)"
           (click)="preventEvent($event)"
           align="right"

@@ -25,6 +25,7 @@ import { isEqual } from 'lodash';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { interval, Subscription } from 'rxjs';
 import { NotebookFormComponent } from './notebook-form/notebook-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-notebook-home',
@@ -45,7 +46,8 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
   constructor(
     private notebookService: NotebookService,
     private nzMessageService: NzMessageService,
-    private userService: UserService
+    private userService: UserService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -110,12 +112,12 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
     this.notebookService.deleteNotebook(id).subscribe({
       next: (result) => {},
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },
       complete: () => {
-        this.nzMessageService.info(`Deleted Notebook!`, {
+        this.nzMessageService.info(this.translate.instant(`Deleted Notebook!`), {
           nzPauseOnHover: true,
         });
         // refresh notebook list after deleted a row

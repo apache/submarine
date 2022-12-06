@@ -24,7 +24,7 @@
   <i nz-icon nzType="search"></i>
 </ng-template>
 <nz-spin [nzSpinning]="isSpinning">
-  <nz-table id="sharedTable" nzBordered #basicTable [nzData]="dataSet" [nzNoResult]="'No data'">
+  <nz-table id="sharedTable" nzBordered #basicTable [nzData]="dataSet" [nzNoResult]="'No data' | translate">
     <thead>
       <tr>
         <th nzWidth="60px">Name</th>

@@ -17,19 +17,19 @@
   ~ under the License.
   -->
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700" (nzOnCancel)="closeModal()">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="{{ 'Create Environment' | translate }}" [nzWidth]="700" (nzOnCancel)="closeModal()">
   <form nz-form [formGroup]="environmentForm" nzLayout="horizontal">
     <div *nzModalFooter>
-      <button id="btn-cancel" nz-button nzType="default" (click)="closeModal()">Cancel</button>
+      <button id="btn-cancel" nz-button nzType="default" (click)="closeModal()">{{ 'Cancel' | translate }}</button>
       <button id="btn-submit" nz-button nzType="primary" [disabled]="checkStatus()" (click)="createEnvironment()">
-        Create
+        {{ 'Create' | translate }}
       </button>
     </div>
-    <h2>Meta</h2>
+    <h2>{{ 'Meta' | translate }}</h2>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="environmentName">Environment Name</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="environmentName">{{ 'Environment Name' | translate }}</nz-form-label>
       <div nz-col nzSpan="16">
-        <nz-form-control nzErrorTip="Please input environment name!">
+        <nz-form-control nzErrorTip="{{ 'Please input environment name!' | translate }}">
           <input
             required
             nz-input
@@ -43,9 +43,9 @@
       </div>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dockerImage">Docker Image</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dockerImage">{{ 'Docker Image' | translate }}</nz-form-label>
       <div nz-col nzSpan="16">
-        <nz-form-control nzErrorTip="Please input docker image!">
+        <nz-form-control nzErrorTip="{{ 'Please input docker image!' | translate }}">
           <input
             required
             nz-input
@@ -63,7 +63,7 @@
         <p class="ant-upload-drag-icon">
           <i nz-icon nzType="inbox"></i>
         </p>
-        <p class="ant-upload-text">Click or drag a conda config YAML file here</p>
+        <p class="ant-upload-text">{{ 'Click or drag a conda config YAML file here' | translate }}</p>
         <div style="text-align: left; margin: 1rem">
           <div
             #preview
