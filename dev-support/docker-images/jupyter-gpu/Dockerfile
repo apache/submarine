@@ -93,7 +93,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --freeze-installed --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
     # nodejs is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs jupyterlab jupyterlab-git cvxpy==1.0.21 && \
+    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab jupyterlab-git && \
+    pip install cvxpy && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -104,7 +105,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda clean -a -y
 
 # Install latest stable qlib
-RUN pip --no-cache-dir install pyqlib==0.6.2
+RUN pip --no-cache-dir install pyqlib
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone --depth=1 https://github.com/apache/submarine && \
