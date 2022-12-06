@@ -23,9 +23,11 @@ version: 0.8.0-SNAPSHOT
 icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
 dependencies:
   - name: training-operator
-    version: "0.7.0"
+    version: "0.8.0"
+    condition: training-operator.enabled
   - name: notebook-controller
-    version: "0.1.0"
+    version: "0.8.0"
+    condition: notebook-controller.enabled
   - name: seldon-core-operator
     version: "1.10.0"
     repository: https://storage.googleapis.com/seldon-charts

@@ -37,6 +37,12 @@ spec:
       annotations:
         timestamp: {{ now | quote }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       containers:
         - image: "{{ .Values.image }}"
           name: "{{ .Values.name }}"
@@ -47,6 +53,12 @@ spec:
               value: "{{ .Values.podSecurityPolicy.create }}"
             - name: SUBMARINE_CLUSTER_TYPE
               value: {{ .Values.clusterType }}
+            - name: SUBMARINE_LEADER_ELECT
+            {{- if gt .Values.replicas 1.0 }}
+              value: "true"
+            {{- else }}
+              value: "false"
+            {{- end }}
       serviceAccountName: submarine-operator
 status: {}
 {{ end }}

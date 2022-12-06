@@ -38,10 +38,15 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 2. Start minikube cluster and install Istio
 
 ```bash
+# You can go to https://minikube.sigs.k8s.io/docs/start/ and follow the tutorial to install minikube.
+# Then you can start kubernetes with minikube:
 minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
-istioctl install -y
 # Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
-minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
+minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
+# You can go to the https://github.com/istio/istio/releases/ to download the istioctl for your k8s version
+# e.g. we can execute the following command to download the istio version adapted to k8s 1.21.2
+# wget https://github.com/istio/istio/releases/download/1.13.9/istio-1.13.9-linux-amd64.tar.gz
+istioctl install -y
 ```
 
 ### Launch submarine in the cluster
@@ -76,10 +81,10 @@ helm install submarine ./helm-charts/submarine -n submarine
 kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
 ```
 
-5. Install submarine serve package istio
+5. Install submarine serve dependent minio secret key file
 
 ```bash
-./submarine-serve/installation/install.sh
+kubectl apply -f ./submarine-serve/installation/seldon-secret.yaml -n submarine-user-test
 ```
 
 ### Ensure submarine is ready

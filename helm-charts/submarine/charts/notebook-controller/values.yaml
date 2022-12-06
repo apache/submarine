@@ -14,3 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+image:
+  # notebook controller image pull policy
+  pullPolicy: IfNotPresent
+  # notebook controller image registry
+  registry: docker.io
+  # notebook controller image repository
+  repository: apache/submarine
+  # notebook controller image tag
+  tag: notebook-controller-v1.4
+  # ImagePullSecrets for notebook-controller ServiceAccount, list of secrets in the same namespace
+  # to use for pulling any images in pods that reference this ServiceAccount.
+  # ImagePullSecrets will be added to the corresponding Deployment(StatefulSet) objects.
+  # Must be set for any cluster configured with private docker registry.
+  imagePullSecrets: []
