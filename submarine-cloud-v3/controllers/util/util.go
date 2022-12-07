@@ -111,6 +111,17 @@ func CompareEnv(a, b []corev1.EnvVar) bool {
 	return true
 }
 
+// CompareInt64 will determine if two int64 are equal
+func CompareInt64(a, b *int64) bool {
+	if a == nil || b == nil {
+		return false
+	}
+	if a != b {
+		return false
+	}
+	return true
+}
+
 // GetSecretData will return secret data ( map[string]string )
 func GetSecretData(secret *corev1.Secret) map[string]string {
 	if secret.StringData != nil {
@@ -128,4 +139,17 @@ func GetSecretData(secret *corev1.Secret) map[string]string {
 // CompareSecret will determine if two Secrets are equal
 func CompareSecret(oldSecret, newSecret *corev1.Secret) bool {
 	return CompareMap(GetSecretData(oldSecret), GetSecretData(newSecret))
+}
+
+// CreateIstioSidecarSecurityContext will support runAsUser for sidecar proxy with istio, especially using istio CNI
+// https://istio.io/latest/docs/setup/additional-setup/cni/#compatibility-with-application-init-containers
+func CreateIstioSidecarSecurityContext(istioSidecarUid int64) *corev1.SecurityContext {
+	securityContext := corev1.SecurityContext{}
+	securityContext.RunAsUser = GetInt64Pointer(istioSidecarUid)
+	securityContext.RunAsGroup = GetInt64Pointer(istioSidecarUid)
+	return &securityContext
+}
+
+func GetInt64Pointer(value int64) *int64 {
+	return &value
 }

@@ -55,8 +55,10 @@ var (
 	// kubeconfig string
 
 	// Flags of submarine
-	seldonGateway           string
+	istioEnable             bool
 	submarineGateway        string
+	seldonIstioEnable       bool
+	seldonGateway           string
 	clusterType             string
 	createPodSecurityPolicy bool
 )
@@ -86,8 +88,10 @@ func main() {
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
 	// Flags of submarine
-	flag.StringVar(&seldonGateway, "seldongateway", "", "Seldon gateway, used for model serve")
+	flag.BoolVar(&istioEnable, "istioenable", true, "Istio enable")
 	flag.StringVar(&submarineGateway, "submarineateway", "", "Submarine gateway, used for server, minio, tensorboard, mlflow and notebook")
+	flag.BoolVar(&seldonIstioEnable, "seldonistioenable", true, "Seldon istio enable")
+	flag.StringVar(&seldonGateway, "seldongateway", "", "Seldon gateway, used for model serve")
 	flag.StringVar(&clusterType, "clustertype", "kubernetes", "K8s cluster type, can be kubernetes or openshift")
 	flag.BoolVar(&createPodSecurityPolicy, "createpsp", true, "Specifies whether a PodSecurityPolicy should be created. This configuration enables the database/minio/server to set securityContext.runAsUser")
 
@@ -122,8 +126,10 @@ func main() {
 		"health-probe-bind-address", &probeAddr,
 		"leader-elect", &enableLeaderElection,
 		"namespace", namespace,
-		"seldongateway", &seldonGateway,
+		"istioenable", &istioEnable,
 		"submarineateway", &submarineGateway,
+		"seldonistioenable", &seldonIstioEnable,
+		"seldongateway", &seldonGateway,
 		"clustertype", &clusterType,
 		"createpsp", &createPodSecurityPolicy,
 	)
@@ -147,8 +153,10 @@ func main() {
 		Recorder:                mgr.GetEventRecorderFor(controllerAgentName),
 		Log:                     ctrl.Log.WithName(controllerAgentName),
 		Namespace:               namespace,
-		SeldonGateway:           seldonGateway,
+		IstioEnable:             istioEnable,
 		SubmarineGateway:        submarineGateway,
+		SeldonIstioEnable:       seldonIstioEnable,
+		SeldonGateway:           seldonGateway,
 		ClusterType:             clusterType,
 		CreatePodSecurityPolicy: createPodSecurityPolicy,
 	}).SetupWithManager(mgr); err != nil {

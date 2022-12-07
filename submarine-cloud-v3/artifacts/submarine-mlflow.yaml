@@ -50,12 +50,11 @@ spec:
   selector:
     matchLabels:
       app: submarine-mlflow
+  replicas: 1
   template:
     metadata:
       labels:
         app: submarine-mlflow
-      annotations:
-        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: "submarine-storage"
       initContainers:
@@ -69,7 +68,7 @@ spec:
         image: "minio/mc"
         command: ["/bin/bash", "-c",
         "cnt=0;
-        while ! /bin/bash -c 'mc --config-dir /root/.mc config host add minio http://submarine-minio-service:9000
+        while ! /bin/bash -c 'mc --config-dir /tmp/.mc config host add minio http://submarine-minio-service:9000
         ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}' 2>&1;
         do
           sleep 15;
@@ -79,14 +78,14 @@ spec:
             exit 1;
           fi;
         done;
-        if /bin/bash -c 'mc --config-dir /root/.mc ls minio/mlflow' >/dev/null 2>&1; then
+        if /bin/bash -c 'mc --config-dir /tmp/.mc ls minio/mlflow' >/dev/null 2>&1; then
           echo 'Bucket minio/mlflow already exists, skipping creation.';
         else
-          /bin/bash -c 'mc --config-dir /root/.mc mb minio/mlflow';
+          /bin/bash -c 'mc --config-dir /tmp/.mc mb minio/mlflow';
         fi;"]
         volumeMounts:
           - name: mc-config-vol
-            mountPath: /root/.mc
+            mountPath: /tmp/.mc
         env:
           - name: MINIO_ACCESS_KEY
             valueFrom:

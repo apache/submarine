@@ -137,6 +137,14 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
 	}
 
+	// If support istio in openshift, we need to add securityContext to pod in to avoid traffic error
+	if r.ClusterType == "openshift" && r.SeldonIstioEnable {
+		initcontainers := deployment.Spec.Template.Spec.InitContainers
+		for i := range initcontainers {
+			initcontainers[i].SecurityContext = util.CreateIstioSidecarSecurityContext(istioSidecarUid)
+		}
+	}
+
 	return deployment
 }
 
@@ -206,7 +214,7 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 	} else {
 		newDeployment := r.newSubmarineServerDeployment(ctx, submarine)
 		// compare if there are same
-		if !CompareServerDeployment(deployment, newDeployment) {
+		if !r.CompareServerDeployment(deployment, newDeployment) {
 			// update meta with uid
 			newDeployment.ObjectMeta = deployment.ObjectMeta
 			err = r.Update(ctx, newDeployment)
@@ -234,36 +242,60 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 }
 
 // CompareServerDeployment will determine if two Deployments are equal
-func CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+func (r *SubmarineReconciler) CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
 	// spec.replicas
 	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
 		return false
 	}
+
 	if len(oldDeployment.Spec.Template.Spec.Containers) != 1 {
 		return false
 	}
 	// spec.template.spec.containers[0].env
-	if !util.CompareEnv(oldDeployment.Spec.Template.Spec.Containers[0].Env, newDeployment.Spec.Template.Spec.Containers[0].Env) {
+	if !util.CompareEnv(oldDeployment.Spec.Template.Spec.Containers[0].Env,
+		newDeployment.Spec.Template.Spec.Containers[0].Env) {
 		return false
 	}
 	// spec.template.spec.containers[0].image
-	if oldDeployment.Spec.Template.Spec.Containers[0].Image != newDeployment.Spec.Template.Spec.Containers[0].Image {
+	if oldDeployment.Spec.Template.Spec.Containers[0].Image !=
+		newDeployment.Spec.Template.Spec.Containers[0].Image {
 		return false
 	}
-	// spec.template.spec.initContainers[0].image
-	if len(oldDeployment.Spec.Template.Spec.InitContainers) != 1 {
+
+	if len(oldDeployment.Spec.Template.Spec.InitContainers) != 2 || len(newDeployment.Spec.Template.Spec.InitContainers) != 2 {
 		return false
 	}
-	if oldDeployment.Spec.Template.Spec.InitContainers[0].Image != newDeployment.Spec.Template.Spec.InitContainers[0].Image {
-		return false
+	for index, old := range oldDeployment.Spec.Template.Spec.InitContainers {
+		// spec.template.spec.initContainers.image
+		container := newDeployment.Spec.Template.Spec.InitContainers[index]
+		if old.Image != container.Image {
+			return false
+		}
+		// spec.template.spec.initContainers.command
+		if !util.CompareSlice(old.Command, container.Command) {
+			return false
+		}
+		// spec.template.spec.initContainers.SecurityContext
+		if r.ClusterType == "openshift" && r.SeldonIstioEnable {
+			sc := container.SecurityContext
+			if sc == nil {
+				return false
+			} else {
+				if util.CompareInt64(sc.RunAsUser, container.SecurityContext.RunAsUser) {
+					return false
+				}
+				if util.CompareInt64(sc.RunAsGroup, container.SecurityContext.RunAsGroup) {
+					return false
+				}
+			}
+		}
 	}
-	// spec.template.spec.initContainers[0].command
-	if !util.CompareSlice(oldDeployment.Spec.Template.Spec.InitContainers[0].Command, newDeployment.Spec.Template.Spec.InitContainers[0].Command) {
-		return false
-	}
+
 	// spec.template.spec.imagePullSecrets
-	if !util.ComparePullSecrets(oldDeployment.Spec.Template.Spec.ImagePullSecrets, newDeployment.Spec.Template.Spec.ImagePullSecrets) {
+	if !util.ComparePullSecrets(oldDeployment.Spec.Template.Spec.ImagePullSecrets,
+		newDeployment.Spec.Template.Spec.ImagePullSecrets) {
 		return false
 	}
+
 	return true
 }
