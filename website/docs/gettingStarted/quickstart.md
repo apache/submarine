@@ -82,12 +82,6 @@ helm install submarine ./helm-charts/submarine --set seldon-core-operator.istio.
 kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
 ```
 
-5. Install submarine serve dependent minio secret key file
-
-```bash
-kubectl apply -f ./submarine-serve/installation/seldon-secret.yaml -n submarine-user-test
-```
-
 ### Ensure submarine is ready
 
 ```bash
