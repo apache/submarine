@@ -113,10 +113,10 @@ func CompareEnv(a, b []corev1.EnvVar) bool {
 
 // CompareInt64 will determine if two int64 are equal
 func CompareInt64(a, b *int64) bool {
-	if a == nil || b == nil {
+	if (a == nil) != (b == nil) {
 		return false
 	}
-	if a != b {
+	if *a != *b {
 		return false
 	}
 	return true
@@ -145,11 +145,7 @@ func CompareSecret(oldSecret, newSecret *corev1.Secret) bool {
 // https://istio.io/latest/docs/setup/additional-setup/cni/#compatibility-with-application-init-containers
 func CreateIstioSidecarSecurityContext(istioSidecarUid int64) *corev1.SecurityContext {
 	securityContext := corev1.SecurityContext{}
-	securityContext.RunAsUser = GetInt64Pointer(istioSidecarUid)
-	securityContext.RunAsGroup = GetInt64Pointer(istioSidecarUid)
+	securityContext.RunAsUser = &istioSidecarUid
+	securityContext.RunAsGroup = &istioSidecarUid
 	return &securityContext
-}
-
-func GetInt64Pointer(value int64) *int64 {
-	return &value
 }
