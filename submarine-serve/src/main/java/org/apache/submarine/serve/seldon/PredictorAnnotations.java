@@ -37,11 +37,20 @@ public class PredictorAnnotations {
   private String serviceName;
 
   /**
+   * To avoid the problem of the model initializer not being able to access S3(Minio) in the initcontainer
+   * due to the use of istio, a traffic `excludeOutboundPorts` has been added here.
+   * Reference link: Compatibility with application init containers,
+   * https://istio.io/latest/docs/setup/additional-setup/cni/#compatibility-with-application-init-containers
+   */
+  @SerializedName("traffic.sidecar.istio.io/excludeOutboundPorts")
+  @JsonProperty("traffic.sidecar.istio.io/excludeOutboundPorts")
+  private String excludeOutboundPorts = "9000";
+
+  /**
    * Get predictor annotations with custom service name
    */
   public static PredictorAnnotations service(String serviceName) {
-    return new PredictorAnnotations()
-            .setServiceName(serviceName);
+    return new PredictorAnnotations().setServiceName(serviceName);
   }
 
   public String getServiceName() {
@@ -51,5 +60,13 @@ public class PredictorAnnotations {
   public PredictorAnnotations setServiceName(String serviceName) {
     this.serviceName = serviceName;
     return this;
+  }
+
+  public void setExcludeOutboundPorts(String excludeOutboundPorts) {
+    this.excludeOutboundPorts = excludeOutboundPorts;
+  }
+
+  public String getExcludeOutboundPorts() {
+    return excludeOutboundPorts;
   }
 }
