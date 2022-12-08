@@ -3,16 +3,15 @@ module github.com/apache/submarine/submarine-cloud-v2
 go 1.16
 
 require (
-	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.7.0
-	github.com/traefik/traefik/v2 v2.4.8
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	github.com/stretchr/testify v1.8.1
+	github.com/traefik/traefik/v2 v2.9.6
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 	istio.io/client-go v1.13.0
 	k8s.io/api v0.23.1
 	k8s.io/apimachinery v0.23.1
 	k8s.io/client-go v0.23.1
-	k8s.io/code-generator v0.21.2
+	k8s.io/code-generator v0.22.0
 	k8s.io/klog/v2 v2.30.0
 )
 
