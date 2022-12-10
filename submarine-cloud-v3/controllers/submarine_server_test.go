@@ -20,25 +20,30 @@ package controllers
 import (
 	"context"
 	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	v1 "k8s.io/api/core/v1"
 	"testing"
 
 	. "github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 	. "github.com/onsi/gomega"
 )
 
-func TestSubmarineMlflow(t *testing.T) {
+func TestSubmarineServer(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler()
 	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
-	deployment1 := r.newSubmarineMlflowDeployment(context.TODO(), submarine)
+	submarine.UID = "adfd95a4-b363-4b58-b0cf-3b8c67b18a29"
+	deployment1 := r.newSubmarineServerDeployment(context.TODO(), submarine)
 	g.Expect(deployment1).NotTo(BeNil())
-	g.Expect(deployment1.Spec.Template.Spec.Containers[0].Image).To(Equal("apache/submarine:mlflow-" + submarine.Spec.Version))
+	g.Expect(deployment1.Spec.Template.Spec.Containers[0].Image).To(Equal("apache/submarine:server-" + submarine.Spec.Version))
+	g.Expect(deployment1.Spec.Template.Spec.Containers[0].Env).To(ContainElement(v1.EnvVar{Name: "SUBMARINE_UID", Value: "adfd95a4-b363-4b58-b0cf-3b8c67b18a29"}))
+	g.Expect(deployment1.Spec.Template.Spec.Containers[0].Env).To(ContainElement(v1.EnvVar{Name: "SUBMARINE_ISTIO_SELDON_GATEWAY", Value: r.SeldonGateway}))
+	g.Expect(deployment1.Spec.Template.Spec.Containers[0].Env).To(ContainElement(v1.EnvVar{Name: "SUBMARINE_ISTIO_SUBMARINE_GATEWAY", Value: r.SubmarineGateway}))
 
 	// test change params
-	submarine.Spec.Mlflow.Image = "harbor.com/apache/submarine/mlflow-" + submarine.Spec.Version
+	submarine.Spec.Server.Image = "harbor.com/apache/submarine/server-" + submarine.Spec.Version
 	submarine.Spec.Common = &submarineapacheorgv1alpha1.SubmarineCommon{
 		Image: submarineapacheorgv1alpha1.CommonImage{
 			McImage:      "harbor.com/minio/mc",
@@ -46,23 +51,23 @@ func TestSubmarineMlflow(t *testing.T) {
 			PullSecrets:  []string{"pull-secret"},
 		},
 	}
-	deployment2 := r.newSubmarineMlflowDeployment(context.TODO(), submarine)
-	g.Expect(deployment2.Spec.Template.Spec.Containers[0].Image).To(Equal("harbor.com/apache/submarine/mlflow-" + submarine.Spec.Version))
+	deployment2 := r.newSubmarineServerDeployment(context.TODO(), submarine)
+	g.Expect(deployment2.Spec.Template.Spec.Containers[0].Image).To(Equal("harbor.com/apache/submarine/server-" + submarine.Spec.Version))
 	g.Expect(deployment2.Spec.Template.Spec.InitContainers[0].Image).To(Equal("harbor.com/busybox:1.28"))
 	g.Expect(deployment2.Spec.Template.Spec.InitContainers[1].Image).To(Equal("harbor.com/minio/mc"))
 	g.Expect(deployment2.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("pull-secret"))
 
 	// test compare
-	g.Expect(r.CompareMlflowDeployment(deployment1, deployment2)).To(Equal(false))
+	g.Expect(r.CompareServerDeployment(deployment1, deployment2)).To(Equal(false))
 }
 
-func TestSubmarineMlflowOpenshift(t *testing.T) {
+func TestSubmarineServerOpenshift(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler(&SubmarineReconciler{SeldonIstioEnable: true, ClusterType: "openshift"})
 	submarine, _ := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
 
 	ArtifactBasePath = "../"
-	deployment := r.newSubmarineMlflowDeployment(context.TODO(), submarine)
+	deployment := r.newSubmarineServerDeployment(context.TODO(), submarine)
 	g.Expect(deployment).NotTo(BeNil())
 	g.Expect(*deployment.Spec.Template.Spec.InitContainers[0].SecurityContext.RunAsUser).To(Equal(int64(istioSidecarUid)))
 	g.Expect(*deployment.Spec.Template.Spec.InitContainers[1].SecurityContext.RunAsUser).To(Equal(int64(istioSidecarUid)))
