@@ -214,7 +214,7 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 	} else {
 		newDeployment := r.newSubmarineServerDeployment(ctx, submarine)
 		// compare if there are same
-		if !r.CompareServerDeployment(deployment, newDeployment) {
+		if !r.compareServerDeployment(deployment, newDeployment) {
 			// update meta with uid
 			newDeployment.ObjectMeta = deployment.ObjectMeta
 			err = r.Update(ctx, newDeployment)
@@ -241,8 +241,8 @@ func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submari
 	return nil
 }
 
-// CompareServerDeployment will determine if two Deployments are equal
-func (r *SubmarineReconciler) CompareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+// compareServerDeployment will determine if two Deployments are equal
+func (r *SubmarineReconciler) compareServerDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
 	// spec.replicas
 	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
 		return false

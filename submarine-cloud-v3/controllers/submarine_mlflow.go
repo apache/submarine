@@ -143,7 +143,7 @@ func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submari
 	} else {
 		newDeployment := r.newSubmarineMlflowDeployment(ctx, submarine)
 		// compare if there are same
-		if !r.CompareMlflowDeployment(deployment, newDeployment) {
+		if !r.compareMlflowDeployment(deployment, newDeployment) {
 			// update meta with uid
 			newDeployment.ObjectMeta = deployment.ObjectMeta
 			err = r.Update(ctx, newDeployment)
@@ -193,8 +193,8 @@ func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submari
 	return nil
 }
 
-// CompareMlflowDeployment will determine if two Deployments are equal
-func (r *SubmarineReconciler) CompareMlflowDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+// compareMlflowDeployment will determine if two Deployments are equal
+func (r *SubmarineReconciler) compareMlflowDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
 	// spec.replicas
 	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
 		return false

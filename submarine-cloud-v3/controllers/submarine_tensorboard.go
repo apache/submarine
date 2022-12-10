@@ -122,6 +122,15 @@ func (r *SubmarineReconciler) createSubmarineTensorboard(ctx context.Context, su
 		deployment = r.newSubmarineTensorboardDeployment(ctx, submarine)
 		err = r.Create(ctx, deployment)
 		r.Log.Info("Create Deployment", "name", deployment.Name)
+	} else {
+		newDeployment := r.newSubmarineTensorboardDeployment(ctx, submarine)
+		// compare if there are same
+		if !r.compareTensorboardDeployment(deployment, newDeployment) {
+			// update meta with uid
+			newDeployment.ObjectMeta = deployment.ObjectMeta
+			err = r.Update(ctx, newDeployment)
+			r.Log.Info("Update Deployment", "name", deployment.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -161,4 +170,29 @@ func (r *SubmarineReconciler) createSubmarineTensorboard(ctx context.Context, su
 	}
 
 	return nil
+}
+
+// compareTensorboardDeployment will determine if two Deployments are equal
+func (r *SubmarineReconciler) compareTensorboardDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+	// spec.replicas
+	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
+		return false
+	}
+
+	if len(oldDeployment.Spec.Template.Spec.Containers) != 1 {
+		return false
+	}
+	// spec.template.spec.containers[0].image
+	if oldDeployment.Spec.Template.Spec.Containers[0].Image !=
+		newDeployment.Spec.Template.Spec.Containers[0].Image {
+		return false
+	}
+
+	// spec.template.spec.imagePullSecrets
+	if !util.ComparePullSecrets(oldDeployment.Spec.Template.Spec.ImagePullSecrets,
+		newDeployment.Spec.Template.Spec.ImagePullSecrets) {
+		return false
+	}
+
+	return true
 }

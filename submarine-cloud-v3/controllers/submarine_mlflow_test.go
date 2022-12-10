@@ -53,7 +53,7 @@ func TestSubmarineMlflow(t *testing.T) {
 	g.Expect(deployment2.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("pull-secret"))
 
 	// test compare
-	g.Expect(r.CompareMlflowDeployment(deployment1, deployment2)).To(Equal(false))
+	g.Expect(r.compareMlflowDeployment(deployment1, deployment2)).To(Equal(false))
 }
 
 func TestSubmarineMlflowOpenshift(t *testing.T) {

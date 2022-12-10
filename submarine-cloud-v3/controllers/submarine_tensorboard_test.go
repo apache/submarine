@@ -19,27 +19,34 @@ package controllers
 
 import (
 	"context"
+	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
 	"testing"
 
 	. "github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 	. "github.com/onsi/gomega"
 )
 
-func TestSubmarineDatabase(t *testing.T) {
+func TestSubmarineTensorboard(t *testing.T) {
 	g := NewGomegaWithT(t)
-	r := createSubmarineReconciler(&SubmarineReconciler{Namespace: "submarine"})
+	r := createSubmarineReconciler()
 	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
-	statefulset1 := r.newSubmarineDatabaseStatefulSet(context.TODO(), submarine)
-	g.Expect(statefulset1).NotTo(BeNil())
+	deployment1 := r.newSubmarineTensorboardDeployment(context.TODO(), submarine)
+	g.Expect(deployment1).NotTo(BeNil())
 
-	// change secret
-	submarine.Spec.Database.MysqlRootPasswordSecret = "mysql-password-secret"
-	statefulset2 := r.newSubmarineDatabaseStatefulSet(context.TODO(), submarine)
-	g.Expect(statefulset2.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name).To(Equal("mysql-password-secret"))
+	// test change params
+	submarine.Spec.Tensorboard.Image = "harbor.com/tensorflow/tensorflow:1.11.0"
+	submarine.Spec.Common = &submarineapacheorgv1alpha1.SubmarineCommon{
+		Image: submarineapacheorgv1alpha1.CommonImage{
+			PullSecrets: []string{"pull-secret"},
+		},
+	}
+	deployment2 := r.newSubmarineTensorboardDeployment(context.TODO(), submarine)
+	g.Expect(deployment2.Spec.Template.Spec.Containers[0].Image).To(Equal("harbor.com/tensorflow/tensorflow:1.11.0"))
+	g.Expect(deployment2.Spec.Template.Spec.ImagePullSecrets[0].Name).To(Equal("pull-secret"))
 
-	// compare
-	g.Expect(r.compareDatabaseStatefulset(statefulset1, statefulset2)).To(Equal(false))
+	// test compare
+	g.Expect(r.compareTensorboardDeployment(deployment1, deployment2)).To(Equal(false))
 }

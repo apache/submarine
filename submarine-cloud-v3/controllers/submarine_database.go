@@ -178,7 +178,7 @@ func (r *SubmarineReconciler) createSubmarineDatabase(ctx context.Context, subma
 	} else {
 		newStatefulset := r.newSubmarineDatabaseStatefulSet(ctx, submarine)
 		// compare if there are same
-		if !r.CompareDatabaseStatefulset(statefulset, newStatefulset) {
+		if !r.compareDatabaseStatefulset(statefulset, newStatefulset) {
 			// update meta with uid
 			newStatefulset.ObjectMeta = statefulset.ObjectMeta
 			err = r.Update(ctx, newStatefulset)
@@ -229,8 +229,8 @@ func (r *SubmarineReconciler) createSubmarineDatabase(ctx context.Context, subma
 	return nil
 }
 
-// CompareDatabaseStatefulset will determine if two StatefulSets are equal
-func (r *SubmarineReconciler) CompareDatabaseStatefulset(oldStatefulset, newStatefulse *appsv1.StatefulSet) bool {
+// compareDatabaseStatefulset will determine if two StatefulSets are equal
+func (r *SubmarineReconciler) compareDatabaseStatefulset(oldStatefulset, newStatefulse *appsv1.StatefulSet) bool {
 	// spec.replicas
 	if *oldStatefulset.Spec.Replicas != *newStatefulse.Spec.Replicas {
 		return false

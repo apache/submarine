@@ -49,6 +49,7 @@ spec:
   selector:
     matchLabels:
       app: submarine-tensorboard
+  replicas: 1
   template:
     metadata:
       labels:

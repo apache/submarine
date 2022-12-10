@@ -25,21 +25,23 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestSubmarineDatabase(t *testing.T) {
+func TestSubmarineServe(t *testing.T) {
 	g := NewGomegaWithT(t)
-	r := createSubmarineReconciler(&SubmarineReconciler{Namespace: "submarine"})
+	r := createSubmarineReconciler()
 	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
-	statefulset1 := r.newSubmarineDatabaseStatefulSet(context.TODO(), submarine)
-	g.Expect(statefulset1).NotTo(BeNil())
+	secret1 := r.newSubmarineSeldonSecret(context.TODO(), submarine)
+	g.Expect(secret1).NotTo(BeNil())
 
 	// change secret
-	submarine.Spec.Database.MysqlRootPasswordSecret = "mysql-password-secret"
-	statefulset2 := r.newSubmarineDatabaseStatefulSet(context.TODO(), submarine)
-	g.Expect(statefulset2.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name).To(Equal("mysql-password-secret"))
+	submarine.Spec.Minio.AccessKey = "submarine_minio1"
+	submarine.Spec.Minio.SecretKey = "submarine_minio2"
+	secret2 := r.newSubmarineSeldonSecret(context.TODO(), submarine)
+	g.Expect(secret2.StringData["RCLONE_CONFIG_S3_ACCESS_KEY_ID"]).To(Equal("submarine_minio1"))
+	g.Expect(secret2.StringData["RCLONE_CONFIG_S3_SECRET_ACCESS_KEY"]).To(Equal("submarine_minio2"))
 
 	// compare
-	g.Expect(r.compareDatabaseStatefulset(statefulset1, statefulset2)).To(Equal(false))
+	g.Expect(CompareSecret(secret1, secret2)).To(Equal(false))
 }
