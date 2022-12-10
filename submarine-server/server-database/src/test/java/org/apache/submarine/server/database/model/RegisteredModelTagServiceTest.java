@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 
 public class RegisteredModelTagServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(RegisteredModelTagServiceTest.class);
-  RegisteredModelService registeredModelService = new RegisteredModelService();
-  RegisteredModelTagService registeredModelTagService = new RegisteredModelTagService();
+  RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
+  RegisteredModelTagService registeredModelTagService = RegisteredModelTagService.getInstance();
 
   @After
   public void cleanAll() {

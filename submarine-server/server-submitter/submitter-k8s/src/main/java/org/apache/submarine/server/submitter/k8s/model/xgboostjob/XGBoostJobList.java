@@ -30,7 +30,7 @@ public class XGBoostJobList implements KubernetesListObject {
   private String apiVersion = XGBoostJob.CRD_XGBOOST_API_VERSION_V1;
 
   @SerializedName("kind")
-  private String kind;
+  private String kind = XGBoostJob.CRD_XGBOOST_KIND_V1 + "List";
 
   @SerializedName("metadata")
   private V1ListMeta metadata;
@@ -55,6 +55,6 @@ public class XGBoostJobList implements KubernetesListObject {
 
   @Override
   public String getKind() {
-    return XGBoostJob.CRD_XGBOOST_KIND_V1 + "List";
+    return kind;
   }
 }

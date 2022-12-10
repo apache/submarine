@@ -28,6 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegisteredModelTagService {
+  private static class RegisteredModelTagServiceHolder {
+    private static RegisteredModelTagService service = new RegisteredModelTagService();
+  }
+
+  public static RegisteredModelTagService getInstance() {
+    return RegisteredModelTagService.RegisteredModelTagServiceHolder.service;
+  }
 
   private static final Logger LOG = LoggerFactory.getLogger(RegisteredModelTagService.class);
 

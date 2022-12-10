@@ -37,7 +37,6 @@ import org.apache.submarine.server.s3.Client;
  * Registered model manager.
  */
 public class RegisteredModelManager {
-  private static RegisteredModelManager manager;
   /* Registered model service */
   private final RegisteredModelService registeredModelService;
 
@@ -54,12 +53,14 @@ public class RegisteredModelManager {
    *
    * @return object
    */
-  public static synchronized RegisteredModelManager getInstance() {
-    if (manager == null) {
-      manager = new RegisteredModelManager(new RegisteredModelService(), new ModelVersionService(),
-          new RegisteredModelTagService(), new Client());
-    }
-    return manager;
+
+  private static class RegisteredModelManagerHolder {
+    private static RegisteredModelManager manager = new RegisteredModelManager(RegisteredModelService.getInstance(), ModelVersionService.getInstance(),
+    RegisteredModelTagService.getInstance(), Client.getInstance());
+  }
+
+  public static RegisteredModelManager getInstance() {
+    return RegisteredModelManager.RegisteredModelManagerHolder.manager;
   }
 
   @VisibleForTesting

@@ -31,8 +31,8 @@ import org.apache.submarine.server.database.model.service.ModelVersionService;
 import org.apache.submarine.server.database.model.service.RegisteredModelService;
 
 public class ModelVersionTest {
-  RegisteredModelService registeredModelService = new RegisteredModelService();
-  ModelVersionService modelVersionService = new ModelVersionService();
+  RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
+  ModelVersionService modelVersionService = ModelVersionService.getInstance();
 
   @After
   public void cleanAll() {

@@ -55,9 +55,9 @@ public class ModelVersionRestApiTest {
   private final String modelVersionModelType = "experiment_123";
   private final String modelVersionTag = "testTag";
 
-  private final RegisteredModelService registeredModelService = new RegisteredModelService();
+  private final RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
 
-  private final ModelVersionService modelVersionService = new ModelVersionService();
+  private final ModelVersionService modelVersionService = ModelVersionService.getInstance();
 
   private static final GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())

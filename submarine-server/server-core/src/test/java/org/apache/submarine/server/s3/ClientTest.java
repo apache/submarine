@@ -27,7 +27,7 @@ import java.util.List;
 
 
 public class ClientTest {
-  private final Client client = new Client("http://localhost:9000");
+  private final Client client = Client.getInstance("http://localhost:9000");
   private final String testExperimentId = "experiment-sample";
 
   @After

@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javax.ws.rs.core.Response;
+import java.util.Map;
+import java.util.HashMap;
 
 import io.minio.CopyObjectArgs;
 import io.minio.CopySource;
@@ -50,25 +52,18 @@ public class Client {
   /* minio client */
   public MinioClient minioClient;
 
-  /* submarine config */
-  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-
   public Client() {
     minioClient = MinioClient.builder()
-        .endpoint(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT))
-        .credentials(
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
-        ).build();
+            .endpoint(S3Constants.ENDPOINT)
+            .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+            .build();
   }
 
-  public Client(String endpoint) {
+  private Client(String endpoint) {
     minioClient = MinioClient.builder()
         .endpoint(endpoint)
-        .credentials(
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
-        ).build();
+        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+        .build();
   }
 
   /**
