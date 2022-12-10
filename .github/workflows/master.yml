@@ -466,6 +466,12 @@ jobs:
           path: |
             ./submarine-server/server-core/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Cache serve jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-serve/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -504,6 +510,18 @@ jobs:
       - name: Test submarine-server-core
         env:
           TEST_MODULES: "-pl :submarine-server-core"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
+      - name: Build submarine-serve
+        env:
+          MODULES: "-pl :submarine-serve"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test submarine-serve
+        env:
+          TEST_MODULES: "-pl :submarine-serve"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
@@ -711,6 +729,12 @@ jobs:
         with:
           path: |
             ./submarine-server/server-core/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Cache submarine-serve data
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-serve/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache submarine-submitter data
         uses: actions/cache@v2

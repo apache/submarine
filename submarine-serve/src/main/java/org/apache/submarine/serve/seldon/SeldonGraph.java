@@ -21,15 +21,40 @@ package org.apache.submarine.serve.seldon;
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.serve.utils.SeldonConstants;
 
+/**
+ * Seldon graph
+ * <p>
+ * Define the graph of every predictor in `spec.predictors[*].graph`, for more we can see:
+ * <a href="https://docs.seldon.io/projects/seldon-core/en/latest/graph/inference-graph.html">
+ *   Inference Graph
+ * </a>
+ */
 public class SeldonGraph {
+
+  /**
+   * Graph name, we generally order by version, e.g.
+   * version-1, version-2, version-3 ...
+   */
   @SerializedName("name")
   private String name;
+
+  /**
+   * Graph implementation, can be:
+   * TENSORFLOW_SERVER, TRITON_SERVER or XGBOOST_SERVER
+   */
   @SerializedName("implementation")
   private String implementation;
+
+  /**
+   * Model storage path on S3(minio), e.g.
+   * s3://submarine/registry/${model_version_path}/${model_name}
+   */
   @SerializedName("modelUri")
   private String modelUri;
-  @SerializedName("storageInitializerImage")
-  private String storageInitializerImage = SeldonConstants.STORAGE_INITIALIZER_IMAGE;
+
+  /**
+   * S3(minio) secret, We have created `Secret` resource by default when creating the submarine
+   */
   @SerializedName("envSecretRefName")
   private String envSecretRefName = SeldonConstants.ENV_SECRET_REF_NAME;
 
@@ -58,14 +83,6 @@ public class SeldonGraph {
 
   public void setModelUri(String modelUri) {
     this.modelUri = modelUri;
-  }
-
-  public String getStorageInitializerImage() {
-    return storageInitializerImage;
-  }
-
-  public void setStorageInitializerImage(String storageInitializerImage) {
-    this.storageInitializerImage = storageInitializerImage;
   }
 
   public String getEnvSecretRefName() {
