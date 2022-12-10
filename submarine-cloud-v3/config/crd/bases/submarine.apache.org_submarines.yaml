@@ -87,8 +87,8 @@ spec:
                     description: Image is the submarine database's docker image
                     type: string
                   mysqlRootPasswordSecret:
-                    description: MysqlRootPasswordSecret is the mysql root password
-                      secret
+                    description: 'MysqlRootPasswordSecret is the mysql root password
+                      secret, this secret need password key: MYSQL_ROOT_PASSWORD'
                     type: string
                   storageSize:
                     description: StorageSize is the storage size of the database
@@ -110,7 +110,7 @@ spec:
                     description: Image is the submarine minio's docker image
                     type: string
                   secretKey:
-                    description: SecretKey defines the access_key of minio
+                    description: SecretKey defines the secret_key of minio
                     type: string
                   storageSize:
                     description: StorageSize defines the storage size of minio

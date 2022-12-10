@@ -77,7 +77,7 @@ type SubmarineDatabaseSpec struct {
 	Image string `json:"image,omitempty"`
 	// StorageSize is the storage size of the database
 	StorageSize string `json:"storageSize"`
-	// MysqlRootPasswordSecret is the mysql root password secret
+	// MysqlRootPasswordSecret is the mysql root password secret, this secret need password key: MYSQL_ROOT_PASSWORD
 	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
 }
 
@@ -119,7 +119,7 @@ type SubmarineMinioSpec struct {
 	StorageSize string `json:"storageSize"`
 	// AccessKey defines the access_key of minio
 	AccessKey string `json:"accessKey,omitempty"`
-	// SecretKey defines the access_key of minio
+	// SecretKey defines the secret_key of minio
 	SecretKey string `json:"secretKey,omitempty"`
 }
 

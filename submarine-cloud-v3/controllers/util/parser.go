@@ -23,6 +23,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/pkg/errors"
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
@@ -32,6 +33,12 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
+
+const artifactBasePathEnv = "ARTIFACT_BASE_PATH"
+
+// ArtifactBasePath is default submarine path,
+// We can use it instead of the yaml path to solve the relative path problem when testing
+var ArtifactBasePath = os.Getenv(artifactBasePathEnv)
 
 // PathToOSFile turn the file at the relativePath into a type of *os.File.
 func pathToOSFile(relativePath string) (*os.File, error) {
@@ -54,6 +61,13 @@ func parseYaml(relativePath, kind string) ([]byte, error) {
 	var err error
 
 	var marshaled []byte
+	if ArtifactBasePath != "" {
+		if strings.HasSuffix(ArtifactBasePath, "/") {
+			relativePath = ArtifactBasePath + relativePath
+		} else {
+			relativePath = strings.Join([]string{ArtifactBasePath, relativePath}, "/")
+		}
+	}
 	if manifest, err = pathToOSFile(relativePath); err != nil {
 		return nil, err
 	}

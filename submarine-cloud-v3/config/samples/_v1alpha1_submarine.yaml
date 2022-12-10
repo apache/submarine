@@ -27,7 +27,7 @@ spec:
   database:
     image: "apache/submarine:database-0.8.0-SNAPSHOT" # overwrite the image when development
     storageSize: "1Gi"
-    mysqlRootPasswordSecret: "root-pass-secret"
+    # mysqlRootPasswordSecret: ""
   virtualservice:
     # configure when using custom hosts, default is "*"
     hosts: []

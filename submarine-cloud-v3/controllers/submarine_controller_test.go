@@ -20,13 +20,19 @@ package controllers
 import (
 	"context"
 	"fmt"
+	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"os"
 	"path/filepath"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pkg/errors"
+	istio "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -37,6 +43,62 @@ import (
 
 	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
 )
+
+func createScheme() *runtime.Scheme {
+	scheme := runtime.NewScheme()
+	_ = clientgoscheme.AddToScheme(scheme)
+	_ = appsv1.AddToScheme(scheme)
+	_ = corev1.AddToScheme(scheme)
+	_ = submarineapacheorgv1alpha1.AddToScheme(scheme)
+	_ = istio.AddToScheme(scheme)
+	_ = serializer.NewCodecFactory(scheme).UniversalDeserializer().Decode
+	return scheme
+}
+
+// We are mainly testing created resources, so for the time being we have not declared k8s client and recoder
+func createSubmarineReconciler(config ...*SubmarineReconciler) *SubmarineReconciler {
+	namespace := "submarine"
+	istioEnable := false
+	submarineGateway := "submarine/submarine-gateway"
+	seldonIstioEnable := false
+	seldonGateway := "submarine/seldon-gateway"
+	clusterType := "kubernetes"
+	createPodSecurityPolicy := false
+	if len(config) > 0 {
+		if config[0].Namespace != "" {
+			namespace = config[0].Namespace
+		}
+		if &config[0].IstioEnable != nil {
+			istioEnable = config[0].IstioEnable
+		}
+		if config[0].SubmarineGateway != "" {
+			submarineGateway = config[0].SubmarineGateway
+		}
+		if &config[0].SeldonIstioEnable != nil {
+			seldonIstioEnable = config[0].SeldonIstioEnable
+		}
+		if config[0].SeldonGateway != "" {
+			seldonGateway = config[0].SeldonGateway
+		}
+		if config[0].ClusterType != "" {
+			clusterType = config[0].ClusterType
+		}
+		if &config[0].CreatePodSecurityPolicy != nil {
+			createPodSecurityPolicy = config[0].CreatePodSecurityPolicy
+		}
+	}
+	return &SubmarineReconciler{
+		Scheme:                  createScheme(),
+		Log:                     ctrl.Log.WithName("submarine-test"),
+		Namespace:               namespace,
+		IstioEnable:             istioEnable,
+		SubmarineGateway:        submarineGateway,
+		SeldonIstioEnable:       seldonIstioEnable,
+		SeldonGateway:           seldonGateway,
+		ClusterType:             clusterType,
+		CreatePodSecurityPolicy: createPodSecurityPolicy,
+	}
+}
 
 var _ = Describe("Submarine controller", func() {
 
@@ -337,6 +399,15 @@ func MakeSubmarineFromYaml(pathToYaml string) (*submarineapacheorgv1alpha1.Subma
 		return nil, errors.Wrap(err, fmt.Sprintf("failed to decode file %s", pathToYaml))
 	}
 	return &tmp, err
+}
+
+func MakeSubmarineFromYamlByNamespace(pathToYaml string, namespace string) (*submarineapacheorgv1alpha1.Submarine, error) {
+	submarine, err := MakeSubmarineFromYaml(pathToYaml)
+	if err != nil {
+		return nil, err
+	}
+	submarine.Namespace = namespace
+	return submarine, nil
 }
 
 // PathToOSFile gets the absolute path from relative path.

@@ -68,7 +68,10 @@ spec:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "password"
+              valueFrom:
+                secretKeyRef:
+                  name: submarine-database-secret
+                  key: MYSQL_ROOT_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: volume
@@ -80,3 +83,11 @@ spec:
         - name: volume
           persistentVolumeClaim:
             claimName: submarine-database-pvc
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: submarine-database-secret
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: "password"
