@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineMinioPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(minioYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineMinioPersistentVolumeClaim(ctx context
 }
 
 func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
-	deployment, err := ParseDeploymentYaml(minioYamlPath)
+	deployment, err := util.ParseDeploymentYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -55,11 +56,23 @@ func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, s
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
 	}
+
+	// minio/mc image
+	minoImage := submarine.Spec.Minio.Image
+	if minoImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = minoImage
+	}
+	// pull secrets
+	pullSecrets := util.GetSubmarineCommonImage(submarine).PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+
 	return deployment
 }
 
 func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(minioYamlPath)
+	service, err := util.ParseServiceYaml(minioYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}
@@ -69,6 +82,31 @@ func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, subm
 		r.Log.Error(err, "Set Service ControllerReference")
 	}
 	return service
+}
+
+// newSubmarineSeldonSecret is a function to create seldon secret which stores minio connection configurations
+func (r *SubmarineReconciler) newSubmarineMinoSecret(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Secret {
+	secret, err := util.ParseSecretYaml(minioYamlPath)
+	if err != nil {
+		r.Log.Error(err, "ParseSecretYaml")
+	}
+	secret.Namespace = submarine.Namespace
+	err = controllerutil.SetControllerReference(submarine, secret, r.Scheme)
+	if err != nil {
+		r.Log.Error(err, "Set Secret ControllerReference")
+	}
+
+	// access_ey and secret_key
+	accessKey := submarine.Spec.Minio.AccessKey
+	if accessKey != "" {
+		secret.StringData["MINIO_ACCESS_KEY"] = accessKey
+	}
+	secretKey := submarine.Spec.Minio.SecretKey
+	if secretKey != "" {
+		secret.StringData["MINIO_SECRET_KEY"] = secretKey
+	}
+
+	return secret
 }
 
 // createSubmarineMinio is a function to create submarine-minio.
@@ -99,7 +137,39 @@ func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarin
 		return fmt.Errorf(msg)
 	}
 
-	// Step 2: Create Deployment
+	// Step 2: Create Minio Secret
+	secret := &corev1.Secret{}
+	err = r.Get(ctx, types.NamespacedName{Name: "submarine-minio-secret", Namespace: submarine.Namespace}, secret)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(err) {
+		secret = r.newSubmarineMinoSecret(ctx, submarine)
+		err = r.Create(ctx, secret)
+		r.Log.Info("Create Minio Secret", "name", secret.Name)
+	} else {
+		newSecret := r.newSubmarineMinoSecret(ctx, submarine)
+		// compare if there are same
+		if !util.CompareSecret(secret, newSecret) {
+			// update meta with uid
+			newSecret.ObjectMeta = secret.ObjectMeta
+			err = r.Update(ctx, newSecret)
+			r.Log.Info("Update Minio Secret", "name", secret.Name)
+		}
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if err != nil {
+		return err
+	}
+
+	if !metav1.IsControlledBy(secret, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, secret.Name)
+		r.Recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
+		return fmt.Errorf(msg)
+	}
+
+	// Step 3: Create Deployment
 	deployment := &appsv1.Deployment{}
 	err = r.Get(ctx, types.NamespacedName{Name: minioName, Namespace: submarine.Namespace}, deployment)
 	if errors.IsNotFound(err) {
@@ -121,7 +191,7 @@ func (r *SubmarineReconciler) createSubmarineMinio(ctx context.Context, submarin
 		return fmt.Errorf(msg)
 	}
 
-	// Step 3: Create Service
+	// Step 4: Create Service
 	service := &corev1.Service{}
 	err = r.Get(ctx, types.NamespacedName{Name: minioServiceName, Namespace: submarine.Namespace}, service)
 	// If the resource doesn't exist, we'll create it

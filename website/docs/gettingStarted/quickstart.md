@@ -70,21 +70,16 @@ kubectl label namespace submarine-user-test istio-injection=enabled
 3. Install the submarine operator and dependencies by helm chart
 
 ```bash
-# We move seldon-core install to helm, thus we need to update our dependency.
+# Update helm dependency.
 helm dependency update ./helm-charts/submarine
-helm install submarine ./helm-charts/submarine -n submarine
+# Install submarine operator in namespace submarine.
+helm install submarine ./helm-charts/submarine --set seldon-core-operator.istio.gateway=submarine/seldon-gateway -n submarine
 ```
 
 4. Create a Submarine custom resource and the operator will create the submarine server, database, etc. for us.
 
 ```bash
 kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
-```
-
-5. Install submarine serve dependent minio secret key file
-
-```bash
-kubectl apply -f ./submarine-serve/installation/seldon-secret.yaml -n submarine-user-test
 ```
 
 ### Ensure submarine is ready
@@ -283,7 +278,7 @@ Metadata:
     ...
 Spec:
   Gateways:
-    istio-system/seldon-gateway
+    submarine/seldon-gateway
   Hosts:
     *
   Http:

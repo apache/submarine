@@ -21,17 +21,29 @@ kind: Role
 metadata:
   name: "submarine-server"
 rules:
+# need to add submarines/finalizers
+# https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#ownerreferencespermissionenforcement
+- apiGroups:
+  - submarine.apache.org
+  resources:
+  - submarines/finalizers
+  verbs:
+  - "update"
 - apiGroups:
   - kubeflow.org
   resources:
   - tfjobs
   - tfjobs/status
+  - tfjobs/finalizers
   - pytorchjobs
   - pytorchjobs/status
+  - pytorchjobs/finalizers
   - xgboostjobs
   - xgboostjobs/status
+  - xgboostjobs/finalizers
   - notebooks
   - notebooks/status
+  - notebooks/finalizers
   verbs:
   - get
   - list

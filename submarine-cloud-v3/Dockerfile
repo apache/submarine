@@ -51,4 +51,10 @@ RUN adduser -u 1000 -S submarine -G submarine
 USER submarine
 
 # CMD ls
-CMD /usr/src/manager
+CMD /usr/src/manager -leader-elect=${SUBMARINE_LEADER_ELECT:-false} \
+    -istioenable=${SUBMARINE_ISTIO_ENABLE} \
+    -submarineateway=${SUBMARINE_ISTIO_SUBMARINE_GATEWAY} \
+    -seldonistioenable=${SUBMARINE_ISTIO_SELDON_ENABLE} \
+    -seldongateway=${SUBMARINE_ISTIO_SELDON_GATEWAY} \
+    -clustertype=${SUBMARINE_CLUSTER_TYPE:kubernetes} \
+    -createpsp=${SUBMARINE_POD_SECURITY_POLICY_ENABLE:-true}

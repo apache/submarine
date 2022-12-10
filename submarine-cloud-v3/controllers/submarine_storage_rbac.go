@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
-	role, err := ParseRoleYaml(storageRbacYamlPath)
+	role, err := util.ParseRoleYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
 	}
@@ -54,7 +55,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, subma
 }
 
 func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.RoleBinding {
-	roleBinding, err := ParseRoleBindingYaml(storageRbacYamlPath)
+	roleBinding, err := util.ParseRoleBindingYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}
@@ -67,7 +68,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context
 }
 
 func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.ServiceAccount {
-	serviceAccount, err := ParseServiceAccountYaml(storageRbacYamlPath)
+	serviceAccount, err := util.ParseServiceAccountYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}

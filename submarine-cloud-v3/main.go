@@ -1,23 +1,27 @@
 /*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package main
 
 import (
 	"flag"
+	"fmt"
+	"go.uber.org/zap/zapcore"
+	"k8s.io/client-go/tools/clientcmd"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -51,6 +55,10 @@ var (
 	// kubeconfig string
 
 	// Flags of submarine
+	istioEnable             bool
+	submarineGateway        string
+	seldonIstioEnable       bool
+	seldonGateway           string
 	clusterType             string
 	createPodSecurityPolicy bool
 )
@@ -80,24 +88,59 @@ func main() {
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
 	// Flags of submarine
+	flag.BoolVar(&istioEnable, "istioenable", true, "Istio enable")
+	flag.StringVar(&submarineGateway, "submarineateway", "", "Submarine gateway, used for server, minio, tensorboard, mlflow and notebook")
+	flag.BoolVar(&seldonIstioEnable, "seldonistioenable", true, "Seldon istio enable")
+	flag.StringVar(&seldonGateway, "seldongateway", "", "Seldon gateway, used for model serve")
 	flag.StringVar(&clusterType, "clustertype", "kubernetes", "K8s cluster type, can be kubernetes or openshift")
 	flag.BoolVar(&createPodSecurityPolicy, "createpsp", true, "Specifies whether a PodSecurityPolicy should be created. This configuration enables the database/minio/server to set securityContext.runAsUser")
 
 	opts := zap.Options{
 		Development: true,
+		// format timestamp with 2006-01-02T15:04:05.000Z0700
+		TimeEncoder: zapcore.ISO8601TimeEncoder,
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
+	// get current namespace
+	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
+	namespace, _, err := kubeConfig.Namespace()
+
+	// if `seldonGateway` is empty, used ${namespace}/seldon-gateway
+	// By default, the operator and seldon-gateway will be under the same namespace when deployed with helm
+	if seldonGateway == "" {
+		seldonGateway = fmt.Sprintf("%s/seldon-gateway", namespace)
+	}
+	// if `submarineGateway` is empty, used ${namespace}/seldon-gateway
+	// By default, the operator and submarine-gateway will be under the same namespace when deployed with helm
+	if submarineGateway == "" {
+		submarineGateway = fmt.Sprintf("%s/submarine-gateway", namespace)
+	}
+
+	setupLog.Info("Starting submarine operator with ",
+		"metrics-bind-address", &metricsAddr,
+		"health-probe-bind-address", &probeAddr,
+		"leader-elect", &enableLeaderElection,
+		"namespace", namespace,
+		"istioenable", &istioEnable,
+		"submarineateway", &submarineGateway,
+		"seldonistioenable", &seldonIstioEnable,
+		"seldongateway", &seldonGateway,
+		"clustertype", &clusterType,
+		"createpsp", &createPodSecurityPolicy,
+	)
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
-		HealthProbeBindAddress: probeAddr,
-		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "5d52732c.submarine.apache.org",
+		Scheme:                  scheme,
+		MetricsBindAddress:      metricsAddr,
+		Port:                    9443,
+		HealthProbeBindAddress:  probeAddr,
+		LeaderElectionNamespace: namespace,
+		LeaderElection:          enableLeaderElection,
+		LeaderElectionID:        "5d52732c.submarine.apache.org",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -109,6 +152,11 @@ func main() {
 		Scheme:                  mgr.GetScheme(),
 		Recorder:                mgr.GetEventRecorderFor(controllerAgentName),
 		Log:                     ctrl.Log.WithName(controllerAgentName),
+		Namespace:               namespace,
+		IstioEnable:             istioEnable,
+		SubmarineGateway:        submarineGateway,
+		SeldonIstioEnable:       seldonIstioEnable,
+		SeldonGateway:           seldonGateway,
 		ClusterType:             clusterType,
 		CreatePodSecurityPolicy: createPodSecurityPolicy,
 	}).SetupWithManager(mgr); err != nil {

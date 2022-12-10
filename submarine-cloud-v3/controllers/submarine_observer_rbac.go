@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
-	role, err := ParseRoleYaml(observerRbacYamlPath)
+	role, err := util.ParseRoleYaml(observerRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, subm
 }
 
 func (r *SubmarineReconciler) newSubmarineObserverRoleBinding(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.RoleBinding {
-	roleBinding, err := ParseRoleBindingYaml(observerRbacYamlPath)
+	roleBinding, err := util.ParseRoleBindingYaml(observerRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}

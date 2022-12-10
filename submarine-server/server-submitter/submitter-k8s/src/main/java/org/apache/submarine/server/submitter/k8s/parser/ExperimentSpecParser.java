@@ -23,12 +23,14 @@ import io.kubernetes.client.custom.Quantity;
 
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarSource;
 import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.openapi.models.V1PodSecurityContext;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
+import io.kubernetes.client.openapi.models.V1SecretKeySelector;
 import io.kubernetes.client.openapi.models.V1SecretVolumeSource;
 import io.kubernetes.client.openapi.models.V1Volume;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
@@ -40,6 +42,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.manager.EnvironmentManager;
+import org.apache.submarine.server.s3.S3Constants;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
@@ -53,6 +56,16 @@ import java.util.Map;
 public class ExperimentSpecParser {
 
   private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+
+  /**
+   * S3 secret
+   */
+  public static final String MLFLOW_S3_ENDPOINT_URL = "MLFLOW_S3_ENDPOINT_URL";
+  public static final String AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";
+  public static final String AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
+  public static final String MINIO_ACCESS_KEY = "MINIO_ACCESS_KEY";
+  public static final String MINIO_SECRET_KEY = "MINIO_SECRET_KEY";
+  public static final String DEFAULT_SUBMARINE_MINIO_SECRET = "submarine-minio-secret";
 
   public static V1PodTemplateSpec parseTemplateSpec(
       ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) throws InvalidSpecException {
@@ -248,6 +261,26 @@ public class ExperimentSpecParser {
       env.setValue(entry.getValue());
       envVars.add(env);
     }
+    // add s3(minio) url and secrets
+    envVars.add(
+        new V1EnvVar().name(MLFLOW_S3_ENDPOINT_URL).value(S3Constants.DEFAULT_ENDPOINT)
+    );
+    envVars.add(new V1EnvVar().name(AWS_ACCESS_KEY_ID)
+        .valueFrom(new V1EnvVarSource()
+            .secretKeyRef(new V1SecretKeySelector()
+                .key(MINIO_ACCESS_KEY)
+                .name(DEFAULT_SUBMARINE_MINIO_SECRET)
+            )
+        )
+    );
+    envVars.add(new V1EnvVar().name(AWS_SECRET_ACCESS_KEY)
+        .valueFrom(new V1EnvVarSource()
+            .secretKeyRef(new V1SecretKeySelector()
+                .key(MINIO_SECRET_KEY)
+                .name(DEFAULT_SUBMARINE_MINIO_SECRET)
+            )
+        )
+    );
     return envVars;
   }
 

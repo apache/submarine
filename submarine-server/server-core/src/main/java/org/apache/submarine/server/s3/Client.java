@@ -38,24 +38,37 @@ import io.minio.Result;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 
-
+/**
+ * S3(Minio) default client
+ */
 public class Client {
+
+  /* minio client */
   public MinioClient minioClient;
+
+  /* submarine config */
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public Client() {
     minioClient = MinioClient.builder()
-            .endpoint(S3Constants.ENDPOINT)
-            .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-            .build();
+        .endpoint(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT))
+        .credentials(
+            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
+            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
+        ).build();
   }
 
   public Client(String endpoint) {
     minioClient = MinioClient.builder()
         .endpoint(endpoint)
-        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-        .build();
+        .credentials(
+            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
+            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
+        ).build();
   }
 
   /**

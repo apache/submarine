@@ -50,9 +50,21 @@ class SubmarineClient:
                              `Where Runs Get Recorded <../tracking.html#where-runs-get-recorded>`_
                              for more info.
         """
-        os.environ["MLFLOW_S3_ENDPOINT_URL"] = s3_registry_uri or S3_ENDPOINT_URL
-        os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id or AWS_ACCESS_KEY_ID
-        os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
+        # s3 endpoint url
+        if s3_registry_uri is not None:
+            os.environ["MLFLOW_S3_ENDPOINT_URL"] = s3_registry_uri
+        elif "MLFLOW_S3_ENDPOINT_URL" not in os.environ:
+            os.environ["MLFLOW_S3_ENDPOINT_URL"] = S3_ENDPOINT_URL
+        # access key
+        if aws_access_key_id is not None:
+            os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id
+        elif "AWS_ACCESS_KEY_ID" not in os.environ:
+            os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
+        # access secret
+        if aws_secret_access_key is not None:
+            os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key
+        elif "AWS_SECRET_ACCESS_KEY" not in os.environ:
+            os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
         self.artifact_repo = Repository()
         self.db_uri = db_uri or submarine.get_db_uri()
         self.store = utils.get_tracking_sqlalchemy_store(self.db_uri)

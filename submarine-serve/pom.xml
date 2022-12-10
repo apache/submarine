@@ -50,7 +50,6 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-commons-utils</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

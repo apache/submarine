@@ -42,7 +42,7 @@ public class IstioVirtualServiceSpec {
 
   public IstioVirtualServiceSpec(Long id, String modelResourceName, Integer modelVersion) {
     hosts.add(IstioConstants.DEFAULT_INGRESS_HOST);
-    gateways.add(IstioConstants.DEFAULT_GATEWAY);
+    gateways.add(IstioConstants.SELDON_GATEWAY);
     // model resource name is service name
     IstioHTTPDestination destination = new IstioHTTPDestination(modelResourceName);
     IstioHTTPMatchRequest matchRequest = new IstioHTTPMatchRequest(

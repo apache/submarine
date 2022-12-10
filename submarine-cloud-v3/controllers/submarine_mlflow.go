@@ -20,6 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +34,7 @@ import (
 )
 
 func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	pvc, err := ParsePersistentVolumeClaimYaml(mlflowYamlPath)
+	pvc, err := util.ParsePersistentVolumeClaimYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
@@ -46,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx contex
 }
 
 func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
-	deployment, err := ParseDeploymentYaml(mlflowYamlPath)
+	deployment, err := util.ParseDeploymentYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
@@ -55,11 +56,44 @@ func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, 
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
 	}
+
+	// mlflow image
+	mlflowImage := submarine.Spec.Mlflow.Image
+	if mlflowImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = mlflowImage
+	} else {
+		deployment.Spec.Template.Spec.Containers[0].Image = fmt.Sprintf("apache/submarine:mlflow-%s", submarine.Spec.Version)
+	}
+	commonImage := util.GetSubmarineCommonImage(submarine)
+	// busybox image
+	busyboxImage := commonImage.BusyboxImage
+	if busyboxImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[0].Image = busyboxImage
+	}
+	// minio/mc image
+	mcImage := commonImage.McImage
+	if mcImage != "" {
+		deployment.Spec.Template.Spec.InitContainers[1].Image = mcImage
+	}
+	// pull secrets
+	pullSecrets := commonImage.PullSecrets
+	if pullSecrets != nil {
+		deployment.Spec.Template.Spec.ImagePullSecrets = r.CreatePullSecrets(&pullSecrets)
+	}
+
+	// If support istio in openshift, we need to add securityContext to pod in to avoid traffic error
+	if r.ClusterType == "openshift" && r.SeldonIstioEnable {
+		initcontainers := deployment.Spec.Template.Spec.InitContainers
+		for i := range initcontainers {
+			initcontainers[i].SecurityContext = util.CreateIstioSidecarSecurityContext(istioSidecarUid)
+		}
+	}
+
 	return deployment
 }
 
 func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
-	service, err := ParseServiceYaml(mlflowYamlPath)
+	service, err := util.ParseServiceYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
 	}
@@ -106,6 +140,15 @@ func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submari
 		deployment = r.newSubmarineMlflowDeployment(ctx, submarine)
 		err = r.Create(ctx, deployment)
 		r.Log.Info("Create Deployment", "name", deployment.Name)
+	} else {
+		newDeployment := r.newSubmarineMlflowDeployment(ctx, submarine)
+		// compare if there are same
+		if !r.compareMlflowDeployment(deployment, newDeployment) {
+			// update meta with uid
+			newDeployment.ObjectMeta = deployment.ObjectMeta
+			err = r.Update(ctx, newDeployment)
+			r.Log.Info("Update Deployment", "name", deployment.Name)
+		}
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -148,4 +191,63 @@ func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submari
 	}
 
 	return nil
+}
+
+// compareMlflowDeployment will determine if two Deployments are equal
+func (r *SubmarineReconciler) compareMlflowDeployment(oldDeployment, newDeployment *appsv1.Deployment) bool {
+	// spec.replicas
+	if *oldDeployment.Spec.Replicas != *newDeployment.Spec.Replicas {
+		return false
+	}
+
+	if len(oldDeployment.Spec.Template.Spec.Containers) != 1 {
+		return false
+	}
+	// spec.template.spec.containers[0].env
+	if !util.CompareEnv(oldDeployment.Spec.Template.Spec.Containers[0].Env,
+		newDeployment.Spec.Template.Spec.Containers[0].Env) {
+		return false
+	}
+	// spec.template.spec.containers[0].image
+	if oldDeployment.Spec.Template.Spec.Containers[0].Image !=
+		newDeployment.Spec.Template.Spec.Containers[0].Image {
+		return false
+	}
+
+	if len(oldDeployment.Spec.Template.Spec.InitContainers) != 2 || len(newDeployment.Spec.Template.Spec.InitContainers) != 2 {
+		return false
+	}
+	for index, old := range oldDeployment.Spec.Template.Spec.InitContainers {
+		container := newDeployment.Spec.Template.Spec.InitContainers[index]
+		// spec.template.spec.initContainers.image
+		if old.Image != container.Image {
+			return false
+		}
+		// spec.template.spec.initContainers.command
+		if !util.CompareSlice(old.Command, container.Command) {
+			return false
+		}
+		// spec.template.spec.initContainers.SecurityContext
+		if r.ClusterType == "openshift" && r.SeldonIstioEnable {
+			sc := old.SecurityContext
+			if sc == nil {
+				return false
+			} else {
+				if util.CompareInt64(sc.RunAsUser, container.SecurityContext.RunAsUser) {
+					return false
+				}
+				if util.CompareInt64(sc.RunAsGroup, container.SecurityContext.RunAsGroup) {
+					return false
+				}
+			}
+		}
+	}
+
+	// spec.template.spec.imagePullSecrets
+	if !util.ComparePullSecrets(oldDeployment.Spec.Template.Spec.ImagePullSecrets,
+		newDeployment.Spec.Template.Spec.ImagePullSecrets) {
+		return false
+	}
+
+	return true
 }

@@ -54,6 +54,8 @@ spec:
     metadata:
       labels:
         app: submarine-minio
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: "submarine-storage"
       containers:
@@ -65,9 +67,15 @@ spec:
             - /data
           env:
             - name: MINIO_ACCESS_KEY
-              value: "submarine_minio"
+              valueFrom:
+                secretKeyRef:
+                  name: submarine-minio-secret
+                  key: MINIO_ACCESS_KEY
             - name: MINIO_SECRET_KEY
-              value: "submarine_minio"
+              valueFrom:
+                secretKeyRef:
+                  name: submarine-minio-secret
+                  key: MINIO_SECRET_KEY
           ports:
             - containerPort: 9000
           volumeMounts:
@@ -78,3 +86,12 @@ spec:
         - name: "volume"
           persistentVolumeClaim:
             claimName: "submarine-minio-pvc"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: submarine-minio-secret
+type: Opaque
+stringData:
+  MINIO_ACCESS_KEY: "submarine_minio"
+  MINIO_SECRET_KEY: "submarine_minio"
