@@ -51,12 +51,30 @@ public class Client {
 
   /* minio client */
   public MinioClient minioClient;
+  public static Map<String,Client> clientFactory = new HashMap<String,Client>();
 
-  public Client() {
-    minioClient = MinioClient.builder()
-            .endpoint(S3Constants.ENDPOINT)
-            .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-            .build();
+  public static Client getClient(String endpoint) {
+    Client client = clientFactory.get(endpoint);
+    Map<String,Client> clientLocalFactory = clientFactory;
+
+    if (client == null) {
+      synchronized(Client.class) {
+        if (client == null) {
+          client = new Client(endpoint);
+          clientLocalFactory.put(endpoint, client);
+          clientFactory = clientLocalFactory;
+        }
+      }
+    }
+    return client;
+  }
+
+  public static Client getInstance() {
+    return getClient(S3Constants.ENDPOINT);
+  }
+
+  public static Client getInstance(String endpoint) {
+    return getClient(endpoint);
   }
 
   private Client(String endpoint) {

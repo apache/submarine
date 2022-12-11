@@ -51,8 +51,9 @@ public class ModelVersionManager {
    * @return object
    */
   private static class ModelVersionManagerHolder {
-    private static ModelVersionManager manager = new ModelVersionManager(ModelVersionService.getInstance(), new ModelVersionTagService(),
-    Client.getInstance());
+    private static ModelVersionManager manager = new ModelVersionManager(ModelVersionService.getInstance(),
+                                                                        new ModelVersionTagService(),
+                                                                        Client.getInstance());
   }
 
   public static ModelVersionManager getInstance() {

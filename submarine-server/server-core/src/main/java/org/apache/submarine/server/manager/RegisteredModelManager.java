@@ -55,8 +55,10 @@ public class RegisteredModelManager {
    */
 
   private static class RegisteredModelManagerHolder {
-    private static RegisteredModelManager manager = new RegisteredModelManager(RegisteredModelService.getInstance(), ModelVersionService.getInstance(),
-    RegisteredModelTagService.getInstance(), Client.getInstance());
+    private static RegisteredModelManager manager = new RegisteredModelManager(RegisteredModelService.getInstance(),
+                                                          ModelVersionService.getInstance(),
+                                                          RegisteredModelTagService.getInstance(),
+                                                          Client.getInstance());
   }
 
   public static RegisteredModelManager getInstance() {

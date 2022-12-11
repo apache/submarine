@@ -57,7 +57,8 @@ public class ModelManager {
    * @return object
    */
   private static class ModelManagerHolder {
-    private static ModelManager manager = new ModelManager(SubmitterManager.loadSubmitter(), ModelVersionService.getInstance());
+    private static ModelManager manager = new ModelManager(SubmitterManager.loadSubmitter(),
+                                                            ModelVersionService.getInstance());
   }
 
   public static ModelManager getInstance() {
