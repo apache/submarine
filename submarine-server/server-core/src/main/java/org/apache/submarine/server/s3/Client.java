@@ -51,14 +51,14 @@ public class Client {
 
   /* minio client */
   public MinioClient minioClient;
-  public static Map<String,Client> clientFactory = new HashMap<String,Client>();
+  public static Map<String, Client> clientFactory = new HashMap<String, Client>();
 
   public static Client getClient(String endpoint) {
     Client client = clientFactory.get(endpoint);
-    Map<String,Client> clientLocalFactory = clientFactory;
+    Map<String, Client> clientLocalFactory = clientFactory;
 
     if (client == null) {
-      synchronized(Client.class) {
+      synchronized (Client.class) {
         if (client == null) {
           client = new Client(endpoint);
           clientLocalFactory.put(endpoint, client);
