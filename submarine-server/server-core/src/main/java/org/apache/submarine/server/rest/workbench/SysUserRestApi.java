@@ -59,9 +59,10 @@ import static org.apache.submarine.server.database.workbench.service.SysUserServ
 @Produces("application/json")
 @Singleton
 public class SysUserRestApi {
+
   private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
-  private final SysUserService userService = new SysUserService();
+  private static final SysUserService userService = SysUserService.INSTANCE;
 
   @Inject
   public SysUserRestApi() {

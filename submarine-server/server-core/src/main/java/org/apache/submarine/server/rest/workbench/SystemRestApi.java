@@ -49,7 +49,7 @@ import java.util.Map;
 public class SystemRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(SystemRestApi.class);
 
-  private SysUserService userService = new SysUserService();
+  private static final SysUserService userService = SysUserService.INSTANCE;
 
   @Inject
   public SystemRestApi() {

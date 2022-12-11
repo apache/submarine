@@ -43,8 +43,9 @@ import static org.apache.submarine.server.database.workbench.service.SysUserServ
  */
 public class RegistryUserActionAdapter extends JEEHttpActionAdapter {
 
+  private static final SysUserService userService = SysUserService.INSTANCE;
+
   private final Logger LOG = LoggerFactory.getLogger(RegistryUserActionAdapter.class);
-  private static final SysUserService userService = new SysUserService();
 
   @Override
   public Object adapt(HttpAction action, WebContext context) {

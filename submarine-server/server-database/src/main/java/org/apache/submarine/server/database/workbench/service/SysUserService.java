@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class SysUserService {
+
+  public static final SysUserService INSTANCE = new SysUserService();
+
   private static final Logger LOG = LoggerFactory.getLogger(SysUserService.class);
 
   private static final String GET_USER_BY_NAME_STATEMENT
