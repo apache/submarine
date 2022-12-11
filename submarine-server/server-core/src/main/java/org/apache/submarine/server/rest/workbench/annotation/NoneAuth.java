@@ -17,23 +17,17 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+package org.apache.submarine.server.rest.workbench.annotation;
 
-@Component({
-  selector: 'submarine-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  constructor(private router: Router, private title: Title) {}
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  ngOnInit(): void {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      const paths = this.router.url.split('/');
-      this.title.setTitle(`Submarine - ${paths[paths.length - 1]}`);
-    });
-  }
+/**
+ * Identifies methods that do not require auth checks
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface NoneAuth {
 }

@@ -31,6 +31,11 @@ public class CommonConfig {
 
   public static final int MAX_AGE;
 
+  public static final String AGENT_HEADER = "User-Agent";
+  // python sdk agent header (submarine-sdk/pysubmarine/submarine/client/api_client.py#93)
+  // We only deal with front and server, py-sdk is not dealt with now
+  public static final String PYTHON_USER_AGENT_REGREX = "^OpenAPI-Generator/[\\w\\-\\.]+/python$";
+
   static {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     MAX_AGE = conf.getInt(ConfVars.SUBMARINE_AUTH_MAX_AGE_ENV);

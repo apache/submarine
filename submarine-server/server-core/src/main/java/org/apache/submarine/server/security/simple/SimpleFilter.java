@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -51,21 +50,21 @@ public class SimpleFilter extends CommonFilter implements Filter {
   }
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-  }
-
-  @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                        FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
     HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-    // check header token
-    Optional<JwtProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
-    // If the token can be correctly parsed then continue processing, otherwise return 401
-    if (profile.isPresent()) {
-      filterChain.doFilter(servletRequest, servletResponse);
+    if (isProtectedApi(httpServletRequest)) {
+      // check header token
+      Optional<JwtProfile> profile = provider.perform(httpServletRequest, httpServletResponse);
+      // If the token can be correctly parsed then continue processing, otherwise return 401
+      if (profile.isPresent()) {
+        filterChain.doFilter(servletRequest, servletResponse);
+      } else {
+        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+      }
     } else {
-      httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+      filterChain.doFilter(servletRequest, servletResponse);
     }
   }
 

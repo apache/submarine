@@ -1,0 +1,12 @@
+{
+  "uid": "oidc_test",
+  "sub": "677ecaf0-2d94-4fa5-8cc1-f3caecac09f9",
+  "email_verified": false,
+  "displayName": "oidc_test",
+  "name": "oidc_test",
+  "preferred_username": "oidc_test",
+  "given_name": "oidc_test",
+  "family_name": "0",
+  "userId": "ffa47159-a80c-450c-999a-dd9420d393da",
+  "policy": "public_read_write_policy"
+}

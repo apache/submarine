@@ -32,17 +32,37 @@ import { LocalStorageService } from './local-storage.service';
 export class AuthService {
   isLoggedIn = false;
   authTokenKey = 'auth_token';
-
   // store the URL so we can redirect after logging in
   redirectUrl: string;
+  // auth flow type: token, session
+  flowType: string = "token";
 
   constructor(
     private localStorageService: LocalStorageService,
     private baseApi: BaseApiService,
     private httpClient: HttpClient
   ) {
-    const authToken = this.localStorageService.get<string>(this.authTokenKey);
-    this.isLoggedIn = !!authToken;
+    this.flowType = window.GLOBAL_CONFIG.type
+    // console.log(`auth type = ${this.authType}`)
+    if (this.flowType === "session") {
+      this.isLoggedIn = true;
+    } else {
+      const authToken = this.localStorageService.get<string>(this.authTokenKey);
+      this.isLoggedIn = !!authToken;
+    }
+  }
+
+  getFlowType(): string {
+    return this.flowType;
+  }
+
+  getToken() {
+    return this.localStorageService.get<string>(this.authTokenKey);
+  }
+
+  removeToken() {
+    this.isLoggedIn = false;
+    this.localStorageService.remove(this.authTokenKey);
   }
 
   login(userForm: { userName: string; password: string }): Observable<SysUser> {
@@ -66,15 +86,19 @@ export class AuthService {
   }
 
   logout() {
-    return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
-      map((res) => {
-        if (res.result) {
-          this.isLoggedIn = false;
-          this.localStorageService.remove(this.authTokenKey);
-        }
-
-        return res.result;
-      })
-    );
+    if (this.flowType === "session") {
+      this.removeToken();
+      const url = window.location.origin + window.location.pathname
+      window.location.href = '/auth/logout?redirect_url=' + url;
+    } else {
+      return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
+        map((res) => {
+          if (res.result) {
+            this.removeToken();
+          }
+          return res.result;
+        })
+      );
+    }
   }
 }

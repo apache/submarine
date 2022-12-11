@@ -17,23 +17,27 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+package org.apache.submarine.server.security.common;
 
-@Component({
-  selector: 'submarine-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  constructor(private router: Router, private title: Title) {}
+/**
+ * Type of the authentication flow
+ */
+public enum AuthFlowType {
 
-  ngOnInit(): void {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      const paths = this.router.url.split('/');
-      this.title.setTitle(`Submarine - ${paths[paths.length - 1]}`);
-    });
+  /* Use header token to pass authentication information by default */
+  TOKEN("token"),
+
+  /* Using session to pass authentication information is generally suitable for sso */
+  SESSION("session");
+
+  private final String type;
+
+  AuthFlowType(String type) {
+    this.type = type;
   }
+
+  public String getType() {
+    return type;
+  }
+
 }

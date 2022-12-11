@@ -86,6 +86,11 @@ public class SubmarineConfVars {
     ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
     ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10"),
 
+    /* cookie setting */
+    SUBMARINE_COOKIE_HTTP_ONLY("submarine.cookie.http.only", false),
+    SUBMARINE_COOKIE_SECURE("submarine.cookie.secure", false),
+    SUBMARINE_COOKIE_SAMESITE("submarine.cookie.samesite", ""),
+
     /* auth */
     SUBMARINE_AUTH_TYPE("submarine.auth.type", "none"),
     SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", "SUBMARINE_SECRET_12345678901234567890"),

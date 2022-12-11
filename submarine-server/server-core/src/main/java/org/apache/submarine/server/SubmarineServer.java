@@ -18,12 +18,16 @@
  */
 package org.apache.submarine.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.SecurityProvider;
+import org.apache.submarine.server.security.common.AuthFlowType;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.server.websocket.WebSocketServer;
+import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -33,6 +37,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.session.DatabaseAdaptor;
+import org.eclipse.jetty.server.session.JDBCSessionDataStoreFactory;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -119,6 +125,9 @@ public class SubmarineServer extends ResourceConfig {
 
     setupRestApiContextHandler(webApp, conf);
 
+    // Cookie config
+    setCookieConfig(webApp);
+
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
 
@@ -199,6 +208,51 @@ public class SubmarineServer extends ResourceConfig {
       webApp.setTempDirectory(warTempDirectory);
     }
 
+    // add security filter
+    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
+    if (securityProvider.isPresent()) {
+      SecurityProvider provider = securityProvider.get();
+      Class<Filter> filterClass = provider.getFilterClass();
+      // add filter
+      LOG.info("Add {} to support auth", filterClass);
+      webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
+      // add flow type result to front end
+      AuthFlowType type = provider.getAuthFlowType();
+      // If using session, we can add JDBCSessionDataStoreFactory to support clustering session
+      // This solves two problems:
+      // 1. session loss after service restart
+      // 2. session sharing when multiple replicas
+      if (type == AuthFlowType.SESSION) {
+        // Configure a JDBCSessionDataStoreFactory.
+        JDBCSessionDataStoreFactory sessionDataStoreFactory = new JDBCSessionDataStoreFactory();
+        sessionDataStoreFactory.setGracePeriodSec(3600);
+        sessionDataStoreFactory.setSavePeriodSec(0);
+        // add datasource (current mybatis) to factory
+        DatabaseAdaptor adaptor = new DatabaseAdaptor();
+        adaptor.setDatasource(MyBatisUtil.getDatasource());
+        sessionDataStoreFactory.setDatabaseAdaptor(adaptor);
+        // Add the SessionDataStoreFactory as a bean on the server.
+        jettyWebServer.addBean(sessionDataStoreFactory);
+      }
+
+      ServletHolder authProviderServlet = new ServletHolder(new HttpServlet() {
+        private static final long serialVersionUID = 1L;
+        private final String staticProviderJs = String.format(
+            "(function () { window.GLOBAL_CONFIG = { \"type\": \"%s\" }; })();", type.getType()
+        );
+        private static final String contentType = "application/javascript";
+        private static final String encoding = "UTF-8";
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+                throws ServletException, IOException {
+          resp.setContentType(contentType);
+          resp.setCharacterEncoding(encoding);
+          resp.getWriter().write(staticProviderJs);
+        }
+      });
+      webApp.addServlet(authProviderServlet, "/assets/security/provider.js");
+    }
+
     webApp.addServlet(new ServletHolder(new DefaultServlet()), "/");
     // When requesting the workbench page, the content of index.html needs to be returned,
     // otherwise a 404 error will be displayed
@@ -207,17 +261,28 @@ public class SubmarineServer extends ResourceConfig {
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
 
-    // add security filter
-    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
-    if (securityProvider.isPresent()) {
-      Class<Filter> filterClass = securityProvider.get().getFilterClass();
-      LOG.info("Add {} to support auth", filterClass);
-      webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
-    }
-
     handlers.setHandlers(new Handler[]{webApp});
 
     return webApp;
+  }
+
+  /**
+   * Session cookie config
+   */
+  public static void setCookieConfig(WebAppContext webapp) {
+    // http only
+    webapp.getSessionHandler().getSessionCookieConfig().setHttpOnly(
+        conf.getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_HTTP_ONLY)
+    );
+    // same site: NONE("None"), STRICT("Strict"), LAX("Lax");
+    String sameSite = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_SAMESITE);
+    if (StringUtils.isNoneBlank(sameSite)) {
+      webapp.getSessionHandler().setSameSite(HttpCookie.SameSite.valueOf(sameSite.toUpperCase()));
+    }
+    // secure
+    webapp.getSessionHandler().getSessionCookieConfig().setSecure(
+        conf.getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_SECURE)
+    );
   }
 
   private static Server setupJettyServer(SubmarineConfiguration conf) {

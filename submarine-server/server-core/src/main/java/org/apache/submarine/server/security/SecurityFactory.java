@@ -21,6 +21,7 @@ package org.apache.submarine.server.security;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.server.security.oidc.OidcSecurityProvider;
 import org.apache.submarine.server.security.simple.SimpleSecurityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +40,15 @@ public class SecurityFactory {
     return (SimpleSecurityProvider) providerMap.get("simple");
   }
 
+  public static OidcSecurityProvider getPac4jSecurityProvider() {
+    return (OidcSecurityProvider) providerMap.get("oidc");
+  }
+
   static {
-    // int provider map
+    // init provider map
     providerMap = new HashMap<>();
     providerMap.put("simple", new SimpleSecurityProvider());
+    providerMap.put("oidc", new OidcSecurityProvider());
   }
 
   public static void addProvider(String name, SecurityProvider provider) {
@@ -51,7 +57,7 @@ public class SecurityFactory {
 
   public static Optional<SecurityProvider> getSecurityProvider() {
     String authType = SubmarineConfiguration.getInstance()
-        .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
+            .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
     if (providerMap.containsKey(authType)) {
       return Optional.ofNullable(providerMap.get(authType));
     } else {

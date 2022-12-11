@@ -21,11 +21,9 @@ package org.apache.submarine.server.security.simple;
 
 import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.security.common.CommonConfig;
-import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.JEEContext;
-import org.pac4j.core.matching.matcher.PathMatcher;
-import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.jwt.profile.JwtProfile;
@@ -37,11 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Optional;
 
-public class SimpleSecurityProvider implements SecurityProvider<SimpleFilter, JwtProfile> {
+public class SimpleSecurityProvider extends SecurityProvider<SimpleFilter, JwtProfile> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SimpleSecurityProvider.class);
-
-  private Config pac4jConfig;
 
   @Override
   public Class<SimpleFilter> getFilterClass() {
@@ -49,24 +45,14 @@ public class SimpleSecurityProvider implements SecurityProvider<SimpleFilter, Jw
   }
 
   @Override
-  public Config getConfig() {
+  public Config createConfig() {
     if (pac4jConfig != null) {
       return pac4jConfig;
     }
-
     // header client
     HeaderClient headerClient = new HeaderClient(CommonConfig.AUTH_HEADER, CommonConfig.BEARER_HEADER_PREFIX,
             SimpleLoginConfig.getJwtAuthenticator());
-
-    Config pac4jConfig = new Config(headerClient);
-    // skip web static resources
-    pac4jConfig.addMatcher("static", new PathMatcher().excludeRegex(
-            "^/.*(\\.map|\\.js|\\.css|\\.ico|\\.svg|\\.png|\\.html|\\.htm)$"));
-    // skip login rest api
-    pac4jConfig.addMatcher("api", new PathMatcher().excludeRegex("^/api/auth/login$"));
-    this.pac4jConfig = pac4jConfig;
-
-    return pac4jConfig;
+    return new Config(headerClient);
   }
 
   @Override
@@ -76,11 +62,11 @@ public class SimpleSecurityProvider implements SecurityProvider<SimpleFilter, Jw
 
   @Override
   public Optional<JwtProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    UserProfile profile = CommonFilter.SECURITY_LOGIC.perform(
-        context,
-        pac4jConfig,
-        (JEEContext ctx, Collection<UserProfile> profiles, Object... parameters) -> {
+    UserProfile profile = (UserProfile) createSecurityLogic().perform(
+        createWebContext(hsRequest, hsResponse),
+        createSessionStore(hsRequest, hsResponse),
+        getConfig(),
+        (WebContext ctx, SessionStore store, Collection<UserProfile> profiles, Object... parameters) -> {
           if (profiles.isEmpty()) {
             LOG.warn("No profiles found with default auth.");
             return null;
@@ -88,15 +74,9 @@ public class SimpleSecurityProvider implements SecurityProvider<SimpleFilter, Jw
             return profiles.iterator().next();
           }
         },
-        CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), DEFAULT_AUTHORIZER, "static,api", null);
+        createHttpActionAdapter(),
+        getClient(hsRequest), DEFAULT_AUTHORIZER, null
+    );
     return Optional.ofNullable((JwtProfile) profile);
-  }
-
-  @Override
-  public Optional<JwtProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
-    ProfileManager<JwtProfile> manager = new ProfileManager<>(context);
-    return manager.get(true);
   }
 }

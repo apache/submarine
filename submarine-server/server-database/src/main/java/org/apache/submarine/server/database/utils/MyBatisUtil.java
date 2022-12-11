@@ -26,6 +26,7 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
@@ -46,8 +47,9 @@ public class MyBatisUtil {
       String jdbcUrl = conf.getJdbcUrl();
       String jdbcUserName = conf.getJdbcUserName();
       String jdbcPassword = conf.getJdbcPassword();
-      LOG.info("MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: {}",
-              jdbcClassName, jdbcUrl, jdbcUserName, jdbcPassword);
+      // We need to protect the password in logging
+      LOG.info("MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: ****",
+              jdbcClassName, jdbcUrl, jdbcUserName);
 
       Properties props = new Properties();
       props.setProperty("jdbc.driverClassName", jdbcClassName);
@@ -69,6 +71,13 @@ public class MyBatisUtil {
    */
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();
+  }
+
+  /**
+   * Get datasource {@link org.apache.ibatis.datasource.pooled.PooledDataSource}
+   */
+  public static DataSource getDatasource() {
+    return sqlSessionFactory.getConfiguration().getEnvironment().getDataSource();
   }
 
   private static void checkCalledByTestMethod() {

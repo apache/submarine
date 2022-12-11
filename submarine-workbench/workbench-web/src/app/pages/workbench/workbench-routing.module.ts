@@ -97,7 +97,7 @@ const routes: Routes = [
       useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
         const disablePaths = ['home', 'data', 'workspace', 'interpreter'];
         let currentPage = state.url.split('/')[2];
-        console.log('currentPage', currentPage);
+        // console.log('currentPage', currentPage);
         if (disablePaths.includes(currentPage)) return false;
         else return true;
       },
