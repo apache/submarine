@@ -52,7 +52,7 @@ public enum Client {
   CUSTOMER("http://localhost:9000");
 
   /* submarine config */
-  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+  private final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   /* minio client */
   private final MinioClient minioClient;
