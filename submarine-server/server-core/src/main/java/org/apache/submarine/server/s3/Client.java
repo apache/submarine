@@ -87,7 +87,8 @@ public enum Client {
   }
 
   public static Client getInstance() {
-    return clientFactory.get(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT.varValue);
+    return clientFactory.get(SubmarineConfiguration.getInstance()
+                        .getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT));
   }
 
   public static Client getInstance(String endpoint) {
