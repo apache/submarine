@@ -48,6 +48,9 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
  * S3(Minio) default client
  */
 public enum Client {
+  DEFAULT(SubmarineConfiguration.getInstance().getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT)),
+  CUSTOMER("http://localhost:9000");
+
   /* submarine config */
   private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
@@ -56,8 +59,6 @@ public enum Client {
 
   public static Map<String, Client> clientFactory = new HashMap<String, Client>();
   private final String endpoint;
-
-  DEFAULT(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT)), CUSTOMER("http://localhost:9000");
 
   static {
     for (Client clientSingleton : Client.values()) {
