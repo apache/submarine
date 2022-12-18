@@ -66,7 +66,7 @@ public enum Client {
     }
   }
 
-  private Client(String endpoint) {
+  Client(String endpoint) {
     this.endpoint = endpoint;
     this.minioClient =  MinioClient.builder()
                         .endpoint(endpoint)
@@ -76,7 +76,7 @@ public enum Client {
                         ).build();
   }
 
-  private Client() {
+  Client() {
     this.endpoint = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT);
     this.minioClient =  MinioClient.builder()
                         .endpoint(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT))
