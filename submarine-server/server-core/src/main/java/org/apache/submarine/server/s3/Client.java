@@ -44,44 +44,40 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 
-/**
- * S3(Minio) default client
- */
-public class Client {
 
-  /* minio client */
-  public MinioClient minioClient;
+public enum Client {
+  DEFAULT(S3Constants.ENDPOINT), CUSTOMER("http://localhost:9000");
+
   public static Map<String, Client> clientFactory = new HashMap<String, Client>();
+  private final String endpoint;
+  private final MinioClient minioClient;
 
-  public static Client getClient(String endpoint) {
-    Client client = clientFactory.get(endpoint);
-    Map<String, Client> clientLocalFactory = clientFactory;
 
-    if (client == null) {
-      synchronized (Client.class) {
-        if (client == null) {
-          client = new Client(endpoint);
-          clientLocalFactory.put(endpoint, client);
-          clientFactory = clientLocalFactory;
-        }
-      }
+  static {
+    for (Client clientSingleton : Client.values()) {
+      clientFactory.put(clientSingleton.endpoint, clientSingleton);
     }
-    return client;
+  }
+
+  Client(String endpoint) {
+    this.endpoint = endpoint;
+    this.minioClient = MinioClient.builder()
+    .endpoint(endpoint)
+    .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+    .build();
   }
 
   public static Client getInstance() {
-    return getClient(S3Constants.ENDPOINT);
+    return clientFactory.get(S3Constants.ENDPOINT);
   }
 
   public static Client getInstance(String endpoint) {
-    return getClient(endpoint);
-  }
-
-  private Client(String endpoint) {
-    minioClient = MinioClient.builder()
-        .endpoint(endpoint)
-        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-        .build();
+    try {
+      return clientFactory.get(endpoint);
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          e.getMessage());
+    }
   }
 
   /**
