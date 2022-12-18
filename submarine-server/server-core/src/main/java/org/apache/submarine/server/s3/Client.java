@@ -44,13 +44,21 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 
-
+/**
+ * S3(Minio) default client
+ */
 public enum Client {
-  DEFAULT(S3Constants.ENDPOINT), CUSTOMER("http://localhost:9000");
+  DEFAULT(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT), CUSTOMER("http://localhost:9000");
+
+  /* minio client */
+  private final MinioClient minioClient;
+
+  /* submarine config */
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static Map<String, Client> clientFactory = new HashMap<String, Client>();
   private final String endpoint;
-  private final MinioClient minioClient;
+
 
 
   static {
@@ -61,14 +69,16 @@ public enum Client {
 
   Client(String endpoint) {
     this.endpoint = endpoint;
-    this.minioClient = MinioClient.builder()
-    .endpoint(endpoint)
-    .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-    .build();
+    this.minioClient =  MinioClient.builder()
+                        .endpoint(endpoint)
+                        .credentials(
+                          conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
+                          conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
+                        ).build();
   }
 
   public static Client getInstance() {
-    return clientFactory.get(S3Constants.ENDPOINT);
+    return clientFactory.get(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT);
   }
 
   public static Client getInstance(String endpoint) {
