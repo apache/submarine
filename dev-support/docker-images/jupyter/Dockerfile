@@ -95,8 +95,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda init bash && \
     source ~/.bashrc && conda activate && \
     # it is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab jupyterlab-git && \
-    pip install cvxpy && \
+    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab==3.5.2 jupyterlab-git==0.41.0 && \
+    pip install cvxpy==1.2.2 && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -106,7 +106,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
     conda clean -a -y
 
-RUN pip --no-cache-dir install pyqlib
+RUN pip --no-cache-dir install pyqlib==0.8.6
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone --depth=1 https://github.com/apache/submarine && \
