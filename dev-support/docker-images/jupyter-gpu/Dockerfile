@@ -118,7 +118,7 @@ RUN git clone --depth=1 https://github.com/apache/submarine && \
     rm submarine -rf
 
 # Add qlib example in notebook
-RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
+RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.9.0/examples/workflow_by_code.ipynb -P $HOME
 
 
 EXPOSE $NB_PORT
