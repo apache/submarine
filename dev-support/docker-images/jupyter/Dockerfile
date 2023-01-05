@@ -95,7 +95,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda init bash && \
     source ~/.bashrc && conda activate && \
     # it is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs jupyterlab jupyterlab-git cvxpy==1.0.21 && \
+    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab==3.5.2 jupyterlab-git==0.41.0 && \
+    pip install cvxpy==1.2.2 && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -105,7 +106,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
     conda clean -a -y
 
-RUN pip --no-cache-dir install pyqlib==0.6.2
+RUN pip --no-cache-dir install pyqlib==0.8.6
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone --depth=1 https://github.com/apache/submarine && \
@@ -117,7 +118,7 @@ RUN git clone --depth=1 https://github.com/apache/submarine && \
     rm submarine -rf
 
 # Add qlib example in notebook
-RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
+RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.8.6/examples/workflow_by_code.ipynb -P $HOME
 
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
