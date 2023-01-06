@@ -190,6 +190,10 @@ eval $(minikube docker-env -u)
 
 For `go` files, please use [gofmt](https://golang.org/pkg/cmd/gofmt/) to format the code.
 
+```bash
+make fmt
+```
+
 For `yaml` files, please use [prettier](https://prettier.io/) to format the code.
 
 ## Generate API
