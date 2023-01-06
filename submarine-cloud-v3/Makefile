@@ -81,6 +81,11 @@ endif
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
+# We define a FAIL_ON_STDOUT awk command that detects if an error message is output,
+# which we will use several times later.
+# NR is a built-in variable for the number of record.
+FAIL_ON_STDOUT := awk '{ print } END { if (NR > 0) { exit 1 } }'
+
 .PHONY: all
 all: build
 
@@ -104,8 +109,10 @@ help: ## Display this help.
 ##@ Development
 
 .PHONY: manifests
+# controller-gen does not add headerFile to the yaml, so we need to add it manually for now
+# https://github.com/kubernetes-sigs/controller-tools/issues/464
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases && sed -i '' '1r ./hack/boilerplate.yaml.txt' config/crd/bases/*.yaml && sed -i '' '1r ./hack/boilerplate.yaml.txt' config/rbac/role.yaml
 
 .PHONY: generate
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
@@ -113,11 +120,11 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
-	go fmt ./...
+	go fmt ./... 2>&1 | $(FAIL_ON_STDOUT)
 
 .PHONY: vet
 vet: ## Run go vet against code.
-	go vet ./...
+	go vet ./... 2>&1 | $(FAIL_ON_STDOUT)
 
 .PHONY: test
 test: manifests generate fmt vet envtest ## Run tests.
