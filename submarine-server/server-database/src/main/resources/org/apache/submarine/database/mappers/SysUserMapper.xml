@@ -39,8 +39,8 @@
     SELECT a.*, b.dept_name FROM sys_user a LEFT JOIN sys_department b ON a.dept_code = b.dept_code
     WHERE 1 = 1
     <if test="deptCode!=null and deptCode!=''"> AND a.`dept_code` = #{deptCode}</if>
-    <if test="userName!=null and userName!=''"> AND a.`user_name` like '%${userName}%'</if>
-    <if test="email!=null and email!=''"> AND a.`email` like '%${email}%'</if>
+    <if test="userName!=null and userName!=''"> AND a.`user_name` like concat('%', #{userName}, '%')</if>
+    <if test="email!=null and email!=''"> AND a.`email` like concat('%', #{email}, '%')</if>
     ORDER BY a.create_time
   </select>
 

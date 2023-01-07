@@ -31,8 +31,8 @@
   <select id="selectAll" resultMap="resultMap">
     SELECT * FROM sys_dict_item WHERE 1 = 1
     <if test="dictCode!=null and dictCode!=''"> AND `dict_code` = #{dictCode}</if>
-    <if test="itemCode!=null and itemCode!=''"> AND `item_code` like '%${itemCode}%'</if>
-    <if test="itemName!=null and itemName!=''"> AND `item_name` like '%${itemName}%'</if>
+    <if test="itemCode!=null and itemCode!=''"> AND `item_code` like concat('%', #{itemCode}, '%')</if>
+    <if test="itemName!=null and itemName!=''"> AND `item_name` like concat('%', #{itemName}, '%')</if>
     ORDER BY sort_order
   </select>
   <resultMap id="resultMap" type="org.apache.submarine.server.database.workbench.entity.SysDictItemEntity" extends="BaseEntityResultMap">

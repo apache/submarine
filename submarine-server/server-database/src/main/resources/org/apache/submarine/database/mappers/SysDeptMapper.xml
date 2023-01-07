@@ -42,8 +42,8 @@
     SELECT a.*, b.dept_name AS parent_name
     FROM sys_department a LEFT JOIN sys_department b ON a.parent_code=b.dept_code
     WHERE 1=1
-    <if test="deptCode!=null and deptCode!=''"> AND a.`dept_code` like '%${deptCode}%' </if>
-    <if test="deptName!=null and deptName!=''"> AND a.`dept_name` like '%${deptName}%' </if>
+    <if test="deptCode!=null and deptCode!=''"> AND a.`dept_code` like concat('%', #{deptCode}, '%')</if>
+    <if test="deptName!=null and deptName!=''"> AND a.`dept_name` like concat('%', #{deptName}, '%')</if>
     ORDER BY a.sort_order
   </select>
 
