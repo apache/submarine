@@ -40,7 +40,6 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.api.Submitter;
-import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -52,7 +51,6 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.client.K8sDefaultClient;
-import org.apache.submarine.server.submitter.k8s.model.AgentPod;
 import org.apache.submarine.server.submitter.k8s.model.K8sResource;
 import org.apache.submarine.server.submitter.k8s.model.common.Configmap;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
@@ -196,12 +194,7 @@ public class K8sSubmitter implements Submitter {
       // MLJob K8s resource object
       MLJob mlJob = MLJobFactory.getMLJob(spec);
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-      // Agent pod K8s resource object
-      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
-          mlJob.getResourceType(), spec.getMeta().getExperimentId());
-      // commit resources/CRD with transaction
-      List<Object> values = resourceTransaction(mlJob, agentPod);
-      return (Experiment) values.get(0);
+      return mlJob.create(k8sClient);
     } catch (InvalidSpecException e) {
       LOG.error(String.format("K8s submitter: parse %s object failed by %s",
               spec.getMeta().getFramework(), e.getMessage()), e);
@@ -240,13 +233,9 @@ public class K8sSubmitter implements Submitter {
     try {
       // MLJob K8s resource object
       MLJob mlJob = MLJobFactory.getMLJob(spec);
-      // Agent pod K8s resource object
-      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
-              mlJob.getResourceType(), spec.getMeta().getExperimentId());
-      // Delete with transaction
-      return deleteResourcesTransaction(mlJob, agentPod);
+      return mlJob.delete(k8sClient);
     } catch (InvalidSpecException e) {
-      throw new SubmarineRuntimeException(200, e.getMessage());
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 
@@ -317,7 +306,7 @@ public class K8sSubmitter implements Submitter {
     V1Deployment deploy = k8sClient.getAppsV1Api()
             .readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
     return deploy == null ? false : Optional.ofNullable(deploy.getStatus().getAvailableReplicas())
-        .map(ar -> ar > 0).orElse(false); // at least one replica is running
+            .map(ar -> ar > 0).orElse(false); // at least one replica is running
   }
 
   @Override
@@ -339,14 +328,12 @@ public class K8sSubmitter implements Submitter {
       overwrite = new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name),
               NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
     }
-    // index-4: agent
-    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
-    // index-5: notebook VirtualService custom resource
+    // index-4: notebook VirtualService custom resource
     IstioVirtualService istioVirtualService = new IstioVirtualService(createMeta(namespace, name));
 
     // commit resources/CRD with transaction
     List<Object> values = resourceTransaction(workspace, userset, overwrite, notebookCR,
-            agentPod, istioVirtualService);
+            istioVirtualService);
     return (Notebook) values.get(3);
   }
 
@@ -385,12 +372,6 @@ public class K8sSubmitter implements Submitter {
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
       dependents.add(new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name)));
     }
-
-    // delete agent
-    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
-    LOG.info(String.format("Notebook:%s had been deleted, start to delete agent pod:%s",
-            spec.getMeta().getName(), agentPod.getMetadata().getName()));
-    dependents.add(agentPod);
 
     // delete resources
     return deleteResourcesTransaction(notebookCR, dependents.toArray(dependents.toArray(new K8sResource[0])));

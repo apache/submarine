@@ -22,7 +22,6 @@ package org.apache.submarine.server.submitter.k8s.mljob;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
-import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.submitter.k8s.K8sSubmitter;
@@ -30,7 +29,6 @@ import org.apache.submarine.server.submitter.k8s.SpecBuilder;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.client.K8sMockClient;
 import org.apache.submarine.server.submitter.k8s.client.MockClientUtil;
-import org.apache.submarine.server.submitter.k8s.model.AgentPod;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,14 +72,6 @@ public class SubmitterTensorflowApiTest {
             aResponse()
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/experiment/tf-read-api.json")));
-    // save pod agent url
-    String agentName = AgentPod.getNormalizePodName(CustomResourceType.TFJob, experimentId);
-    MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
-        .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
-        .willReturn(
-            aResponse()
-                .withStatus(200)
-                .withBody("{\"metadata\":{\"name\":\"" + agentName + "\"," + "\"namespace\":\"default\"}}"));
 
     // get tf url
     MappingBuilder tfGet = get(urlPathEqualTo(
@@ -100,15 +90,8 @@ public class SubmitterTensorflowApiTest {
             aResponse()
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/experiment/tf-delete-api.json")));
-    //  delete agent pod url
-    MappingBuilder agentDelete = delete(urlPathEqualTo(MockClientUtil.getPodUrl(namespace, agentName)))
-        .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
-        .willReturn(
-            aResponse()
-                .withStatus(200)
-                .withBody(MockClientUtil.getMockSuccessStatus(agentName)));
 
-    K8sClient k8sClient = new K8sMockClient(tfPost, agentPost, tfGet, tfDelete, agentDelete);
+    K8sClient k8sClient = new K8sMockClient(tfPost, tfGet, tfDelete);
     try {
       submitter = new K8sSubmitter(k8sClient);
       submitter.initialize(null);

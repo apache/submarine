@@ -23,7 +23,6 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.NotebookMeta;
@@ -32,7 +31,6 @@ import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.client.K8sMockClient;
 import org.apache.submarine.server.submitter.k8s.client.MockClientUtil;
-import org.apache.submarine.server.submitter.k8s.model.AgentPod;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -100,14 +98,6 @@ public class SubmitterNotebookApiTest {
             aResponse()
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/notebook/notebook-read-api.json")));
-    //  save pod agent url
-    String agentName = AgentPod.getNormalizePodName(CustomResourceType.Notebook, notebookId);
-    MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
-        .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
-        .willReturn(
-            aResponse()
-                .withStatus(200)
-                .withBody("{\"metadata\":{\"name\":\"" + agentName + "\",\"namespace\":\"default\"}}"));
     //  save istio url
     MappingBuilder istioPost = post(urlPathEqualTo(
         "/apis/networking.istio.io/v1beta1/namespaces/default/virtualservices"))
@@ -154,17 +144,10 @@ public class SubmitterNotebookApiTest {
             aResponse()
                 .withStatus(200)
                 .withBody(MockClientUtil.getMockSuccessStatus(configmapName)));
-    //  delete agent pod url
-    MappingBuilder podDelete = delete(urlPathEqualTo(MockClientUtil.getPodUrl(namespace, agentName)))
-        .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
-        .willReturn(
-            aResponse()
-                .withStatus(200)
-                .withBody(MockClientUtil.getMockSuccessStatus(agentName)));
     K8sClient k8sClient = new K8sMockClient(
         notebookGet, // get endpoint
-        pvcPost, configmapPost, notebookPost, agentPost, istioPost, // save endpoint
-        notebookDelete, istioDelete, pvcDelete, userPvcDelete, configmapDelete, podDelete // delete endpoint
+        pvcPost, configmapPost, notebookPost, istioPost, // save endpoint
+        notebookDelete, istioDelete, pvcDelete, userPvcDelete, configmapDelete // delete endpoint
     );
 
     // init notebook spec
