@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM alpine:3.10
+FROM alpine:3.16.3
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 # If you are in China, enabling the following two lines of code can speed up the build of the image, but it may cause failure in travis.
@@ -23,21 +23,18 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 # INSTALL openjdk
 RUN apk update && \
-    apk add --no-cache openjdk8 tzdata bash tini&& \
+    apk add --no-cache openjdk11 tzdata bash tini&& \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo Asia/Shanghai > /etc/timezone && \
     apk del tzdata && \
     rm -rf /tmp/* /var/cache/apk/*
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk/jre
 
 # Install Submarine
-ADD ./tmp/submarine-k8s-agent-*.tar.gz /opt/
-RUN ln -s /opt/submarine-k8s-agent-* "/opt/submarine-current"
-ADD ./tmp/submarine-site.xml "/opt/submarine-current/conf/"
+RUN mkdir "/opt/submarine-agent"
+ADD ./tmp/submarine-k8s-agent-*.jar /opt/submarine-agent/submarine-k8s-agent.jar
 
-WORKDIR /opt/submarine-current
+WORKDIR /opt/submarine-agent
 
-ENTRYPOINT ["/sbin/tini", "--"]
-
-CMD ["/bin/bash", "-c", "/opt/submarine-current/bin/agent.sh"]
+CMD ["java", "-jar", "/opt/submarine-agent/submarine-k8s-agent.jar"]

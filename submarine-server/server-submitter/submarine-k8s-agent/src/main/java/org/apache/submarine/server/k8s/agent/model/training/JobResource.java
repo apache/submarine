@@ -17,20 +17,21 @@
  * under the License.
  */
 
-package org.apache.submarine.server.k8s.agent;
+package org.apache.submarine.server.k8s.agent.model.training;
 
-import org.apache.submarine.server.api.common.CustomResourceType;
-import org.apache.submarine.server.k8s.agent.handler.CustomResourceHandler;
+import io.fabric8.kubernetes.api.model.Namespaced;
+import io.fabric8.kubernetes.client.CustomResource;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.submarine.server.k8s.agent.model.training.status.JobStatus;
 
-public class HandlerFactory {
+/**
+ * Kubeflow training operator custom resource
+ */
+public class JobResource extends CustomResource<Void, JobStatus> implements Namespaced {
 
-  private static String HANDLER_POSTFIX = "Handler";
-  private static String HANDLER_PACKAGE = "org.apache.submarine.server.k8s.agent.handler";
-    
-  public static CustomResourceHandler getHandler(CustomResourceType crType) 
-          throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-    String handlerClassStr = HANDLER_PACKAGE + "." +  crType.toString() + HANDLER_POSTFIX;
-    Class handlerClass = Class.forName(handlerClassStr);
-    return (CustomResourceHandler) handlerClass.newInstance();
-  }
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+    }
+
 }

@@ -30,19 +30,15 @@ export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 if [ ! -d "${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target" ]; then
   mkdir -p "${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target"
 fi
-submarine_dist_exists=$(find -L "${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target" -name "submarine-k8s-agent-${SUBMARINE_VERSION}.tar.gz")
+submarine_jar_exists=$(find -L "${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target" -name "submarine-k8s-agent-${SUBMARINE_VERSION}.jar")
 # Build source code if the package doesn't exist.
-if [[ -z "${submarine_dist_exists}" ]]; then
-  cd "${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent"
-  mvn clean package -DskipTests
+if [[ -z "${submarine_jar_exists}" ]]; then
+  cd ${SUBMARINE_HOME}
+  mvn clean install -DskipTests -pl submarine-server/server-submitter/submarine-k8s-agent -am
 fi
 
 mkdir -p "${CURRENT_PATH}/tmp"
-cp ${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target/submarine-k8s-agent-${SUBMARINE_VERSION}.tar.gz "${CURRENT_PATH}/tmp"
-
-# Replace the submarine.server.addr in the submarine-site.xml file with the link name of the submarine container
-# `submarine-server` is submarine server container name
-cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
+cp ${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target/submarine-k8s-agent-${SUBMARINE_VERSION}.jar "${CURRENT_PATH}/tmp"
 
 # build image
 cd ${CURRENT_PATH}

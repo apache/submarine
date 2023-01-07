@@ -34,120 +34,101 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
+    <dependency>
+      <groupId>io.javaoperatorsdk</groupId>
+      <artifactId>operator-framework</artifactId>
+      <version>4.1.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
+
 		<dependency>
 			<groupId>org.apache.submarine</groupId>
-			<artifactId>submarine-submitter-k8s</artifactId>
+			<artifactId>submarine-server-database</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
-	<profiles>
-		<profile>
-			<id>src</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-checkstyle-plugin</artifactId>
-						<configuration>
-							<skip>false</skip>
-						</configuration>
-					</plugin>
-					<plugin>
-						<artifactId>maven-enforcer-plugin</artifactId>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>src-dist</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<configuration>
-									<finalName>${project.artifactId}-${project.version}-src</finalName>
-									<appendAssemblyId>false</appendAssemblyId>
-									<attach>false</attach>
-									<descriptors>
-										<descriptor>src/assembly/src-distribution.xml</descriptor>
-									</descriptors>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	<build>
-		<plugins>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
+    <dependency>
+      <groupId>org.takes</groupId>
+      <artifactId>takes</artifactId>
+      <version>1.24.4</version>
+    </dependency>
 
-			<plugin>
-				<artifactId>maven-enforcer-plugin</artifactId>
-			</plugin>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies-runtime</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>runtime</includeScope>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-dependencies-system</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>system</includeScope>
-							<excludeTransitive>true</excludeTransitive>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java.version}</version>
+      <!-- mysql-connector-java uses the GPL license. When we release the version in Submarine-dist, we exclude mysql-connector-java jar -->
+    </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${plugin.maven.assembly.version}</version>
-				<executions>
-					<execution>
-						<id>dist</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>${project.artifactId}-${project.version}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<attach>false</attach>
-							<descriptors>
-								<descriptor>src/assembly/distribution.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.10.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>submarine-k8s-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${plugin.shade.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>org.apache.submarine.server.k8s.agent.SubmarineAgentListener</Main-Class>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>io.fabric8:openshift-client</artifact>
+                  <excludes>
+                    <exclude>io/fabric8/kubernetes/client/Config*</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -82,4 +82,28 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
+  <update id="create" >
+    update experiment
+    set experiment_status='Created', accepted_time=#{acceptedTime,jdbcType=TIMESTAMP}, update_time=now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="succeed" >
+    update experiment
+    set experiment_status='Succeeded', finished_time=#{finishedTime,jdbcType=TIMESTAMP}, update_time=now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="failed" >
+    update experiment
+    set experiment_status='Failed', finished_time=#{finishedTime,jdbcType=TIMESTAMP}, update_time=now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="running" >
+    update experiment
+    set experiment_status='Running', running_time=#{runningTime,jdbcType=TIMESTAMP}, update_time=now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

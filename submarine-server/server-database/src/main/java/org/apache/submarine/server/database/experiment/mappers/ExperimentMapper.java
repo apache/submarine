@@ -19,15 +19,41 @@
 
 package org.apache.submarine.server.database.experiment.mappers;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.submarine.server.database.experiment.entity.ExperimentEntity;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ExperimentMapper {
+
   List<ExperimentEntity> selectAll();
+
   ExperimentEntity select(String id);
 
   int insert(ExperimentEntity experiment);
+
   int update(ExperimentEntity experiment);
+
   int delete(String id);
+
+  /**
+   * Update experimentStatus to 'Created'
+   */
+  int create(@Param("id") String id, @Param("acceptedTime") Date acceptedTime);
+
+  /**
+   * Update experimentStatus to 'Succeeded'
+   */
+  int succeed(@Param("id") String id, @Param("finishedTime") Date finishedTime);
+
+  /**
+   * Update experimentStatus to 'Failed'
+   */
+  int failed(@Param("id") String id, @Param("finishedTime") Date finishedTime);
+
+  /**
+   * Update experimentStatus to 'Running'
+   */
+  int running(@Param("id") String id, @Param("runningTime") Date runningTime);
 }

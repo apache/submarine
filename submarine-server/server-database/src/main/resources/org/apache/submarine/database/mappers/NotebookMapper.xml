@@ -82,4 +82,12 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
+  <update id="updateStatus" >
+    update notebook
+    set notebook_status = #{status,jdbcType=VARCHAR},
+        reason = #{reason,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
 </mapper>
