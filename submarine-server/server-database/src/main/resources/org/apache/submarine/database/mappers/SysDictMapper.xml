@@ -31,8 +31,8 @@
   <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
     SELECT * FROM sys_dict
     WHERE 1=1
-    <if test="dictCode!=null and dictCode!=''">AND `dict_code` like '%${dictCode}%'</if>
-    <if test="dictName!=null and dictName!=''">AND `dict_name` like '%${dictName}%'</if>
+    <if test="dictCode!=null and dictCode!=''">AND `dict_code` like concat('%', #{dictCode}, '%')</if>
+    <if test="dictName!=null and dictName!=''">AND `dict_name` like concat('%', #{dictName}, '%')</if>
     ORDER BY id
   </select>
   <resultMap id="resultMap" type="org.apache.submarine.server.database.workbench.entity.SysDictEntity" extends="BaseEntityResultMap">

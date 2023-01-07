@@ -78,6 +78,19 @@ public class SysUserServiceTest {
             10);
     LOG.debug("userList.size():{}", userList.size());
     assertEquals(userList.size(), 1);
+
+    // Avoid sql injection.
+    // Issue: https://issues.apache.org/jira/browse/SUBMARINE-1361
+    List<SysUserEntity> sqlInjectTestList = userService.queryPageList(
+            String.format("%s' or 1=1 or 1='", sysUser.getUserName()),
+            null,
+            null,
+            null,
+            null,
+            0,
+            10);
+    assertEquals("SQL Injection Vulnerability Detected!", sqlInjectTestList.size(), 0);
+
     SysUserEntity user = userList.get(0);
 
     assertEquals(sysUser.getEmail(), user.getEmail());
