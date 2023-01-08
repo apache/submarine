@@ -86,7 +86,15 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 	}
 	// password secret
 	if submarine.Spec.Database.MysqlRootPasswordSecret != "" {
-		statefulset.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = submarine.Spec.Database.MysqlRootPasswordSecret
+		statefulset.Spec.Template.Spec.Containers[0].Env[0].Value = ""
+		statefulset.Spec.Template.Spec.Containers[0].Env[0].ValueFrom = &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: submarine.Spec.Database.MysqlRootPasswordSecret,
+				},
+				Key: "MYSQL_ROOT_PASSWORD",
+			},
+		}
 	}
 
 	return statefulset

@@ -47,12 +47,12 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 	specVirtual := submarine.Spec.Virtualservice
 	if specVirtual != nil {
 		virtualserviceHosts := specVirtual.Hosts
-		if virtualserviceHosts != nil {
+		if virtualserviceHosts != nil && len(virtualserviceHosts) > 0 {
 			// Use `Hosts` defined in submarine spec
 			virtualService.Spec.Hosts = virtualserviceHosts
 		}
 		virtualserviceGateways := specVirtual.Gateways
-		if virtualserviceGateways != nil {
+		if virtualserviceGateways != nil && len(virtualserviceGateways) > 0 {
 			// Use `Gateways` defined in submarine spec
 			virtualService.Spec.Gateways = virtualserviceGateways
 		} else {
