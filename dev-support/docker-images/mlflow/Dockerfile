@@ -17,7 +17,7 @@ FROM python:3.7.0-slim
 
 RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential wget
 
-RUN pip install mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3
+RUN pip install greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3
 
 COPY start.sh /usr/local/bin
 
@@ -27,6 +27,7 @@ ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio
 ENV BACKEND_URI mysql+pymysql://mlflow:password@submarine-database:3306/mlflowdb
+
 
 EXPOSE 5000
 
