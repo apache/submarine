@@ -15,7 +15,6 @@
 
 FROM python:3.7.0-slim
 
-ENV CPPFLAGS=-std=c++11
 RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential wget
 
 RUN pip install greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3
