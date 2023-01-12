@@ -26,8 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javax.ws.rs.core.Response;
-import java.util.Map;
-import java.util.HashMap;
 
 import io.minio.CopyObjectArgs;
 import io.minio.CopySource;
@@ -48,8 +46,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
  * S3(Minio) default client
  */
 public enum Client {
-  DEFAULT(SubmarineConfiguration.getInstance().getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT)),
-  CUSTOMER("http://localhost:9000");
+  INSTANCE(SubmarineConfiguration.getInstance().getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT));
 
   /* submarine config */
   private final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
@@ -57,17 +54,7 @@ public enum Client {
   /* minio client */
   private final MinioClient minioClient;
 
-  public static Map<String, Client> clientFactory = new HashMap<String, Client>();
-  private final String endpoint;
-
-  static {
-    for (Client clientSingleton : Client.values()) {
-      clientFactory.put(clientSingleton.endpoint, clientSingleton);
-    }
-  }
-
   Client(String endpoint) {
-    this.endpoint = endpoint;
     this.minioClient =  MinioClient.builder()
                         .endpoint(endpoint)
                         .credentials(
@@ -76,28 +63,8 @@ public enum Client {
                         ).build();
   }
 
-  Client() {
-    this.endpoint = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT);
-    this.minioClient =  MinioClient.builder()
-                        .endpoint(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT))
-                        .credentials(
-                            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
-                            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
-                        ).build();
-  }
-
   public static Client getInstance() {
-    return clientFactory.get(SubmarineConfiguration.getInstance()
-                        .getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT));
-  }
-
-  public static Client getInstance(String endpoint) {
-    try {
-      return clientFactory.get(endpoint);
-    } catch (Exception e) {
-      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-          e.getMessage());
-    }
+    return INSTANCE;
   }
 
   /**

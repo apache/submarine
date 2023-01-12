@@ -27,7 +27,7 @@ import java.util.List;
 
 
 public class ClientTest {
-  private final Client client = Client.getInstance("http://localhost:9000");
+  private final Client client = Client.getInstance();
   private final String testExperimentId = "experiment-sample";
 
   @After
@@ -78,5 +78,11 @@ public class ClientTest {
     client.copyArtifact(copyPath, path);
     response = client.downloadArtifact(copyPath);
     Assert.assertArrayEquals(content, response);
+  }
+
+  @Test
+  public void testSingleton() {
+    Client testClient = Client.getInstance();
+    Assert.assertEquals(testClient, client);
   }
 }
