@@ -135,6 +135,7 @@
     <json.version>20211205</json.version>
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>11.0.1</k8s.client-java.version>
+    <k8s.fabric8.version>6.2.0</k8s.fabric8.version>
     <jersey.test-framework>2.27</jersey.test-framework>
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>

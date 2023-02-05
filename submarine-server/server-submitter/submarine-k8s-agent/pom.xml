@@ -46,6 +46,20 @@
       </exclusions>
     </dependency>
 
+
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-server-mock</artifactId>
+      <version>${k8s.fabric8.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -86,6 +100,13 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-k8s-utils</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <!--  Unit Tests  -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
