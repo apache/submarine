@@ -54,41 +54,41 @@ public class ClientTest {
     Assert.assertArrayEquals(content, response);
   }
 
- @Test
- public void testListAndDeleteArtifactByExperimentId() {
-   byte[] content = "0123456789".getBytes();
+  @Test
+  public void testListAndDeleteArtifactByExperimentId() {
+    byte[] content = "0123456789".getBytes();
 
-   String[] artifactPaths = {
-       String.format("experiment/%s/1", testExperimentId),
-       String.format("experiment/%s/2", testExperimentId)
-   };
-   String[] actualResults = {
-       String.format("s3://%s/experiment/%s/1", S3Constants.BUCKET, testExperimentId),
-       String.format("s3://%s/experiment/%s/2", S3Constants.BUCKET, testExperimentId)
-   };
-   client.logArtifact(artifactPaths[0], content);
-   client.logArtifact(artifactPaths[1], content);
-   List<String> results = client.listArtifact(String.format("experiment/%s", testExperimentId));
-   Assert.assertArrayEquals(actualResults, results.toArray());
+    String[] artifactPaths = {
+        String.format("experiment/%s/1", testExperimentId),
+        String.format("experiment/%s/2", testExperimentId)
+    };
+    String[] actualResults = {
+        String.format("s3://%s/experiment/%s/1", S3Constants.BUCKET, testExperimentId),
+        String.format("s3://%s/experiment/%s/2", S3Constants.BUCKET, testExperimentId)
+    };
+    client.logArtifact(artifactPaths[0], content);
+    client.logArtifact(artifactPaths[1], content);
+    List<String> results = client.listArtifact(String.format("experiment/%s", testExperimentId));
+    Assert.assertArrayEquals(actualResults, results.toArray());
 
-   client.deleteArtifactsByExperiment(testExperimentId);
-   results = client.listArtifact(testExperimentId);
-   Assert.assertArrayEquals(new String[0], results.toArray());
- }
+    client.deleteArtifactsByExperiment(testExperimentId);
+    results = client.listArtifact(testExperimentId);
+    Assert.assertArrayEquals(new String[0], results.toArray());
+  }
 
- @Test
- public void testCopyObject() {
-   String path = "sample_folder/sample_file";
-   byte[] content = "0123456789".getBytes();
-   client.logArtifact(path, content);
-   byte[] response = client.downloadArtifact(path);
-   Assert.assertArrayEquals(content, response);
+  @Test
+  public void testCopyObject() {
+    String path = "sample_folder/sample_file";
+    byte[] content = "0123456789".getBytes();
+    client.logArtifact(path, content);
+    byte[] response = client.downloadArtifact(path);
+    Assert.assertArrayEquals(content, response);
 
-   String copyPath = "sample_folder_copy/sample_file";
-   client.copyArtifact(copyPath, path);
-   response = client.downloadArtifact(copyPath);
-   Assert.assertArrayEquals(content, response);
- }
+    String copyPath = "sample_folder_copy/sample_file";
+    client.copyArtifact(copyPath, path);
+    response = client.downloadArtifact(copyPath);
+    Assert.assertArrayEquals(content, response);
+  }
 
   @Test
   public void testSingleton() {
