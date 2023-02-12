@@ -30,7 +30,7 @@ setup(
     install_requires=[
         "numpy",
         "pandas",
-        "sqlalchemy>=1.4.0",
+        "sqlalchemy>=1.4.0, <2.0.0",
         "sqlparse",
         "pymysql",
         "requests>=2.26.0",  # SUBMARINE-922. avoid GPL dependency.

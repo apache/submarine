@@ -14,7 +14,7 @@
 # limitations under the License.
 
 mypy
-sqlalchemy[mypy]
+sqlalchemy[mypy]<2.0.0
 types-certifi
 types-python-dateutil
 types-PyYAML
