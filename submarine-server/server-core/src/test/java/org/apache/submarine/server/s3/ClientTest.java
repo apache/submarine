@@ -31,7 +31,7 @@ import java.util.List;
 
 
 public class ClientTest {
-  private final Client client = Client.getInstance();
+  private static Client client;
   private final String testExperimentId = "experiment-sample";
 
   @After
@@ -42,7 +42,8 @@ public class ClientTest {
   @BeforeClass
   public static void init() {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    conf.setString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT, "http://localhost:8000");
+    conf.setString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT, "http://localhost:9000");
+    client = Client.getInstance();
   }
 
   @Test
