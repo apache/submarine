@@ -24,3 +24,28 @@ CREATE TABLE `notebook`
     `reason`          varchar(512),
     `deleted_time`    datetime
 );
+
+insert into notebook (id, notebook_status)
+values ('notebook_1642402491519_0003', 'starting');
+
+CREATE TABLE `experiment`
+(
+    `id`                varchar(64) primary key,
+    `experiment_spec`   text,
+    `create_by`         varchar(32),
+    `create_time`       datetime,
+    `update_by`         varchar(32),
+    `update_time`       datetime,
+    `experiment_status` varchar(20),
+    `accepted_time`     datetime,
+    `running_time`      datetime,
+    `finished_time`     datetime,
+    `uid`               varchar(64)
+);
+
+insert into experiment (id, experiment_status)
+values ('experiment-1659167632755-0001', 'Starting');
+insert into experiment (id, experiment_status)
+values ('experiment-1659167632755-0002', 'Starting');
+insert into experiment (id, experiment_status)
+values ('experiment-1659167632755-0003', 'Starting');

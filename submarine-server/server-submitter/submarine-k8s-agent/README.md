@@ -27,6 +27,16 @@ Also, we need use `port-forward` to link the database port to a local connection
 kubectl port-forward service/submarine-database 3306:3306 -n submarine-user-test
 ```
 
+## Test
+
+If you want to run a test case, you need to set the environment variables before the test case starts
+to ensure that the watch event is listening to the relevant resources correctly.
+
+```shell
+export SUBMARINE_UID=${submarine_uid}
+mvn test -pl submarine-server/server-submitter/submarine-k8s-agent
+```
+
 ## Build Image
 
 We already have a script to automate the image build

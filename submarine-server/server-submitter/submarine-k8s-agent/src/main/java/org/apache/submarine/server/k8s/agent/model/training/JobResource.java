@@ -30,7 +30,17 @@ import org.apache.submarine.server.k8s.agent.model.training.status.JobStatus;
  */
 public class JobResource extends CustomResource<Void, JobStatus> implements Namespaced {
 
-    public String toString() {
+  @Override
+  public void setSpec(Void spec) {
+    super.setSpec(spec);
+  }
+
+  @Override
+  public void setStatus(JobStatus status) {
+    super.setStatus(status);
+  }
+
+  public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 

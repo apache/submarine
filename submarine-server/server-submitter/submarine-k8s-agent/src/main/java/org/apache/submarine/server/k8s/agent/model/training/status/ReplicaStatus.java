@@ -36,7 +36,16 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReplicaStatus implements KubernetesResource {
 
-    private Integer active;
+  public ReplicaStatus() {
+  }
+
+  public ReplicaStatus(Integer active, Integer failed, Integer succeeded) {
+    this.active = active;
+    this.failed = failed;
+    this.succeeded = succeeded;
+  }
+
+  private Integer active;
 
     private Integer failed;
 
