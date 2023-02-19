@@ -543,14 +543,8 @@ jobs:
           mvn $BUILD_FLAG $MODULES -B
       - name: Test
         env:
-          # There is a `submarine-submitter-k8s` package under the `submarine-server-submitter` that also needs to be tested
-          TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s"
-        run: |
-          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-          mvn $TEST_FLAG $TEST_MODULES -B
-      - name: Test submarine-k8s-agent
-        env:
-          MODULES: "-pl :submarine-k8s-agent"
+          # There are some `submitter-k8s` packages under the `submarine-server-submitter` that also needs to be tested
+          TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s,:submarine-k8s-agent"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           export SUBMARINE_UID="dfea05c4-dbf2-43cc-833c-62ff329566a5"
