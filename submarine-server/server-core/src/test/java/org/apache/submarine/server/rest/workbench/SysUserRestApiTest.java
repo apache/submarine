@@ -68,9 +68,13 @@ public class SysUserRestApiTest extends CommonDataTest {
     CommonDataTest.assertUserResponseSuccess(response);
 
     List<SysUserEntity> userList = userService.queryPageList("", null, null, null, null, 0, 10);
+    LOG.info("Get Users {}", userList);
     assertTrue(userList.size() > 0);
+    SysUserEntity checkUser = userList.stream()
+        .filter(user -> user.getId().equals(CommonDataTest.userId))
+        .findFirst()
+        .orElse(null);
 
-    SysUserEntity checkUser = userList.get(0);
     assertEquals(sysUser.getUserName(), checkUser.getUserName());
     assertEquals(sysUser.getRealName(), checkUser.getRealName());
     assertEquals(sysUser.getStatus(), checkUser.getStatus());
