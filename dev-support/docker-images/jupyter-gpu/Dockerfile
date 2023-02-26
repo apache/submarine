@@ -111,6 +111,7 @@ RUN pip --no-cache-dir install pyqlib==0.8.6
 RUN git clone --depth=1 https://github.com/apache/submarine && \
     # replace numpy==1.19.2 to numpy>=1.20.0
     sed -i "s/numpy==1.19.2/numpy>=1.20.0/" submarine/submarine-sdk/pysubmarine/setup.py && \
+    pip --no-cache-dir install setuptools==65.7.0 && \
     pip --no-cache-dir install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     # Add DeepFM example into notebook
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
