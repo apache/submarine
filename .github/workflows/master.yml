@@ -471,10 +471,14 @@ jobs:
           mvn $BUILD_FLAG $MODULES -B
       - name: Test with chrome
         working-directory: ./submarine-workbench/workbench-web
-        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - name: Test with firefox
         working-directory: ./submarine-workbench/workbench-web
-        run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
   submarine-workbench-v2:
     runs-on: ubuntu-latest
     timeout-minutes: 30
