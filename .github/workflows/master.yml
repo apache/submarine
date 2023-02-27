@@ -690,6 +690,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Build the project with JDK 11
+        run: mvn install -DskipTests
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
