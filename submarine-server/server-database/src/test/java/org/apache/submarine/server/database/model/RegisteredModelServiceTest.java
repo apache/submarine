@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegisteredModelServiceTest {
-  RegisteredModelService registeredModelService = new RegisteredModelService();
+  RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
 
   @After
   public void cleanAll() {

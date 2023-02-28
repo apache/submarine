@@ -39,7 +39,7 @@ import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 
 public class RegisteredModelRestApiTest {
-  private final RegisteredModelService registeredModelService = new RegisteredModelService();
+  private final RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
   private final String registeredModelName = "testRegisteredModel";
   private final String newRegisteredModelName = "newTestRegisteredModel";
   private final String registeredModelDescription = "test registered model description";

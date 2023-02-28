@@ -19,20 +19,31 @@
 
 package org.apache.submarine.server.s3;
 
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+
+import org.junit.BeforeClass;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Assert;
 
 import java.util.List;
 
 
 public class ClientTest {
-  private final Client client = new Client("http://localhost:9000");
+  private static Client client;
   private final String testExperimentId = "experiment-sample";
 
   @After
   public void cleanAll() {
     client.deleteAllArtifacts();
+  }
+
+  @BeforeClass
+  public static void init() {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    conf.setString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT, "http://localhost:9000");
+    client = Client.getInstance();
   }
 
   @Test
@@ -78,5 +89,11 @@ public class ClientTest {
     client.copyArtifact(copyPath, path);
     response = client.downloadArtifact(copyPath);
     Assert.assertArrayEquals(content, response);
+  }
+
+  @Test
+  public void testSingleton() {
+    Client testClient = Client.getInstance();
+    Assert.assertEquals(testClient, client);
   }
 }

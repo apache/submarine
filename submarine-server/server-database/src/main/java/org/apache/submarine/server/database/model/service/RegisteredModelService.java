@@ -31,6 +31,14 @@ import java.util.List;
 
 public class RegisteredModelService {
 
+  private static class RegisteredModelServiceHolder {
+    private static RegisteredModelService service = new RegisteredModelService();
+  }
+
+  public static RegisteredModelService getInstance() {
+    return RegisteredModelService.RegisteredModelServiceHolder.service;
+  }
+
   private static final Logger LOG = LoggerFactory.getLogger(RegisteredModelService.class);
 
   public List<RegisteredModelEntity> selectAll() throws SubmarineRuntimeException {

@@ -56,13 +56,13 @@ public class ModelManager {
    *
    * @return object
    */
+  private static class ModelManagerHolder {
+    private static ModelManager manager = new ModelManager(SubmitterManager.loadSubmitter(),
+                                                            ModelVersionService.getInstance());
+  }
+
   public static ModelManager getInstance() {
-    if (manager == null) {
-      synchronized (ModelManager.class) {
-        manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
-      }
-    }
-    return manager;
+    return ModelManager.ModelManagerHolder.manager;
   }
 
   /**
@@ -141,7 +141,7 @@ public class ModelManager {
   }
 
   private void transferDescription(ServeSpec spec) {
-    Client s3Client = new Client();
+    Client s3Client = Client.getInstance();
     String modelUniquePath = String.format("%s-%d-%s",
         spec.getModelName(), spec.getModelVersion(), spec.getModelId());
     String res  = new String(s3Client.downloadArtifact(String.format("registry/%s/%s/%d/description.json",

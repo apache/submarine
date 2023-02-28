@@ -30,6 +30,13 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class ModelVersionService {
+  private static class ModelVersionServiceHolder {
+    private static ModelVersionService service = new ModelVersionService();
+  }
+
+  public static ModelVersionService getInstance() {
+    return ModelVersionService.ModelVersionServiceHolder.service;
+  }
 
   private static final Logger LOG = LoggerFactory.getLogger(ModelVersionService.class);
 

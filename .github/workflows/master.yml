@@ -436,6 +436,7 @@ jobs:
           TEST_MODULES: "-pl :submarine-server-core"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          export SUBMARINE_S3_ENDPOINT=http://localhost:9000
           mvn $TEST_FLAG $TEST_MODULES -B
       - name: Build submarine-serve
         env:

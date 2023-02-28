@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 
 public class ModelVersionTagTest {
   private static final Logger LOG = LoggerFactory.getLogger(ModelVersionTagTest.class);
-  RegisteredModelService registeredModelService = new RegisteredModelService();
-  ModelVersionService modelVersionService = new ModelVersionService();
+  RegisteredModelService registeredModelService = RegisteredModelService.getInstance();
+  ModelVersionService modelVersionService = ModelVersionService.getInstance();
   ModelVersionTagService modelVersionTagService = new ModelVersionTagService();
 
 

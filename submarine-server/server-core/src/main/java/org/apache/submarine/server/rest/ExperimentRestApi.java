@@ -58,7 +58,7 @@ import org.apache.submarine.server.utils.response.JsonResponse;
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
   private ExperimentManager experimentManager = ExperimentManager.getInstance();
-  private final Client minioClient = new Client();
+  private final Client minioClient = Client.getInstance();
 
   @VisibleForTesting
   public void setExperimentManager(ExperimentManager experimentManager) {

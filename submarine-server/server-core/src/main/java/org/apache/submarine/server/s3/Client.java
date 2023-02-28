@@ -45,30 +45,26 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 /**
  * S3(Minio) default client
  */
-public class Client {
-
-  /* minio client */
-  public MinioClient minioClient;
+public enum Client {
+  INSTANCE(SubmarineConfiguration.getInstance().getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT));
 
   /* submarine config */
-  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+  private final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
-  public Client() {
-    minioClient = MinioClient.builder()
-        .endpoint(conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ENDPOINT))
-        .credentials(
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
-        ).build();
+  /* minio client */
+  private final MinioClient minioClient;
+
+  Client(String endpoint) {
+    this.minioClient =  MinioClient.builder()
+                        .endpoint(endpoint)
+                        .credentials(
+                          conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
+                          conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
+                        ).build();
   }
 
-  public Client(String endpoint) {
-    minioClient = MinioClient.builder()
-        .endpoint(endpoint)
-        .credentials(
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_ACCESS_KEY_ID),
-            conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_S3_SECRET_ACCESS_KEY)
-        ).build();
+  public static Client getInstance() {
+    return INSTANCE;
   }
 
   /**
