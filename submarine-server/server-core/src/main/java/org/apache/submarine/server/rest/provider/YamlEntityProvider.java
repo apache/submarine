@@ -19,9 +19,7 @@
 
 package org.apache.submarine.server.rest.provider;
 
-import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.SafeConstructor;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -57,8 +55,7 @@ public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyR
       MediaType mediaType,
       MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws WebApplicationException {
-    Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
-    T t = yaml.loadAs(toString(entityStream), type);
+    T t = YamlUtils.readValue(toString(entityStream), type);
     return t;
   }
 
@@ -87,9 +84,8 @@ public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyR
       Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
-    Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
     try (OutputStreamWriter writer = new OutputStreamWriter(entityStream)) {
-      yaml.dump(t, writer);
+      YamlUtils.writeValue(writer, t);
     }
   }
 }

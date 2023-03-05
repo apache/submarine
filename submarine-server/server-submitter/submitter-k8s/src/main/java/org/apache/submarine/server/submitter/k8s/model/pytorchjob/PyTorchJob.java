@@ -39,7 +39,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.JsonUtils;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,11 +88,11 @@ public class PyTorchJob extends MLJob {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = ExperimentSpecParser.parseTemplateSpec(taskSpec, experimentSpec);
-        
+
         if (initContainer != null && replicaType.equals("Master")) {
-          podTemplateSpec.getSpec().addInitContainersItem(initContainer);  
+          podTemplateSpec.getSpec().addInitContainersItem(initContainer);
         }
-        
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {

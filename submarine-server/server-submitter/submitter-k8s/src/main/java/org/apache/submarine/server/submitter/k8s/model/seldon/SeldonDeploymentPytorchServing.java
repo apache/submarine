@@ -27,7 +27,7 @@ import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

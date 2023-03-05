@@ -33,7 +33,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
