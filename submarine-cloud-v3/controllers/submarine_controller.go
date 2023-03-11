@@ -42,6 +42,7 @@ import (
 // Defines resource names and path to artifact yaml files
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/
 const (
+	agentName              = "submarine-agent"
 	serverName             = "submarine-server"
 	observerName           = "submarine-observer"
 	databaseName           = "submarine-database"
@@ -58,6 +59,7 @@ const (
 	minioPvcName           = minioName + "-pvc"
 	minioServiceName       = minioName + "-service"
 	artifactPath           = "./artifacts/"
+	agentYamlPath          = artifactPath + "submarine-agent.yaml"
 	databaseYamlPath       = artifactPath + "submarine-database.yaml"
 	minioYamlPath          = artifactPath + "submarine-minio.yaml"
 	serveYamlPath          = artifactPath + "submarine-serve.yaml"
@@ -317,12 +319,12 @@ func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *su
 		return err
 	}
 
-	err = r.createSubmarineServer(ctx, submarine)
+	err = r.createSubmarineDatabase(ctx, submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
-	err = r.createSubmarineDatabase(ctx, submarine)
+	err = r.createSubmarineServer(ctx, submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
@@ -348,6 +350,11 @@ func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *su
 	}
 
 	err = r.createSubmarineServe(ctx, submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = r.createSubmarineAgent(ctx, submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}

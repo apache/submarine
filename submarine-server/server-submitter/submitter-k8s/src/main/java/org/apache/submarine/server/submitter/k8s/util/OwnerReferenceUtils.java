@@ -22,21 +22,18 @@ package org.apache.submarine.server.submitter.k8s.util;
 import java.util.ArrayList;
 
 import io.kubernetes.client.openapi.models.V1OwnerReference;
+import org.apache.submarine.server.k8s.utils.OwnerReferenceConfig;
 
 public class OwnerReferenceUtils {
-  private static final String SUBMARINE_APIVERSION = "SUBMARINE_APIVERSION";
-  private static final String SUBMARINE_KIND = "SUBMARINE_KIND";
-  private static final String SUBMARINE_NAME = "SUBMARINE_NAME";
-  private static final String SUBMARINE_UID = "SUBMARINE_UID";
-
+  
   public static ArrayList<V1OwnerReference> getOwnerReference() {
     ArrayList<V1OwnerReference> ownerReferences = new ArrayList<>();
     V1OwnerReference owner = new V1OwnerReference();
-    if (System.getenv(SUBMARINE_UID) != null) {
-      String apiVersion = System.getenv(SUBMARINE_APIVERSION);
-      String kind = System.getenv(SUBMARINE_KIND);
-      String name = System.getenv(SUBMARINE_NAME);
-      String uid = System.getenv(SUBMARINE_UID);
+    String uid = OwnerReferenceConfig.getSubmarineUid();
+    if (uid != null) {
+      String apiVersion = OwnerReferenceConfig.getSubmarineApiversion();
+      String kind = OwnerReferenceConfig.getSubmarineKind();
+      String name = OwnerReferenceConfig.getSubmarineName();
       Boolean blockOwnerDeletion = true;
       Boolean controller = true;
       owner.setApiVersion(apiVersion);

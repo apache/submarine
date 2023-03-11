@@ -19,8 +19,10 @@
 
 package org.apache.submarine.server.database.notebook.mappers;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.submarine.server.database.notebook.entity.NotebookEntity;
 
+import java.util.Date;
 import java.util.List;
 
 public interface NotebookMapper {
@@ -33,4 +35,10 @@ public interface NotebookMapper {
   int update(NotebookEntity notebook);
 
   int delete(String id);
+
+  /**
+   * Update notebook status
+   */
+  int updateStatus(@Param("id") String id, @Param("status") String status,
+                   @Param("reason") String reason, @Param("updateTime")Date updateTime);
 }

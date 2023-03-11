@@ -52,6 +52,14 @@ spec:
           spec:
             description: SubmarineSpec defines the desired state of Submarine
             properties:
+              agent:
+                description: SubmarineAgent is the spec that defines the submarine
+                  agent
+                properties:
+                  image:
+                    description: Image is the submarine agent's docker image
+                    type: string
+                type: object
               common:
                 description: Common is the spec that defines some submarine common
                   configurations
@@ -87,14 +95,13 @@ spec:
                     description: Image is the submarine database's docker image
                     type: string
                   mysqlRootPasswordSecret:
-                    description: 'MysqlRootPasswordSecret is the mysql root password
-                      secret, this secret need password key: MYSQL_ROOT_PASSWORD'
+                    description: MysqlRootPasswordSecret is the mysql root password
+                      secret, secret must have key MYSQL_ROOT_PASSWORD as root password
                     type: string
                   storageSize:
                     description: StorageSize is the storage size of the database
                     type: string
                 required:
-                - mysqlRootPasswordSecret
                 - storageSize
                 type: object
               minio:

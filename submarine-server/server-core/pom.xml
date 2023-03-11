@@ -397,6 +397,10 @@
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-text</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 

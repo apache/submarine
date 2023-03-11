@@ -37,6 +37,11 @@ import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Starting from 0.8.0, we deploy agent as a separate service.
+ * Therefore, we no longer need to install when creating/deleting resources
+ */
+@Deprecated(since = "0.8.0")
 public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AgentPod.class);
