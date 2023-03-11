@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.util;
+package org.apache.submarine.server.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,9 +29,13 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.io.IOException;
+import java.io.Writer;
+
 /**
  * Support the conversion of objects to yaml format,
- * so that the resource information can be displayed on the log in a more k8s declarative and readable manner
+ * so that the resource information can be displayed on the log in a more k8s declarative and readable manner,
+ * or used for {@link org.apache.submarine.server.rest.provider.YamlEntityProvider}
  */
 public class YamlUtils {
 
@@ -69,6 +73,17 @@ public class YamlUtils {
       return YAML_MAPPER.readValue(content, tClass);
     } catch (JsonProcessingException ex) {
       throw new RuntimeException("Read yaml failed! " + tClass.getName(), ex);
+    }
+  }
+
+  /**
+   * Write object to writer
+   */
+  public static void writeValue(Writer writer, Object value) {
+    try {
+      YAML_MAPPER.writeValue(writer, value);
+    } catch (IOException ex) {
+      throw new RuntimeException("Write yaml failed! " + value.getClass().getName(), ex);
     }
   }
 }

@@ -293,6 +293,11 @@
       <artifactId>jackson-core</artifactId>
       <version>${jackson-core.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-joda</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -391,7 +396,7 @@
     <dependency>
       <groupId>com.github.wnameless.json</groupId>
       <artifactId>json-flattener</artifactId>
-      <version>0.9.0</version>
+      <version>0.16.1</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.commons</groupId>

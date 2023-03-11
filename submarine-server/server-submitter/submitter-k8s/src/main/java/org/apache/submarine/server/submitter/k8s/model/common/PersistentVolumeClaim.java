@@ -33,7 +33,7 @@ import org.apache.submarine.server.submitter.k8s.K8sSubmitter;
 import org.apache.submarine.server.submitter.k8s.model.K8sResource;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

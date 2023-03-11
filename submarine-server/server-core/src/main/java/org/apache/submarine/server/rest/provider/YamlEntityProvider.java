@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.rest.provider;
 
-import org.yaml.snakeyaml.Yaml;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 @Provider
@@ -54,14 +55,14 @@ public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyR
       MediaType mediaType,
       MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws WebApplicationException {
-    Yaml yaml = new Yaml();
-    T t = yaml.loadAs(toString(entityStream), type);
+    T t = YamlUtils.readValue(toString(entityStream), type);
     return t;
   }
 
   public static String toString(InputStream inputStream) {
-    return new Scanner(inputStream, "UTF-8")
-        .useDelimiter("\\A").next();
+    try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+      return scanner.useDelimiter("\\A").next();
+    }
   }
 
   @Override
@@ -83,9 +84,8 @@ public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyR
       Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
       OutputStream entityStream) throws IOException, WebApplicationException {
-    Yaml yaml = new Yaml();
-    OutputStreamWriter writer = new OutputStreamWriter(entityStream);
-    yaml.dump(t, writer);
-    writer.close();
+    try (OutputStreamWriter writer = new OutputStreamWriter(entityStream)) {
+      YamlUtils.writeValue(writer, t);
+    }
   }
 }

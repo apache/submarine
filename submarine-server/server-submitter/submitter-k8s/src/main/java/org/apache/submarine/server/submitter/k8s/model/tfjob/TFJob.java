@@ -40,7 +40,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.JsonUtils;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class TFJob extends MLJob {
     setGroup(CRD_TF_GROUP_V1);
     // set spec
     setSpec(parseTFJobSpec(experimentSpec));
-    
+
     V1Container initContainer = this.getExperimentHandlerContainer(experimentSpec);
     if (initContainer != null) {
       Map<TFJobReplicaType, MLJobReplicaSpec> replicaSet = this.getSpec().getReplicaSpecs();
