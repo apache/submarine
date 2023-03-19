@@ -55,7 +55,7 @@ setup(
             "tensorflow-estimator>=2.9.0rc0,<2.10.0",
             "tf_slim==1.1.0",
         ],
-        "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
+        "pytorch": ["torch>=1.5.0,<2.0.0", "torchvision>=0.6.0"],
     },
     classifiers=[
         "Intended Audience :: Developers",
