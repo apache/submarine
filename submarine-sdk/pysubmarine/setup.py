@@ -60,7 +60,7 @@ setup(
             #                   and will fix version compatibility issues in 0.8.1 or 0.9.0.
             "typeguard<3.0.0",
         ],
-        "pytorch": ["torch>=1.5.0,<2.0.0", "torchvision>=0.6.0"],
+        "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
     classifiers=[
         "Intended Audience :: Developers",

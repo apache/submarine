@@ -353,7 +353,10 @@ class SqlAlchemyStore(AbstractStore):
 
         def next_version(sql_registered_model: SqlRegisteredModel) -> int:
             if sql_registered_model.model_versions:
-                return max(0 if m.version is None else m.version for m in sql_registered_model.model_versions) + 1
+                return (
+                    max(0 if m.version is None else m.version for m in sql_registered_model.model_versions)
+                    + 1
+                )
             else:
                 return 1
 
