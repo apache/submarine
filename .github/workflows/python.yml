@@ -76,7 +76,7 @@ jobs:
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
           pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
       - name: List installed packages
-        run: pip list
+        run: pip list && pipdeptree
       - name: Run unit test
         working-directory: ./submarine-sdk/pysubmarine
         run: pytest -m "not e2e" --cov-report xml
