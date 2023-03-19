@@ -26,3 +26,4 @@ python_dateutil>=2.5.3
 scikit-learn>=0.24.2,<=1.0.2  # 1.1.x does not support cp37
 setuptools>=21.0.0
 urllib3>=1.15.1
+pipdeptree==2.5.2

@@ -54,6 +54,11 @@ setup(
             "tensorflow-addons==0.17.0",
             "tensorflow-estimator>=2.9.0rc0,<2.10.0",
             "tf_slim==1.1.0",
+            # todo(cdmikechen): Based on SUBMARINE-1372, typeguard has recently been upgraded to version 3.0,
+            #                   which will restrict some python syntax and types more tightly.
+            #                   We are not upgrading this in submarine 0.8.0 for now,
+            #                   and will fix version compatibility issues in 0.8.1 or 0.9.0.
+            "typeguard<3.0.0",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
