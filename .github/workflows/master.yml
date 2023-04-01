@@ -258,7 +258,7 @@ jobs:
           echo ">>> mvn ${BUILD_FLAG} -B"
           mvn ${BUILD_FLAG} -B
       - name: Build Image locally
-        run: .github/scripts/build-image-locally.sh
+        run: .github/scripts/build-image-locally-v3.sh
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Test

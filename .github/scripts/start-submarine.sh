@@ -32,7 +32,7 @@ kubectl label namespace submarine istio-injection=enabled
 kubectl label namespace "$submarine_user_namespace" istio-injection=enabled
 helm dependency update ./helm-charts/submarine
 helm install --wait --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine -n submarine
-kubectl apply -f ./submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n "$submarine_user_namespace"
+kubectl apply -f ./submarine-cloud-v3/config/samples/_v1alpha1_submarine.yaml -n "$submarine_user_namespace"
 
 # Polling waiting for the submarine to be in the RUNNING state
 for ((i=0;i<$wait_times;++i)); do
