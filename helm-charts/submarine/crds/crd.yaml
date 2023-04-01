@@ -99,7 +99,6 @@ spec:
                       description: StorageSize is the storage size of the database
                       type: string
                   required:
-                    - mysqlRootPasswordSecret
                     - storageSize
                   type: object
                 minio:
