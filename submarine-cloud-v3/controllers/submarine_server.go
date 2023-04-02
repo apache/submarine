@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.ServiceAccount {
+func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.ServiceAccount {
 	serviceAccount, err := util.ParseServiceAccountYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceAccountYaml")
@@ -46,7 +46,7 @@ func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Conte
 	return serviceAccount
 }
 
-func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
+func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Service {
 	service, err := util.ParseServiceYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
@@ -59,7 +59,7 @@ func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, sub
 	return service
 }
 
-func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
+func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *appsv1.Deployment {
 	serverReplicas := *submarine.Spec.Server.Replicas
 	operatorEnv := []corev1.EnvVar{
 		{
@@ -150,7 +150,7 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 
 // createSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-server.yaml
-func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineServer(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineServer")
 
 	// Step1: Create ServiceAccount

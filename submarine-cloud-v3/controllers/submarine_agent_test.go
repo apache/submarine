@@ -21,7 +21,7 @@ import (
 	"context"
 	"testing"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	. "github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 	. "github.com/onsi/gomega"
@@ -30,7 +30,7 @@ import (
 func TestSubmarineAgent(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler(&SubmarineReconciler{Namespace: "submarine"})
-	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
+	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
@@ -38,7 +38,7 @@ func TestSubmarineAgent(t *testing.T) {
 	g.Expect(deployment1).NotTo(BeNil())
 
 	// change image
-	submarine.Spec.Agent = &submarineapacheorgv1alpha1.SubmarineAgent{
+	submarine.Spec.Agent = &submarineapacheorgv1.SubmarineAgent{
 		Image: "apache/submarine:agent",
 	}
 	deployment2 := r.newSubmarineAgentDeployment(context.TODO(), submarine)

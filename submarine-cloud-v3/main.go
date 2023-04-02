@@ -37,7 +37,7 @@ import (
 
 	istioscheme "istio.io/client-go/pkg/clientset/versioned/scheme"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	"github.com/apache/submarine/submarine-cloud-v3/controllers"
 	//+kubebuilder:scaffold:imports
 )
@@ -75,7 +75,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(istioscheme.AddToScheme(scheme))
 
-	utilruntime.Must(submarineapacheorgv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(submarineapacheorgv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

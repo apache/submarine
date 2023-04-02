@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
+func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *rbacv1.Role {
 	role, err := util.ParseRoleYaml(observerRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
@@ -46,7 +46,7 @@ func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, subm
 	return role
 }
 
-func (r *SubmarineReconciler) newSubmarineObserverRoleBinding(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.RoleBinding {
+func (r *SubmarineReconciler) newSubmarineObserverRoleBinding(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *rbacv1.RoleBinding {
 	roleBinding, err := util.ParseRoleBindingYaml(observerRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
@@ -61,7 +61,7 @@ func (r *SubmarineReconciler) newSubmarineObserverRoleBinding(ctx context.Contex
 
 // createSubmarineObserverRBAC is a function to create RBAC for submarine-observer which will be binded on service account: default.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-observer-rbac.yaml
-func (r *SubmarineReconciler) createSubmarineObserverRBAC(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineObserverRBAC(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineObserverRBAC")
 
 	// Step1: Create Role

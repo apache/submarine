@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
+func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := util.ParsePersistentVolumeClaimYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
@@ -46,7 +46,7 @@ func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx contex
 	return pvc
 }
 
-func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
+func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *appsv1.Deployment {
 	deployment, err := util.ParseDeploymentYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
@@ -92,7 +92,7 @@ func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, 
 	return deployment
 }
 
-func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
+func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Service {
 	service, err := util.ParseServiceYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
@@ -107,7 +107,7 @@ func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, sub
 
 // createSubmarineMlflow is a function to create submarine-mlflow.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-mlflow.yaml
-func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineMlflow(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineMlflow")
 
 	// Step 1: Create PersistentVolumeClaim

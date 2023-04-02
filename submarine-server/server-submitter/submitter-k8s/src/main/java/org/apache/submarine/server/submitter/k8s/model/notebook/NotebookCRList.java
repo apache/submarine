@@ -26,9 +26,9 @@ import io.kubernetes.client.openapi.models.V1ListMeta;
 
 import java.util.List;
 
-public class NotebookCRList implements KubernetesListObject{
+public class NotebookCRList implements KubernetesListObject {
 
-  public static final String CRD_NOTEBOOK_VERSION_V1 = "v1alpha1";
+  public static final String CRD_NOTEBOOK_VERSION_V1 = "v1";
   public static final String CRD_NOTEBOOK_GROUP_V1 = "kubeflow.org";
   public static final String CRD_APIVERSION_V1 = CRD_NOTEBOOK_GROUP_V1 + "/" + CRD_NOTEBOOK_VERSION_V1;
   public static final String CRD_NOTEBOOK_LIST_KIND_V1 = "NotebookList";
@@ -37,7 +37,7 @@ public class NotebookCRList implements KubernetesListObject{
     setApiVersion(CRD_APIVERSION_V1);
     setKind(CRD_NOTEBOOK_LIST_KIND_V1);
   }
-  
+
   @SerializedName("apiVersion")
   private String apiVersion;
 
@@ -46,10 +46,10 @@ public class NotebookCRList implements KubernetesListObject{
 
   @SerializedName("metadata")
   private V1ListMeta metadata;
-    
+
   @SerializedName("items")
   private List<NotebookCR> items;
-  
+
   public void setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
   }
@@ -75,7 +75,7 @@ public class NotebookCRList implements KubernetesListObject{
 
   @Override
   public String getKind() {
-  
+
     return kind;
   }
 }

@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
+func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := util.ParsePersistentVolumeClaimYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
@@ -46,7 +46,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx c
 	return pvc
 }
 
-func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.Deployment {
+func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *appsv1.Deployment {
 	deployment, err := util.ParseDeploymentYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseDeploymentYaml")
@@ -71,7 +71,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 	return deployment
 }
 
-func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
+func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Service {
 	service, err := util.ParseServiceYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
@@ -86,7 +86,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context
 
 // createSubmarineTensorboard is a function to create submarine-tensorboard.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-tensorboard.yaml
-func (r *SubmarineReconciler) createSubmarineTensorboard(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineTensorboard(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineTensorboard")
 
 	// Step 1: Create PersistentVolumeClaim

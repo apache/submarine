@@ -41,7 +41,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 )
 
 func createScheme() *runtime.Scheme {
@@ -49,7 +49,7 @@ func createScheme() *runtime.Scheme {
 	_ = clientgoscheme.AddToScheme(scheme)
 	_ = appsv1.AddToScheme(scheme)
 	_ = corev1.AddToScheme(scheme)
-	_ = submarineapacheorgv1alpha1.AddToScheme(scheme)
+	_ = submarineapacheorgv1.AddToScheme(scheme)
 	_ = istio.AddToScheme(scheme)
 	_ = serializer.NewCodecFactory(scheme).UniversalDeserializer().Decode
 	return scheme
@@ -186,7 +186,7 @@ var _ = Describe("Submarine controller", func() {
 	Context("Create Submarines", func() {
 		It(fmt.Sprintf("Should create Submarine in %s and it should become RUNNING", submarineNamespaceDefaultCR), func() {
 			By(fmt.Sprintf("Creating new Submarine in %s", submarineNamespaceDefaultCR))
-			submarine, err := MakeSubmarineFromYaml("../config/samples/_v1alpha1_submarine.yaml")
+			submarine, err := MakeSubmarineFromYaml("../config/samples/_v1_submarine.yaml")
 			Expect(err).To(BeNil())
 
 			// Leave Spec.Virtualservice.Host empty to test default value
@@ -201,7 +201,7 @@ var _ = Describe("Submarine controller", func() {
 			Expect(k8sClient.Create(ctx, submarine)).Should(Succeed())
 
 			// We'll need to retry getting this newly created Submarine, given that creation may not immediately happen.
-			createdSubmarine := &submarineapacheorgv1alpha1.Submarine{} // stub
+			createdSubmarine := &submarineapacheorgv1.Submarine{} // stub
 			Eventually(func() bool {
 				err := k8sClient.Get(ctx, types.NamespacedName{Name: submarineNameDefaultCR, Namespace: submarineNamespaceDefaultCR}, createdSubmarine)
 				if err != nil {
@@ -217,8 +217,8 @@ var _ = Describe("Submarine controller", func() {
 				Expect(err).To(BeNil())
 
 				state := createdSubmarine.Status.SubmarineState.State
-				Expect(state).ToNot(Equal(submarineapacheorgv1alpha1.FailedState))
-				if createdSubmarine.Status.SubmarineState.State == submarineapacheorgv1alpha1.RunningState {
+				Expect(state).ToNot(Equal(submarineapacheorgv1.FailedState))
+				if createdSubmarine.Status.SubmarineState.State == submarineapacheorgv1.RunningState {
 					return true
 				}
 				return false
@@ -226,7 +226,7 @@ var _ = Describe("Submarine controller", func() {
 		})
 		It(fmt.Sprintf("Should create Submarine in %s and it should become RUNNING", submarineNamespaceCustomCR), func() {
 			By(fmt.Sprintf("Creating new Submarine in %s", submarineNamespaceCustomCR))
-			submarine, err := MakeSubmarineFromYaml("../config/samples/_v1alpha1_submarine.yaml")
+			submarine, err := MakeSubmarineFromYaml("../config/samples/_v1_submarine.yaml")
 			Expect(err).To(BeNil())
 
 			// Set Spec.Virtualservice.Hosts to [submarineCustomHosts] to test custom value
@@ -248,7 +248,7 @@ var _ = Describe("Submarine controller", func() {
 			Expect(k8sClient.Create(ctx, submarine)).Should(Succeed())
 
 			// We'll need to retry getting this newly created Submarine, given that creation may not immediately happen.
-			createdSubmarine := &submarineapacheorgv1alpha1.Submarine{} // stub
+			createdSubmarine := &submarineapacheorgv1.Submarine{} // stub
 			Eventually(func() bool {
 				err := k8sClient.Get(ctx, types.NamespacedName{Name: submarineNameCustomCR, Namespace: submarineNamespaceCustomCR}, createdSubmarine)
 				if err != nil {
@@ -264,8 +264,8 @@ var _ = Describe("Submarine controller", func() {
 				Expect(err).To(BeNil())
 
 				state := createdSubmarine.Status.SubmarineState.State
-				Expect(state).ToNot(Equal(submarineapacheorgv1alpha1.FailedState))
-				if createdSubmarine.Status.SubmarineState.State == submarineapacheorgv1alpha1.RunningState {
+				Expect(state).ToNot(Equal(submarineapacheorgv1.FailedState))
+				if createdSubmarine.Status.SubmarineState.State == submarineapacheorgv1.RunningState {
 					return true
 				}
 				return false
@@ -303,7 +303,7 @@ var _ = Describe("Submarine controller", func() {
 			Expect(submarineNameDefaultCR).ToNot(BeNil())
 
 			By(fmt.Sprintf("Deleting Submarine %s/%s", submarineNameDefaultCR, submarineNamespaceDefaultCR))
-			createdSubmarine := &submarineapacheorgv1alpha1.Submarine{} // stub
+			createdSubmarine := &submarineapacheorgv1.Submarine{} // stub
 			err := k8sClient.Get(ctx, types.NamespacedName{Name: submarineNameDefaultCR, Namespace: submarineNamespaceDefaultCR}, createdSubmarine)
 			Expect(err).To(BeNil())
 
@@ -327,7 +327,7 @@ var _ = Describe("Submarine controller", func() {
 			Expect(submarineNameCustomCR).ToNot(BeNil())
 
 			By(fmt.Sprintf("Deleting Submarine %s/%s", submarineNameCustomCR, submarineNamespaceCustomCR))
-			createdSubmarine := &submarineapacheorgv1alpha1.Submarine{} // stub
+			createdSubmarine := &submarineapacheorgv1.Submarine{} // stub
 			err := k8sClient.Get(ctx, types.NamespacedName{Name: submarineNameCustomCR, Namespace: submarineNamespaceCustomCR}, createdSubmarine)
 			Expect(err).To(BeNil())
 
@@ -389,19 +389,19 @@ var _ = Describe("Submarine controller", func() {
 	})
 })
 
-func MakeSubmarineFromYaml(pathToYaml string) (*submarineapacheorgv1alpha1.Submarine, error) {
+func MakeSubmarineFromYaml(pathToYaml string) (*submarineapacheorgv1.Submarine, error) {
 	manifest, err := PathToOSFile(pathToYaml)
 	if err != nil {
 		return nil, err
 	}
-	tmp := submarineapacheorgv1alpha1.Submarine{}
+	tmp := submarineapacheorgv1.Submarine{}
 	if err := yaml.NewYAMLOrJSONDecoder(manifest, 100).Decode(&tmp); err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("failed to decode file %s", pathToYaml))
 	}
 	return &tmp, err
 }
 
-func MakeSubmarineFromYamlByNamespace(pathToYaml string, namespace string) (*submarineapacheorgv1alpha1.Submarine, error) {
+func MakeSubmarineFromYamlByNamespace(pathToYaml string, namespace string) (*submarineapacheorgv1.Submarine, error) {
 	submarine, err := MakeSubmarineFromYaml(pathToYaml)
 	if err != nil {
 		return nil, err

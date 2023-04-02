@@ -30,7 +30,7 @@ public class OwnerReferenceConfig {
   public static final String SUBMARINE_NAME = "SUBMARINE_NAME";
   public static final String SUBMARINE_UID = "SUBMARINE_UID";
 
-  public static final String DEFAULT_SUBMARINE_APIVERSION = "submarine.apache.org/v1alpha1";
+  public static final String DEFAULT_SUBMARINE_APIVERSION = "submarine.apache.org/v1";
   public static final String DEFAULT_SUBMARINE_KIND = "Submarine";
 
   /**
