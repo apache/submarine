@@ -26,7 +26,9 @@ CREATE TABLE `notebook`
 );
 
 insert into notebook (id, notebook_status)
-values ('notebook_1642402491519_0003', 'starting');
+values ('notebook_1642402491519_0001', 'starting');
+insert into notebook (id, notebook_status)
+values ('notebook_1642402491519_0002', 'starting');
 
 CREATE TABLE `experiment`
 (
