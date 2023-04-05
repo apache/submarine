@@ -55,9 +55,17 @@ public class MLJobFactory {
   /**
    * Get ml job labelSelector.
    * The new training-operator has unified label.
+   * <p>
+   * In submarine-0.7.0 (training-operator 1.3.0) key is `job-name`,
+   * From submarine-0.8.0 (training-operator 1.6.0) key is `training.kubeflow.org/job-name`
    */
   public static String getJobLabelSelector(ExperimentSpec experimentSpec) {
-    return String.format("job-name=%s", experimentSpec.getMeta().getExperimentId());
+    // TODO(cdmikechen): Different release versions of the training-operator
+    //  will have different tag names for their pods,
+    //  so we'll stick with the current version here for now.
+    //  A method will be provided in later PR to confirm the actual version of the training-operator
+    //  and to select the corresponding key according to the version number
+    return String.format("training.kubeflow.org/job-name=%s", experimentSpec.getMeta().getExperimentId());
   }
 
 }
