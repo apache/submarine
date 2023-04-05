@@ -37,16 +37,33 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 2. Start minikube cluster and install Istio
 
+Start minikube
 ```bash
 # You can go to https://minikube.sigs.k8s.io/docs/start/ and follow the tutorial to install minikube.
 # Then you can start kubernetes with minikube:
-minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
+minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.24.12
 # Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
-minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
+minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.24.12
+```
+
+Install Istio, there are two ways to install: Command-Istioctl-based, or Helm-based
+```bash
 # You can go to the https://github.com/istio/istio/releases/ to download the istioctl for your k8s version
-# e.g. we can execute the following command to download the istio version adapted to k8s 1.21.2
-# wget https://github.com/istio/istio/releases/download/1.13.9/istio-1.13.9-linux-amd64.tar.gz
+# e.g. we can execute the following command to download the istio version adapted to k8s 1.24.12
+# wget https://github.com/istio/istio/releases/download/1.17.1/istio-1.17.1-linux-amd64.tar.gz
 istioctl install -y
+
+# Alternatively, you can use istio's helm to install
+# This is the link: https://istio.io/latest/docs/setup/install/helm/
+## Add istio repo
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+## Create istio-system namespace
+kubectl create namespace istio-system
+## Install istio resources
+helm install istio-base istio/base -n istio-system
+helm install istiod istio/istiod -n istio-system
+helm install istio-ingressgateway istio/gateway -n istio-system
 ```
 
 ### Launch submarine in the cluster
@@ -79,7 +96,7 @@ helm install submarine ./helm-charts/submarine --set seldon-core-operator.istio.
 4. Create a Submarine custom resource and the operator will create the submarine server, database, etc. for us.
 
 ```bash
-kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
+kubectl apply -f submarine-cloud-v3/config/samples/_v1_submarine.yaml -n submarine-user-test
 ```
 
 ### Ensure submarine is ready
@@ -294,6 +311,11 @@ Spec:
           Number:  8000
 Events:            <none>
 ```
+
+To confirm that the serving endpoint is available, try using the swagger address to confirm the availability of the interface.
+In our example, the address of the swagger is: http://localhost:32080/seldon/submarine-user-test/1/1/api/v1.0/doc/
+
+More details can be found in the official seldon documentation: https://docs.seldon.io/projects/seldon-core/en/latest/workflow/serving.html#generated-documentation-swagger-ui
 
 6. After successfully serving the model, we can test the results of serving using the test python code [serve_predictions.py](https://github.com/apache/submarine/blob/master/dev-support/examples/quickstart/serve_predictions.py)
 

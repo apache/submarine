@@ -88,7 +88,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   public void testValidLabel() throws IOException, URISyntaxException {
     ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     String label = MLJobFactory.getJobLabelSelector(experimentSpec);
-    Assert.assertEquals("job-name=" + experimentSpec.getMeta().getExperimentId(), label);
+    Assert.assertEquals("training.kubeflow.org/job-name="
+        + experimentSpec.getMeta().getExperimentId(), label);
   }
 
   @Test
@@ -230,17 +231,17 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(K8sUtils.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(expectedMeta.getFramework().toLowerCase(), actualFramework);
   }
-  
+
   private void validateExperimentHandlerMetadata(ExperimentSpec experimentSpec,
       MLJob mlJob) {
-    
-    if (experimentSpec.getExperimentHandlerSpec() == null || 
+
+    if (experimentSpec.getExperimentHandlerSpec() == null ||
         experimentSpec.getExperimentHandlerSpec().isEmpty()) {
       return;
     }
-      
+
     V1Container initContainer = null;
-    
+
     MLJobReplicaSpec mlJobReplicaSpec = null;
     if (mlJob instanceof PyTorchJob) {
       mlJobReplicaSpec = ((PyTorchJob) mlJob).getSpec()
@@ -265,9 +266,9 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         , varMap.get("HDFS_SOURCE"));
     Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("ENABLE_KERBEROS")
         , varMap.get("ENABLE_KERBEROS"));
-    Assert.assertEquals(mlJob.getExperimentId(), varMap.get("EXPERIMENT_ID")); 
+    Assert.assertEquals(mlJob.getExperimentId(), varMap.get("EXPERIMENT_ID"));
   }
-  
+
   private void validateReplicaSpec(ExperimentSpec experimentSpec,
       MLJob mlJob, MLJobReplicaType type) {
     MLJobReplicaSpec mlJobReplicaSpec = null;

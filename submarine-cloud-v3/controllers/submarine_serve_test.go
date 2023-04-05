@@ -28,7 +28,7 @@ import (
 func TestSubmarineServe(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler()
-	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
+	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"

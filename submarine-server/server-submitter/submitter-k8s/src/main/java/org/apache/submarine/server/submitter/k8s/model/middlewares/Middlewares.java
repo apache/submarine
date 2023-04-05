@@ -22,6 +22,7 @@ package org.apache.submarine.server.submitter.k8s.model.middlewares;
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
+@Deprecated(since = "0.7.0")
 public class Middlewares {
   // reference: https://doc.traefik.io/traefik/reference/dynamic-configuration/kubernetes-crd/#definitions
 

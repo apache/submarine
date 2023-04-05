@@ -19,7 +19,7 @@ package controllers
 
 import (
 	"context"
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	"testing"
 
 	. "github.com/apache/submarine/submarine-cloud-v3/controllers/util"
@@ -29,7 +29,7 @@ import (
 func TestSubmarineTensorboard(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler()
-	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
+	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
@@ -38,8 +38,8 @@ func TestSubmarineTensorboard(t *testing.T) {
 
 	// test change params
 	submarine.Spec.Tensorboard.Image = "harbor.com/tensorflow/tensorflow:1.11.0"
-	submarine.Spec.Common = &submarineapacheorgv1alpha1.SubmarineCommon{
-		Image: submarineapacheorgv1alpha1.CommonImage{
+	submarine.Spec.Common = &submarineapacheorgv1.SubmarineCommon{
+		Image: submarineapacheorgv1.CommonImage{
 			PullSecrets: []string{"pull-secret"},
 		},
 	}

@@ -27,11 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-    # Version updates for k8s can be found at https://kubernetes.io/releases/patch-releases/
+    # Version updates for k8s can be found at https://kubernetes.io/releases/patch-releases/ or
+    # https://kubernetes.io/releases/
+    # We mainly support the last 3-4 releases of kubernetes
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.19.16\", \"v1.20.15\", \"v1.21.14\"]"
+          echo "::set-output name=matrix::[\"v1.22.17\", \"v1.23.17\", \"v1.24.12\"]"
   submarine-operator-verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -97,10 +99,10 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
-      - name: Download Istio 1.13.0
+      - name: Download Istio 1.17.1
         run: |
-          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
-          cd istio-1.13.0
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 sh -
+          cd istio-1.17.1
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
         run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
@@ -239,10 +241,10 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
-      - name: Download Istio 1.13.0
+      - name: Download Istio 1.17.1
         run: |
-          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
-          cd istio-1.13.0
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 sh -
+          cd istio-1.17.1
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
         run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m

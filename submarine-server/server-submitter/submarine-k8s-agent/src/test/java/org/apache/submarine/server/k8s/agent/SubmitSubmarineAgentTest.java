@@ -62,6 +62,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -288,6 +289,9 @@ public class SubmitSubmarineAgentTest {
   }
 
 
+  /**
+   * This can test notebook-controller 1.4.0
+   */
   @Test
   public void testNotebookAgent() throws InterruptedException {
     // add notebook
@@ -298,9 +302,9 @@ public class SubmitSubmarineAgentTest {
     condition.setLastProbeTime(LocalDateTime.now().atZone(ZoneOffset.UTC).toString());
     status.setConditions(List.of(condition));
     ObjectMeta meta = new ObjectMetaBuilder()
-            .withName("notebook-1642402491519-0003-test-notebook")
+            .withName("notebook-1642402491519-0001-test-notebook")
             .withNamespace(client.getNamespace())
-            .withLabels(Map.of("notebook-id", "notebook_1642402491519_0003",
+            .withLabels(Map.of("notebook-id", "notebook_1642402491519_0001",
                     "notebook-owner-id", "e9ca23d68d884d4ebb19d07889727dae"))
             .addToOwnerReferences(new OwnerReferenceBuilder()
                     .withUid(OwnerReferenceConfig.getSubmarineUid())
@@ -319,7 +323,61 @@ public class SubmitSubmarineAgentTest {
     // check status have changed
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       NotebookMapper mapper = sqlSession.getMapper(NotebookMapper.class);
-      NotebookEntity notebook = mapper.select("notebook_1642402491519_0003");
+      NotebookEntity notebook = mapper.select("notebook_1642402491519_0001");
+      Assert.assertEquals("running", notebook.getNotebookStatus());
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  /**
+   * This can test notebook-controller 1.7.0
+   */
+  @Test
+  public void testNotebookAgentNewConditions() throws InterruptedException {
+    // add notebook
+    NotebookStatus status = new NotebookStatus();
+    status.setReadyReplicas(1);
+
+    String probeTime = LocalDateTime.now().atZone(ZoneOffset.UTC).toString();
+    NotebookCondition condition1 = new NotebookCondition();
+    condition1.setType("Initialized");
+    condition1.setLastProbeTime(probeTime);
+    condition1.setLastTransitionTime(LocalDateTime.now().atZone(ZoneOffset.UTC).toString());
+    NotebookCondition condition2 = new NotebookCondition();
+    condition2.setType("Ready");
+    condition2.setLastProbeTime(probeTime);
+    condition2.setLastTransitionTime(LocalDateTime.now().atZone(ZoneOffset.UTC).toString());
+    NotebookCondition condition3 = new NotebookCondition();
+    condition3.setType("ContainersReady");
+    condition3.setLastProbeTime(probeTime);
+    condition3.setLastTransitionTime(LocalDateTime.now().atZone(ZoneOffset.UTC).toString());
+
+    status.setConditions(List.of(condition1, condition2, condition3));
+    ObjectMeta meta = new ObjectMetaBuilder()
+            .withName("notebook-1642402491519-0002-test-notebook")
+            .withNamespace(client.getNamespace())
+            .withLabels(Map.of("notebook-id", "notebook_1642402491519_0002",
+                    "notebook-owner-id", "e9ca23d68d884d4ebb19d07889727dae"))
+            .addToOwnerReferences(new OwnerReferenceBuilder()
+                    .withUid(OwnerReferenceConfig.getSubmarineUid())
+                    .withApiVersion(OwnerReferenceConfig.DEFAULT_SUBMARINE_APIVERSION)
+                    .withKind(OwnerReferenceConfig.DEFAULT_SUBMARINE_KIND)
+                    .build())
+            .build();
+    NotebookResource resource = new NotebookResource();
+    resource.setMetadata(meta);
+    resource.setStatus(status);
+    client.resource(resource).createOrReplace();
+
+    // left 5s to process
+    Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+
+    // check status have changed
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      NotebookMapper mapper = sqlSession.getMapper(NotebookMapper.class);
+      NotebookEntity notebook = mapper.select("notebook_1642402491519_0002");
       Assert.assertEquals("running", notebook.getNotebookStatus());
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);

@@ -30,12 +30,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *istiov1alpha3.VirtualService {
+func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *istiov1alpha3.VirtualService {
 	virtualService, err := util.ParseVirtualService(virtualServiceYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseVirtualService")
@@ -71,7 +71,7 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 
 // createVirtualService is a function to create VirtualService.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-virtualservice.yaml
-func (r *SubmarineReconciler) createVirtualService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createVirtualService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createIngress")
 
 	virtualService := &istiov1alpha3.VirtualService{}

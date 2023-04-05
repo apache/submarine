@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
+func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *rbacv1.Role {
 	role, err := util.ParseRoleYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
@@ -54,7 +54,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, subma
 	return role
 }
 
-func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.RoleBinding {
+func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *rbacv1.RoleBinding {
 	roleBinding, err := util.ParseRoleBindingYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
@@ -67,7 +67,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context
 	return roleBinding
 }
 
-func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.ServiceAccount {
+func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.ServiceAccount {
 	serviceAccount, err := util.ParseServiceAccountYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceAccountYaml")
@@ -82,7 +82,7 @@ func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Cont
 
 // createSubmarineStorageRBAC is a function to create RBAC for submarine-database and submarine-minio which will be binded on service account: submarine-storage.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-storage-rbac.yaml
-func (r *SubmarineReconciler) createSubmarineStorageRBAC(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineStorageRBAC(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineStorageRBAC")
 
 	// Step1: Create ServiceAccount

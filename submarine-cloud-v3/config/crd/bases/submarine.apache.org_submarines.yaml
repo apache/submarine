@@ -32,7 +32,7 @@ spec:
     singular: submarine
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Submarine is the Schema for the submarines API

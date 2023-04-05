@@ -19,7 +19,7 @@ package controllers
 
 import (
 	"context"
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	"testing"
 
 	. "github.com/apache/submarine/submarine-cloud-v3/controllers/util"
@@ -29,7 +29,7 @@ import (
 func TestSubmarineMlflow(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler()
-	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
+	submarine, err := MakeSubmarineFromYamlByNamespace("../config/samples/_v1_submarine.yaml", "submarine")
 	g.Expect(err).To(BeNil())
 
 	ArtifactBasePath = "../"
@@ -39,8 +39,8 @@ func TestSubmarineMlflow(t *testing.T) {
 
 	// test change params
 	submarine.Spec.Mlflow.Image = "harbor.com/apache/submarine/mlflow-" + submarine.Spec.Version
-	submarine.Spec.Common = &submarineapacheorgv1alpha1.SubmarineCommon{
-		Image: submarineapacheorgv1alpha1.CommonImage{
+	submarine.Spec.Common = &submarineapacheorgv1.SubmarineCommon{
+		Image: submarineapacheorgv1.CommonImage{
 			McImage:      "harbor.com/minio/mc",
 			BusyboxImage: "harbor.com/busybox:1.28",
 			PullSecrets:  []string{"pull-secret"},
@@ -59,7 +59,7 @@ func TestSubmarineMlflow(t *testing.T) {
 func TestSubmarineMlflowOpenshift(t *testing.T) {
 	g := NewGomegaWithT(t)
 	r := createSubmarineReconciler(&SubmarineReconciler{SeldonIstioEnable: true, ClusterType: "openshift"})
-	submarine, _ := MakeSubmarineFromYamlByNamespace("../config/samples/_v1alpha1_submarine.yaml", "submarine")
+	submarine, _ := MakeSubmarineFromYamlByNamespace("../config/samples/_v1_submarine.yaml", "submarine")
 
 	ArtifactBasePath = "../"
 	deployment := r.newSubmarineMlflowDeployment(context.TODO(), submarine)
