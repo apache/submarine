@@ -312,6 +312,11 @@ Spec:
 Events:            <none>
 ```
 
+To confirm that the serving endpoint is available, try using the swagger address to confirm the availability of the interface.
+In our example, the address of the swagger is: http://localhost:32080/seldon/submarine-user-test/1/1/api/v1.0/doc/
+
+More details can be found in the official seldon documentation: https://docs.seldon.io/projects/seldon-core/en/latest/workflow/serving.html#generated-documentation-swagger-ui
+
 6. After successfully serving the model, we can test the results of serving using the test python code [serve_predictions.py](https://github.com/apache/submarine/blob/master/dev-support/examples/quickstart/serve_predictions.py)
 
 ![](/img/submarine-serve-prediction.png)
