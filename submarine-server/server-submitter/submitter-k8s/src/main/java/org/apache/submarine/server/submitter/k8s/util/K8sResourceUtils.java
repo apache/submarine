@@ -17,20 +17,21 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
+package org.apache.submarine.server.submitter.k8s.util;
 
-import io.kubernetes.client.openapi.models.V1PodSpec;
-import org.apache.submarine.server.api.spec.code.GitCodeSpec;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarBuilder;
 
-public class HTTPGitCodeLocalizer extends GitCodeLocalizer {
+/**
+ * Provides some common processing methods for k8s resources
+ */
+public class K8sResourceUtils {
 
-  public HTTPGitCodeLocalizer(GitCodeSpec codeSpec) {
-    super(codeSpec);
-  }
-
-  @Override
-  public void localize(V1PodSpec podSpec) {
-    super.localize(podSpec);
+  /**
+   * Create {@link V1EnvVar} with key and value
+   */
+  public static V1EnvVar createEnvVar(String key, String value) {
+    return new V1EnvVarBuilder().withName(key).withValue(value).build();
   }
 
 }

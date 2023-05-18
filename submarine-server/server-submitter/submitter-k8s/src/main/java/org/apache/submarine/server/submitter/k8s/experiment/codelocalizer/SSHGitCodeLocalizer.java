@@ -26,6 +26,7 @@ import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1SecurityContext;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
+import org.apache.submarine.server.api.spec.code.GitCodeSpec;
 
 public class SSHGitCodeLocalizer extends GitCodeLocalizer {
 
@@ -37,8 +38,8 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
   public static final String GIT_SYNC_SSH_NAME = "GIT_SYNC_SSH";
   public static final String GIT_SYNC_SSH_VALUE = "true";
 
-  public SSHGitCodeLocalizer(String url) {
-    super(url);
+  public SSHGitCodeLocalizer(GitCodeSpec codeSpec) {
+    super(codeSpec);
   }
 
   @Override

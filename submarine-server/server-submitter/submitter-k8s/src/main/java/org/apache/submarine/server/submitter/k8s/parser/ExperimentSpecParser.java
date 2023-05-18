@@ -120,8 +120,7 @@ public class ExperimentSpecParser {
      */
     if (experimentSpec.getCode() != null) {
       CodeLocalizer localizer = AbstractCodeLocalizer.getCodeLocalizer(
-          experimentSpec.getCode().getSyncMode(),
-          experimentSpec.getCode().getUrl());
+          experimentSpec.getCode());
       localizer.localize(podSpec);
 
       if (podSpec.getInitContainers() != null

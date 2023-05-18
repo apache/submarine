@@ -24,6 +24,7 @@ import org.apache.submarine.server.api.exception.InvalidSpecException;
 import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1Volume;
+import org.apache.submarine.server.api.spec.CodeSpec;
 
 public abstract class AbstractCodeLocalizer implements CodeLocalizer {
 
@@ -31,18 +32,6 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
   public static final String CODE_LOCALIZER_MOUNT_NAME = "code-dir";
   public static final String CODE_LOCALIZER_INIT_CONTAINER_NAME = "code-localizer";
   public static final String CODE_LOCALIZER_PATH_ENV_VAR = "CODE_PATH";
-  private String url;
-
-  public AbstractCodeLocalizer(String url) {
-    this.url = url;
-  }
-
-  /**
-   * @return the url
-   */
-  public String getUrl() {
-    return url;
-  }
 
   @Override
   public void localize(V1PodSpec podSpec) {
@@ -52,12 +41,13 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
     podSpec.addVolumesItem(volume);
   }
 
-  public static CodeLocalizer getCodeLocalizer(String syncMode, String url)
+  public static CodeLocalizer getCodeLocalizer(CodeSpec codeSpec)
       throws InvalidSpecException {
-    if (syncMode.equals(CodeLocalizerModes.GIT.getMode())) {
-      return GitCodeLocalizer.getGitCodeLocalizer(url);
+    CodeLocalizerModes syncMode = CodeLocalizerModes.valueOfSyncMode(codeSpec.getSyncMode());
+    if (syncMode.equals(CodeLocalizerModes.GIT)) {
+      return GitCodeLocalizer.getGitCodeLocalizer(codeSpec.getGit());
     } else {
-      return new DummyCodeLocalizer(url);
+      return new DummyCodeLocalizer();
     }
   }
 
@@ -73,6 +63,18 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
 
     public String getMode() {
       return this.mode;
+    }
+
+    /**
+     * Get CodeLocalizerModes by code key
+     */
+    public static CodeLocalizerModes valueOfSyncMode(String key) {
+      for (CodeLocalizerModes clm : values()) {
+        if (clm.mode.equals(key)) {
+          return clm;
+        }
+      }
+      return GIT;
     }
   }
 }
