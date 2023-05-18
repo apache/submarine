@@ -83,7 +83,7 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
       gitSyncEnvVars.add(K8sResourceUtils.createEnvVar("GIT_SYNC_PASSWORD", getCodeSpec().getPassword()));
     }
     //  accept a self-signed certificate host
-    if (getCodeSpec().getTrustCerts()) {
+    if (getCodeSpec().getTrustCerts() != null && getCodeSpec().getTrustCerts()) {
       gitSyncEnvVars.add(K8sResourceUtils.createEnvVar("GIT_SSL_NO_VERIFY", "true"));
     }
 
