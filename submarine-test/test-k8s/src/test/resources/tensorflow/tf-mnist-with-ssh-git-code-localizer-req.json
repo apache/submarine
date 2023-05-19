@@ -23,6 +23,8 @@
   },
   "code": {
     "syncMode": "git",
-    "url" : "ssh://git@github.com/apache/submarine.git"
+    "git": {
+      "url" : "ssh://git@github.com/apache/submarine.git"
+    }
   }
 }
