@@ -46,7 +46,15 @@ export interface Specs {
 
 export interface CodeSpec {
   syncMode: string;
+  git: GitCodeSpec;
+}
+
+// Git code spec
+export interface GitCodeSpec {
   url: string;
+  branch?: string; // default branch should be main
+  username?: string;
+  password?: string;
 }
 
 export interface ExperimentSpec {
