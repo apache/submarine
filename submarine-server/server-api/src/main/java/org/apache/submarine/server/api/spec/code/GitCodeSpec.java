@@ -30,7 +30,7 @@ public class GitCodeSpec {
    */
   public static final String DEFAULT_BRANCH = "main";
 
-  private final String url;
+  private String url;
 
   private String branch = DEFAULT_BRANCH;
 
@@ -43,7 +43,14 @@ public class GitCodeSpec {
    */
   private Boolean trustCerts;
 
+  public GitCodeSpec() {
+  }
+
   public GitCodeSpec(String url) {
+    this.url = url;
+  }
+
+  public void setUrl(String url) {
     this.url = url;
   }
 
