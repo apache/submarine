@@ -21,6 +21,7 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,6 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,11 +54,11 @@ public class MLJobConverterTest extends SpecBuilder {
     Assert.assertNull(experiment.getStatus());
 
     // Created Status
-    DateTime startTime = new DateTime();
+    OffsetDateTime startTime = OffsetDateTime.now();
     mlJob.getStatus().setStartTime(startTime);
 
     List<V1JobCondition> conditions = new ArrayList<>();
-    DateTime createdTime = new DateTime();
+    OffsetDateTime createdTime = OffsetDateTime.now();
     V1JobCondition condition = new V1JobConditionBuilder().withStatus("True")
         .withType("Created").withLastTransitionTime(createdTime).build();
     conditions.add(condition);
@@ -69,7 +69,7 @@ public class MLJobConverterTest extends SpecBuilder {
     Assert.assertEquals(startTime.toString(), experiment.getCreatedTime());
 
     // Running Status
-    DateTime runningTime = new DateTime();
+    OffsetDateTime runningTime = OffsetDateTime.now();
     condition = new V1JobConditionBuilder().withStatus("True")
         .withType("Running").withLastTransitionTime(runningTime).build();
     conditions.add(condition);
@@ -80,7 +80,7 @@ public class MLJobConverterTest extends SpecBuilder {
     Assert.assertEquals(runningTime.toString(), experiment.getRunningTime());
 
     // Succeeded Status
-    DateTime finishedTime = new DateTime();
+    OffsetDateTime finishedTime = OffsetDateTime.now();
     mlJob.getStatus().setCompletionTime(finishedTime);
     condition = new V1JobConditionBuilder().withStatus("True")
             .withType("Succeeded").withLastTransitionTime(runningTime).build();

@@ -35,10 +35,10 @@ import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 import org.apache.submarine.server.utils.YamlUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -267,7 +267,7 @@ public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
     } finally {
       if (notebook == null) {
         // add metadata time info
-        this.getMetadata().setDeletionTimestamp(new DateTime());
+        this.getMetadata().setDeletionTimestamp(OffsetDateTime.now());
         // build notebook response
         notebook = NotebookUtils.buildNotebookResponse(this);
         notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());

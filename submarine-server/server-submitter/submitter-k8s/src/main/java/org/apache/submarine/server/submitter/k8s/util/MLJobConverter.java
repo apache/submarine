@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.util;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import io.kubernetes.client.openapi.models.V1JobCondition;
 import io.kubernetes.client.openapi.models.V1JobStatus;
@@ -27,7 +28,6 @@ import io.kubernetes.client.openapi.models.V1StatusDetails;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
-import org.joda.time.DateTime;
 
 /**
  * Converter for different types.
@@ -37,7 +37,7 @@ public class MLJobConverter {
   public static Experiment toJobFromMLJob(MLJob mlJob) {
     Experiment experiment = new Experiment();
     experiment.setUid(mlJob.getMetadata().getUid());
-    DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
+    OffsetDateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
       experiment.setAcceptedTime(dateTime.toString());
       experiment.setStatus(Experiment.Status.STATUS_ACCEPTED.getValue());

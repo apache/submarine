@@ -19,7 +19,8 @@
 package org.apache.submarine.server.submitter.k8s.model.notebook;
 
 import com.google.gson.annotations.SerializedName;
-import org.joda.time.DateTime;
+
+import java.time.OffsetDateTime;
 
 public class NotebookCondition {
 
@@ -31,7 +32,7 @@ public class NotebookCondition {
   private String type;
 
   @SerializedName("lastProbeTime")
-  private DateTime lastProbeTime;
+  private OffsetDateTime lastProbeTime;
 
   @SerializedName("reason")
   private String reason;
