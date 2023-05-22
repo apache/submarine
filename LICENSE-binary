@@ -242,9 +242,9 @@ commons-logging:commons-logging:1.1.1
 commons-net:commons-net:3.1
 io.fabric8:kubernetes-client:6.6.1
 io.fabric8:kubernetes-server-mock:6.6.1
+io.javaoperatorsdk:operator-framework:4.3.2
 io.kubernetes:client-java:17.0.2
 io.kubernetes:client-java-api-fluent:17.0.2
-io.javaoperatorsdk:operator-framework:4.3.2
 io.minio:minio:8.5.3
 io.netty:netty:3.7.0.Final
 io.netty:netty-all:4.0.23.Final
