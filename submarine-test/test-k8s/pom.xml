@@ -42,10 +42,6 @@
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>joda-time</groupId>
-          <artifactId>joda-time</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.jetbrains.kotlin</groupId>
           <artifactId>kotlin-stdlib</artifactId>
         </exclusion>
