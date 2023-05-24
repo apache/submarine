@@ -182,10 +182,8 @@ public class SubmitSubmarineAgentTest {
     TFJob resource = new TFJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(TFJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0001")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -226,10 +224,8 @@ public class SubmitSubmarineAgentTest {
     PyTorchJob resource = new PyTorchJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(PyTorchJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0002")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -270,10 +266,8 @@ public class SubmitSubmarineAgentTest {
     XGBoostJob resource = new XGBoostJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(XGBoostJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0003")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -316,7 +310,8 @@ public class SubmitSubmarineAgentTest {
     NotebookResource resource = new NotebookResource();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resource(resource).createOrReplace();
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -370,7 +365,8 @@ public class SubmitSubmarineAgentTest {
     NotebookResource resource = new NotebookResource();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resource(resource).createOrReplace();
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
