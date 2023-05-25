@@ -27,6 +27,7 @@ import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.openapi.models.V1StatusDetails;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 
 /**
@@ -39,7 +40,7 @@ public class MLJobConverter {
     experiment.setUid(mlJob.getMetadata().getUid());
     OffsetDateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
-      experiment.setAcceptedTime(dateTime.toString());
+      experiment.setAcceptedTime(K8sUtils.castOffsetDatetimeToString(dateTime));
       experiment.setStatus(Experiment.Status.STATUS_ACCEPTED.getValue());
     }
 
@@ -47,7 +48,7 @@ public class MLJobConverter {
     if (status != null) {
       dateTime = status.getStartTime();
       if (dateTime != null) {
-        experiment.setCreatedTime(dateTime.toString());
+        experiment.setCreatedTime(K8sUtils.castOffsetDatetimeToString(dateTime));
         experiment.setStatus(Experiment.Status.STATUS_CREATED.getValue());
       }
 
@@ -57,7 +58,7 @@ public class MLJobConverter {
         for (V1JobCondition condition : conditions) {
           if (condition.getType().toLowerCase().equals("running")) {
             dateTime = condition.getLastTransitionTime();
-            experiment.setRunningTime(dateTime.toString());
+            experiment.setRunningTime(K8sUtils.castOffsetDatetimeToString(dateTime));
             break;
           }
         }

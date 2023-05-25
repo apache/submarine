@@ -22,6 +22,9 @@ package org.apache.submarine.server.k8s.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Utility methods for common k8s operations.
  *
@@ -46,5 +49,17 @@ public abstract class K8sUtils {
       LOG.info("Namespace: {}", namespace);
     }
     return namespace;
+  }
+
+  /**
+   * In k8s resource time declarations, the usual return is something like this:
+   * <p>
+   * creationTimestamp: '2023-05-23T09:01:12Z'
+   * <p>
+   * So we try to do the same for our return datetime format
+   */
+  public static String castOffsetDatetimeToString(OffsetDateTime odt) {
+    if (odt == null) return null;
+    return DateTimeFormatter.ISO_ZONED_DATE_TIME.format(odt);
   }
 }
