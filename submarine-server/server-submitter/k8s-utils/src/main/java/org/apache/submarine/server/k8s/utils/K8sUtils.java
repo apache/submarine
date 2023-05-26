@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -51,6 +52,9 @@ public abstract class K8sUtils {
     return namespace;
   }
 
+  public static final DateTimeFormatter UTC_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
+
   /**
    * In k8s resource time declarations, the usual return is something like this:
    * <p>
@@ -60,6 +64,6 @@ public abstract class K8sUtils {
    */
   public static String castOffsetDatetimeToString(OffsetDateTime odt) {
     if (odt == null) return null;
-    return DateTimeFormatter.ISO_ZONED_DATE_TIME.format(odt);
+    return UTC_DATE_FORMATTER.format(odt.withOffsetSameInstant(ZoneOffset.UTC));
   }
 }

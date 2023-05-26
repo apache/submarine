@@ -35,6 +35,7 @@ import io.kubernetes.client.openapi.models.V1StatusBuilder;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
@@ -66,7 +67,7 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_CREATED.getValue(), experiment.getStatus());
-    Assert.assertEquals(startTime.toString(), experiment.getCreatedTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(startTime), experiment.getCreatedTime());
 
     // Running Status
     OffsetDateTime runningTime = OffsetDateTime.now();
@@ -77,7 +78,7 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_RUNNING.toString(), experiment.getStatus());
-    Assert.assertEquals(runningTime.toString(), experiment.getRunningTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(runningTime), experiment.getRunningTime());
 
     // Succeeded Status
     OffsetDateTime finishedTime = OffsetDateTime.now();
@@ -89,7 +90,7 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_SUCCEEDED.toString(), experiment.getStatus());
-    Assert.assertEquals(finishedTime.toString(), experiment.getFinishedTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(finishedTime), experiment.getFinishedTime());
   }
 
   @Test
