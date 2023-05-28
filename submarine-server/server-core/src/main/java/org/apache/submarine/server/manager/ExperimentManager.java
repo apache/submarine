@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.manager;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +46,7 @@ import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.database.experiment.entity.ExperimentEntity;
 import org.apache.submarine.server.database.experiment.service.ExperimentService;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.rest.RestConstants;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -357,29 +360,37 @@ public class ExperimentManager {
     experiment.setExperimentId(ExperimentId.fromString(entity.getId()));
     experiment.setSpec(new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class));
     experiment.setStatus(entity.getExperimentStatus());
-    
+
     if (entity.getCreateTime() != null) {
-      experiment.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
+      experiment.setCreatedTime(K8sUtils.castOffsetDatetimeToString(
+        OffsetDateTime.ofInstant(entity.getCreateTime().toInstant(), ZoneId.systemDefault()))
+      );
     } else {
       experiment.setCreatedTime(null);
     }
     if (entity.getAcceptedTime() != null) {
-      experiment.setAcceptedTime(new DateTime(entity.getAcceptedTime()).toString());
+      experiment.setAcceptedTime(K8sUtils.castOffsetDatetimeToString(
+        OffsetDateTime.ofInstant(entity.getAcceptedTime().toInstant(), ZoneId.systemDefault()))
+      );
     } else {
       experiment.setAcceptedTime(null);
     }
     if (entity.getRunningTime() != null) {
-      experiment.setRunningTime(new DateTime(entity.getRunningTime()).toString());
+      experiment.setRunningTime(K8sUtils.castOffsetDatetimeToString(
+        OffsetDateTime.ofInstant(entity.getRunningTime().toInstant(), ZoneId.systemDefault()))
+      );
     } else {
       experiment.setRunningTime(null);
     }
     if (entity.getFinishedTime() != null) {
-      experiment.setFinishedTime(new DateTime(entity.getFinishedTime()).toString());
+      experiment.setFinishedTime(K8sUtils.castOffsetDatetimeToString(
+        OffsetDateTime.ofInstant(entity.getFinishedTime().toInstant(), ZoneId.systemDefault()))
+      );
     } else {
       experiment.setFinishedTime(null);
     }
     experiment.setUid(entity.getUid());
-    
+
     return experiment;
   }
 
@@ -396,7 +407,7 @@ public class ExperimentManager {
     if (experiment.getCreatedTime() != null) {
       entity.setCreateTime(DateTime.parse(experiment.getCreatedTime()).toDate());
     } else {
-      entity.setCreateTime(null);  
+      entity.setCreateTime(null);
     }
     if (experiment.getAcceptedTime() != null) {
       entity.setAcceptedTime(DateTime.parse(experiment.getAcceptedTime()).toDate());
@@ -406,7 +417,7 @@ public class ExperimentManager {
     if (experiment.getRunningTime() != null) {
       entity.setRunningTime(DateTime.parse(experiment.getRunningTime()).toDate());
     } else {
-      entity.setRunningTime(null);      
+      entity.setRunningTime(null);
     }
     if (experiment.getFinishedTime() != null) {
       entity.setFinishedTime(DateTime.parse(experiment.getFinishedTime()).toDate());
