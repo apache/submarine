@@ -69,10 +69,14 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
                                                    Context<NotebookResource> context) {
     LOGGER.debug("Reconciling Notebook: {}", notebook);
     if (!notebook.hasOwnerReferenceFor(OwnerReferenceConfig.getSubmarineUid())) {
-      LOGGER.trace("OwnerReference is {}, Skip the processing of this notebook",
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("OwnerReference is {}, Skip the processing of this notebook",
           notebook.getMetadata().getOwnerReferences() == null ? "" :
-              notebook.getMetadata().getOwnerReferences().stream()
-                  .map(OwnerReference::getUid).findFirst().orElse(null));
+            notebook.getMetadata().getOwnerReferences().stream()
+              .map(OwnerReference::getUid)
+              .filter(Objects::nonNull)
+              .findFirst().orElse("''"));
+      }
     } else {
       triggerStatus(notebook);
     }

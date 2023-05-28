@@ -81,7 +81,7 @@
     <commons-configuration.version>1.10</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
 
-    <minio.version>7.1.4</minio.version>
+    <minio.version>8.5.3</minio.version>
 
     <cglib.version>3.3.0</cglib.version>
     <jboss.logging.version>3.4.2.Final</jboss.logging.version>
@@ -133,10 +133,13 @@
     <jgit.version>5.13.0.202109080827-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
     <json.version>20211205</json.version>
+
     <!--  Submarine on Kubernetes  -->
-    <k8s.client-java.version>11.0.1</k8s.client-java.version>
-    <k8s.fabric8.version>6.2.0</k8s.fabric8.version>
+    <k8s.client-java.version>17.0.2</k8s.client-java.version>
+    <kotlin-stdlib.version>1.6.10</kotlin-stdlib.version>
+    <k8s.fabric8.version>6.6.1</k8s.fabric8.version>
     <jersey.test-framework>2.27</jersey.test-framework>
+
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>
     <!--  embedded-ldap-junit  -->
@@ -146,7 +149,7 @@
     <guice-servlet.version>3.0</guice-servlet.version>
     <guice.version>3.0</guice.version>
     <!--  server API  -->
-    <protobuf-java.version>3.14.0</protobuf-java.version>
+    <protobuf-java.version>3.21.10</protobuf-java.version>
     <joda-time.version>2.10.8</joda-time.version>
     <!--  pac4j  -->
     <pac4j.version>5.6.1</pac4j.version>
@@ -203,6 +206,11 @@
       <dependency>
         <groupId>io.kubernetes</groupId>
         <artifactId>client-java</artifactId>
+        <version>${k8s.client-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kubernetes</groupId>
+        <artifactId>client-java-api-fluent</artifactId>
         <version>${k8s.client-java.version}</version>
       </dependency>
 

@@ -42,8 +42,8 @@
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>joda-time</groupId>
-          <artifactId>joda-time</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -54,6 +54,19 @@
       <version>${project.version}</version>
       <type>test-jar</type>
       <classifier>tests</classifier>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>${kotlin-stdlib.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -106,6 +119,12 @@
     <dependency>
       <groupId>io.kubernetes</groupId>
       <artifactId>client-java</artifactId>
+      <version>${k8s.client-java.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kubernetes</groupId>
+      <artifactId>client-java-api-fluent</artifactId>
       <version>${k8s.client-java.version}</version>
       <scope>test</scope>
     </dependency>

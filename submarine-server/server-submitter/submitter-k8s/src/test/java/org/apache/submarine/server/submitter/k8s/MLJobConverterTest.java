@@ -21,6 +21,7 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +35,10 @@ import io.kubernetes.client.openapi.models.V1StatusBuilder;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,11 +55,11 @@ public class MLJobConverterTest extends SpecBuilder {
     Assert.assertNull(experiment.getStatus());
 
     // Created Status
-    DateTime startTime = new DateTime();
+    OffsetDateTime startTime = OffsetDateTime.now();
     mlJob.getStatus().setStartTime(startTime);
 
     List<V1JobCondition> conditions = new ArrayList<>();
-    DateTime createdTime = new DateTime();
+    OffsetDateTime createdTime = OffsetDateTime.now();
     V1JobCondition condition = new V1JobConditionBuilder().withStatus("True")
         .withType("Created").withLastTransitionTime(createdTime).build();
     conditions.add(condition);
@@ -66,10 +67,10 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_CREATED.getValue(), experiment.getStatus());
-    Assert.assertEquals(startTime.toString(), experiment.getCreatedTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(startTime), experiment.getCreatedTime());
 
     // Running Status
-    DateTime runningTime = new DateTime();
+    OffsetDateTime runningTime = OffsetDateTime.now();
     condition = new V1JobConditionBuilder().withStatus("True")
         .withType("Running").withLastTransitionTime(runningTime).build();
     conditions.add(condition);
@@ -77,10 +78,10 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_RUNNING.toString(), experiment.getStatus());
-    Assert.assertEquals(runningTime.toString(), experiment.getRunningTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(runningTime), experiment.getRunningTime());
 
     // Succeeded Status
-    DateTime finishedTime = new DateTime();
+    OffsetDateTime finishedTime = OffsetDateTime.now();
     mlJob.getStatus().setCompletionTime(finishedTime);
     condition = new V1JobConditionBuilder().withStatus("True")
             .withType("Succeeded").withLastTransitionTime(runningTime).build();
@@ -89,7 +90,7 @@ public class MLJobConverterTest extends SpecBuilder {
 
     experiment = MLJobConverter.toJobFromMLJob(mlJob);
     Assert.assertEquals(Experiment.Status.STATUS_SUCCEEDED.toString(), experiment.getStatus());
-    Assert.assertEquals(finishedTime.toString(), experiment.getFinishedTime());
+    Assert.assertEquals(K8sUtils.castOffsetDatetimeToString(finishedTime), experiment.getFinishedTime());
   }
 
   @Test

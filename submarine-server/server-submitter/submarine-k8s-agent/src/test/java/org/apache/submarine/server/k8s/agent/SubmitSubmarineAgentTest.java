@@ -24,6 +24,7 @@ import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.fabric8.kubernetes.internal.KubernetesDeserializer;
 import io.javaoperatorsdk.operator.Operator;
@@ -105,14 +106,14 @@ public class SubmitSubmarineAgentTest {
     operator = new Operator(client);
 
     // create notbook resource
-    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1beta1", "Notebook", NotebookResource.class);
+    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1","Notebook", NotebookResource.class);
     CustomResourceDefinition notebookCrd = client
             .apiextensions().v1()
             .customResourceDefinitions()
             .load(SubmitSubmarineAgentTest.class.getResourceAsStream("/custom-resources/notebook.yml"))
-            .get();
+            .item();
     LOGGER.info("Create Notebook CRD ...");
-    client.apiextensions().v1().customResourceDefinitions().create(notebookCrd);
+    client.apiextensions().v1().customResourceDefinitions().createOrReplace(notebookCrd);
 
     // create tf resource
     KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1", "TFJob", TFJob.class);
@@ -120,7 +121,7 @@ public class SubmitSubmarineAgentTest {
             .apiextensions().v1()
             .customResourceDefinitions()
             .load(SubmitSubmarineAgentTest.class.getResourceAsStream("/custom-resources/tfjobs.yaml"))
-            .get();
+            .item();
     LOGGER.info("Create TF CRD ...");
     client.apiextensions().v1().customResourceDefinitions().create(tfCrd);
 
@@ -130,7 +131,7 @@ public class SubmitSubmarineAgentTest {
             .apiextensions().v1()
             .customResourceDefinitions()
             .load(SubmitSubmarineAgentTest.class.getResourceAsStream("/custom-resources/pytorchjobs.yaml"))
-            .get();
+            .item();
     LOGGER.info("Create PyTorch CRD ...");
     client.apiextensions().v1().customResourceDefinitions().create(ptCrd);
 
@@ -140,7 +141,7 @@ public class SubmitSubmarineAgentTest {
             .apiextensions().v1()
             .customResourceDefinitions()
             .load(SubmitSubmarineAgentTest.class.getResourceAsStream("/custom-resources/xgboostjobs.yaml"))
-            .get();
+            .item();
     LOGGER.info("Create XGBoost CRD ...");
     client.apiextensions().v1().customResourceDefinitions().create(xgbCrd);
 
@@ -181,10 +182,8 @@ public class SubmitSubmarineAgentTest {
     TFJob resource = new TFJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(TFJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0001")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -225,10 +224,8 @@ public class SubmitSubmarineAgentTest {
     PyTorchJob resource = new PyTorchJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(PyTorchJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0002")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -269,10 +266,8 @@ public class SubmitSubmarineAgentTest {
     XGBoostJob resource = new XGBoostJob();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resources(XGBoostJob.class)
-            .inNamespace(client.getNamespace())
-            .withName("experiment-1659167632755-0003")
-            .createOrReplace(resource);
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -315,7 +310,8 @@ public class SubmitSubmarineAgentTest {
     NotebookResource resource = new NotebookResource();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resource(resource).createOrReplace();
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));
@@ -369,7 +365,8 @@ public class SubmitSubmarineAgentTest {
     NotebookResource resource = new NotebookResource();
     resource.setMetadata(meta);
     resource.setStatus(status);
-    client.resource(resource).createOrReplace();
+    client.resource(resource).create();
+    client.resource(resource).updateStatus();
 
     // left 5s to process
     Thread.sleep(TimeUnit.SECONDS.toMillis(5));

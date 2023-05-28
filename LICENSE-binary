@@ -240,8 +240,12 @@ commons-lang:commons-lang:2.6
 commons-logging:commons-logging:1.1.3
 commons-logging:commons-logging:1.1.1
 commons-net:commons-net:3.1
-io.fabric8:kubernetes-server-mock:6.2.0
-io.javaoperatorsdk:operator-framework:4.1.1
+io.fabric8:kubernetes-client:6.6.1
+io.fabric8:kubernetes-server-mock:6.6.1
+io.javaoperatorsdk:operator-framework:4.3.2
+io.kubernetes:client-java:17.0.2
+io.kubernetes:client-java-api-fluent:17.0.2
+io.minio:minio:8.5.3
 io.netty:netty:3.7.0.Final
 io.netty:netty-all:4.0.23.Final
 javax.inject:javax.inject:1
@@ -338,7 +342,7 @@ com.linkedin.tony:tony-core:0.3.21
 BSD 3-Clause
 ------------
 org.hamcrest:hamcrest-core:1.3
-com.google.protobuf:protobuf-java:2.5.0
+com.google.protobuf:protobuf-java:3.21.10
 com.thoughtworks.paranamer:paranamer:2.3
 org.ow2.asm:asm:5.0.4
 asm:asm:3.3.1

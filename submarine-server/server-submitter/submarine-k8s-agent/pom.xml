@@ -37,7 +37,7 @@
     <dependency>
       <groupId>io.javaoperatorsdk</groupId>
       <artifactId>operator-framework</artifactId>
-      <version>4.1.1</version>
+      <version>4.3.2</version>
       <exclusions>
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>

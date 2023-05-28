@@ -22,6 +22,10 @@ package org.apache.submarine.server.k8s.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Utility methods for common k8s operations.
  *
@@ -46,5 +50,20 @@ public abstract class K8sUtils {
       LOG.info("Namespace: {}", namespace);
     }
     return namespace;
+  }
+
+  public static final DateTimeFormatter UTC_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
+
+  /**
+   * In k8s resource time declarations, the usual return is something like this:
+   * <p>
+   * creationTimestamp: '2023-05-23T09:01:12Z'
+   * <p>
+   * So we try to do the same for our return datetime format
+   */
+  public static String castOffsetDatetimeToString(OffsetDateTime odt) {
+    if (odt == null) return null;
+    return UTC_DATE_FORMATTER.format(odt.withOffsetSameInstant(ZoneOffset.UTC));
   }
 }
