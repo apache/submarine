@@ -22,6 +22,8 @@ cd ../../../
 
 # Sort imports
 isort submarine-sdk/ dev-support/ website/
+# Replace `'long': int if six.PY3 else long,  # noqa: F821` to `'long': int,`
+sed -i '' 's/ if six.PY3 else long,  # noqa: F821/,/g' ./submarine-sdk/pysubmarine/submarine/client/api_client.py
 # Autoformat code
 black submarine-sdk/ dev-support/ website/ --preview 
 

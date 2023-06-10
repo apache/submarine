@@ -141,16 +141,6 @@ to generate pysubmarine client API that used to communicate with submarine serve
 2. Execute `./dev-support/pysubmarine/gen-sdk.sh` to generate latest version of SDK.
 
     > Notice: Please install required package before running the script: [lint-requirements.txt](https://github.com/apache/submarine/blob/master/dev-support/style-check/python/lint-requirements.txt)
-3. In `submarine/submarine-sdk/pysubmarine/client/api_client.py` line 74
-
-    Please change
-    ```python
-    "long": int if six.PY3 else long,  # noqa: F821
-    ```
-    to
-    ```python
-    "long": int,
-    ```
 
 ### Model Management Model Development
 
