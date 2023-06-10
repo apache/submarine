@@ -23,6 +23,8 @@ cd ../../../
 # Sort imports
 isort submarine-sdk/ dev-support/ website/
 # Replace `'long': int if six.PY3 else long,  # noqa: F821` to `'long': int,`
+# This type of fix will only work in openapi-generator-cli 4.3.1
+# This issue should not occur after openapi-generator-cli upgrades to 5.0+
 sed -i '' 's/ if six.PY3 else long,  # noqa: F821/,/g' ./submarine-sdk/pysubmarine/submarine/client/api_client.py
 # Autoformat code
 black submarine-sdk/ dev-support/ website/ --preview 
