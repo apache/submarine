@@ -19,3 +19,4 @@ types-certifi
 types-python-dateutil
 types-PyYAML
 types-requests
+types-six

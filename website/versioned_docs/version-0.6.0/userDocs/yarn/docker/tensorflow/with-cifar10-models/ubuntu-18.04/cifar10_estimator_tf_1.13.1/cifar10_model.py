@@ -30,9 +30,7 @@ class ResNetCifar10(model_base.ResNet):
         batch_norm_epsilon,
         data_format="channels_first",
     ):
-        super(ResNetCifar10, self).__init__(
-            is_training, data_format, batch_norm_decay, batch_norm_epsilon
-        )
+        super(ResNetCifar10, self).__init__(is_training, data_format, batch_norm_decay, batch_norm_epsilon)
         self.n = (num_layers - 2) // 6
         # Add one in case label starts with 1. No impact if label starts with 0.
         self.num_classes = 10 + 1

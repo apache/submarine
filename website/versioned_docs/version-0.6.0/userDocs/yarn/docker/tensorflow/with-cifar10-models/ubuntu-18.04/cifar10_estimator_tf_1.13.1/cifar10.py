@@ -58,9 +58,7 @@ class Cifar10DataSet(object):
         image.set_shape([DEPTH * HEIGHT * WIDTH])
 
         # Reshape from [depth * height * width] to [depth, height, width].
-        image = tf.cast(
-            tf.transpose(tf.reshape(image, [DEPTH, HEIGHT, WIDTH]), [1, 2, 0]), tf.float32
-        )
+        image = tf.cast(tf.transpose(tf.reshape(image, [DEPTH, HEIGHT, WIDTH]), [1, 2, 0]), tf.float32)
         label = tf.cast(features["label"], tf.int32)
 
         # Custom preprocessing.

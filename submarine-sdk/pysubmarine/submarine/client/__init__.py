@@ -28,12 +28,18 @@
 """
 
 
+from __future__ import absolute_import
+
 __version__ = "0.8.0-SNAPSHOT"
 
 # import apis into sdk package
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api.experiment_api import ExperimentApi
+from submarine.client.api.experiment_template_api import ExperimentTemplateApi
+from submarine.client.api.experiment_templates_api import ExperimentTemplatesApi
+from submarine.client.api.model_version_api import ModelVersionApi
 from submarine.client.api.notebook_api import NotebookApi
+from submarine.client.api.registered_model_api import RegisteredModelApi
 from submarine.client.api.serve_api import ServeApi
 
 # import ApiClient
@@ -53,13 +59,16 @@ from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.experiment_meta import ExperimentMeta
 from submarine.client.models.experiment_spec import ExperimentSpec
 from submarine.client.models.experiment_task_spec import ExperimentTaskSpec
+from submarine.client.models.experiment_template_param_spec import (
+    ExperimentTemplateParamSpec,
+)
+from submarine.client.models.experiment_template_spec import ExperimentTemplateSpec
 from submarine.client.models.experiment_template_submit import ExperimentTemplateSubmit
 from submarine.client.models.json_response import JsonResponse
 from submarine.client.models.kernel_spec import KernelSpec
+from submarine.client.models.model_version_entity import ModelVersionEntity
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
 from submarine.client.models.notebook_spec import NotebookSpec
+from submarine.client.models.registered_model_entity import RegisteredModelEntity
 from submarine.client.models.serve_spec import ServeSpec
-
-# import utils
-from submarine.client.utils.api_utils import *
