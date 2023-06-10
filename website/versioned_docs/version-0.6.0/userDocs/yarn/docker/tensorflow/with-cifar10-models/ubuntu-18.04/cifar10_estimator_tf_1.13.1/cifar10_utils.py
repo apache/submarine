@@ -112,9 +112,7 @@ class ExamplesPerSecondHook(session_run_hook.SessionRunHook):
                 self._step_train_time += elapsed_time
                 self._total_steps += elapsed_steps
 
-                average_examples_per_sec = self._batch_size * (
-                    self._total_steps / self._step_train_time
-                )
+                average_examples_per_sec = self._batch_size * (self._total_steps / self._step_train_time)
                 current_examples_per_sec = steps_per_sec * self._batch_size
                 # Average examples/sec followed by current examples/sec
                 logging.info(
@@ -142,9 +140,7 @@ def local_device_setter(
 
         node_def = op if isinstance(op, node_def_pb2.NodeDef) else op.node_def
         if node_def.op in ps_ops:
-            ps_device_spec = pydev.DeviceSpec.from_string(
-                "/{}:{}".format(ps_device_type, ps_strategy(op))
-            )
+            ps_device_spec = pydev.DeviceSpec.from_string("/{}:{}".format(ps_device_type, ps_strategy(op)))
 
             ps_device_spec.merge_from(current_device)
             return ps_device_spec.to_string()

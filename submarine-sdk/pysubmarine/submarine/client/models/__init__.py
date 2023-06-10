@@ -27,16 +27,24 @@
 """
 
 
+from __future__ import absolute_import
+
 # import models into model package
 from submarine.client.models.code_spec import CodeSpec
 from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.experiment_meta import ExperimentMeta
 from submarine.client.models.experiment_spec import ExperimentSpec
 from submarine.client.models.experiment_task_spec import ExperimentTaskSpec
+from submarine.client.models.experiment_template_param_spec import (
+    ExperimentTemplateParamSpec,
+)
+from submarine.client.models.experiment_template_spec import ExperimentTemplateSpec
 from submarine.client.models.experiment_template_submit import ExperimentTemplateSubmit
 from submarine.client.models.json_response import JsonResponse
 from submarine.client.models.kernel_spec import KernelSpec
+from submarine.client.models.model_version_entity import ModelVersionEntity
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
 from submarine.client.models.notebook_spec import NotebookSpec
+from submarine.client.models.registered_model_entity import RegisteredModelEntity
 from submarine.client.models.serve_spec import ServeSpec

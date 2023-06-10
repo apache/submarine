@@ -44,9 +44,7 @@ class ResNet(object):
     def forward_pass(self, x):
         raise NotImplementedError("forward_pass() is implemented in ResNet sub classes")
 
-    def _residual_v1(
-        self, x, kernel_size, in_filter, out_filter, stride, activate_before_residual=False
-    ):
+    def _residual_v1(self, x, kernel_size, in_filter, out_filter, stride, activate_before_residual=False):
         """Residual unit with 2 sub layers, using Plan A for shortcut connection."""
 
         del activate_before_residual
@@ -105,9 +103,7 @@ class ResNet(object):
             tf.logging.info("image after unit %s: %s", name_scope, x.get_shape())
             return x
 
-    def _bottleneck_residual_v2(
-        self, x, in_filter, out_filter, stride, activate_before_residual=False
-    ):
+    def _bottleneck_residual_v2(self, x, in_filter, out_filter, stride, activate_before_residual=False):
         """Bottleneck residual unit with 3 sub layers, plan B shortcut."""
 
         with tf.name_scope("bottle_residual_v2") as name_scope:
@@ -189,9 +185,7 @@ class ResNet(object):
 
     def _avg_pool(self, x, pool_size, stride):
         with tf.name_scope("avg_pool") as name_scope:
-            x = tf.layers.average_pooling2d(
-                x, pool_size, stride, "SAME", data_format=self._data_format
-            )
+            x = tf.layers.average_pooling2d(x, pool_size, stride, "SAME", data_format=self._data_format)
 
         tf.logging.info("image after unit %s: %s", name_scope, x.get_shape())
         return x
