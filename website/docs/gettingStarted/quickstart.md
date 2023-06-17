@@ -46,8 +46,8 @@ minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1
 # The version of k8s can be adjusted to the range of your current minikube. 
 # For example, minikube v1.28.0 can provide versions from v1.25.0 to v1.25.3 in k8s 1.25
 
-# Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
-minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.24.12
+# Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp) in k8s 1.21 or 1.22, you can use the following command to start cluster
+minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
 ```
 
 Install Istio, there are two ways to install: Command-Istioctl-based, or Helm-based
@@ -82,10 +82,18 @@ cd submarine
 2. Create necessary namespaces
 
 ```bash
+# create namespace for submarine, training, notebook and seldon-core operators
 kubectl create namespace submarine
-kubectl create namespace submarine-user-test
 kubectl label namespace submarine istio-injection=enabled
+
+# create namespace for deploying submarine-server
+kubectl create namespace submarine-user-test
 kubectl label namespace submarine-user-test istio-injection=enabled
+
+# After k8s 1.25, we can turn on PSA (Pod Security Admission) labels for namespace.
+# We use a common PSA enforcement level. If you want to use a more detailed configuration, you can refer to
+# https://kubernetes.io/docs/concepts/security/pod-security-admission/#pod-security-admission-labels-for-namespaces
+kubectl label namespace submarine-user-test 'pod-security.kubernetes.io/enforce=privileged'
 ```
 
 3. Install the submarine operator and dependencies by helm chart

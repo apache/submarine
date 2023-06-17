@@ -28,7 +28,7 @@ under the License.
 | Kubernetes Version  |    Support?    |
 | ------------------- | :------------: |
 | 1.18.x (or earlier) |       X        |
-| 1.19.x - 1.21.x     |       X        |
+| 1.19.x - 1.21.x     |   Not tested   |
 | 1.22.x - 1.25.x     |       √        |
 | 1.26.x (or later)   | To be verified |
 
