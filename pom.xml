@@ -116,7 +116,7 @@
     <mockito.version>2.23.4</mockito.version>
     <wiremock.version>2.33.2</wiremock.version>
     <powermock.version>1.6.4</powermock.version>
-    <guava.version>30.0-jre</guava.version>
+    <guava.version>32.0.0-jre</guava.version>
     <testng.version>6.4</testng.version>
     <avro.version>1.8.2</avro.version>
     <httpclient.version>4.5.2</httpclient.version>
