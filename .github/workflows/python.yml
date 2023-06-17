@@ -19,7 +19,7 @@ name: python-sdk
 on: [push, pull_request]
 
 env:
-  KUBERNETES_VERSION: "v1.21.14"
+  KUBERNETES_VERSION: "v1.25.10"
 
 jobs:
   check-style:

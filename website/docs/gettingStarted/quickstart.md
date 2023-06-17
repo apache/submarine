@@ -42,6 +42,10 @@ Start minikube
 # You can go to https://minikube.sigs.k8s.io/docs/start/ and follow the tutorial to install minikube.
 # Then you can start kubernetes with minikube:
 minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.24.12
+
+# The version of k8s can be adjusted to the range of your current minikube. 
+# For example, minikube v1.28.0 can provide versions from v1.25.0 to v1.25.3 in k8s 1.25
+
 # Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
 minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.24.12
 ```
