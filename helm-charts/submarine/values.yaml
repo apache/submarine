@@ -43,7 +43,9 @@ clusterType: kubernetes
 podSecurityPolicy:
   # Specifies whether a PodSecurityPolicy should be created,
   # This configuration enables the database/minio/server to set securityContext.runAsUser
-  create: true
+  # If your kubernetes cluster version is 1.25+, please set false.
+  # reference: https://kubernetes.io/docs/reference/using-api/deprecation-guide/#psp-v125
+  create: false
 
 # Istio configuration
 istio:
