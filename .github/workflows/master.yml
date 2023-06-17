@@ -33,7 +33,7 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.22.17\", \"v1.23.17\", \"v1.24.12\"]"
+          echo "::set-output name=matrix::[\"v1.22.17\", \"v1.23.17\", \"v1.24.12\", \"v1.25.3\"]"
   submarine-operator-verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
