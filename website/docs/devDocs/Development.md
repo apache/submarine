@@ -44,7 +44,7 @@ A brief introduction about these components:
 
 ### Prerequisites
 
-- JDK 1.8
+- JDK 11
 - Maven 3.3 or later ( < 3.8.1 )
 - Docker
 
