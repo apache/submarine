@@ -160,7 +160,7 @@ telepresence --new-deployment submarine-dev
 
 For Apache Submarine committer and PMCs to do a new release.
 
-1. Change the version from 0.x.x-SNAPSHOT to 0.x.x
+1. Change the version from 0.x.x.dev to 0.x.x
    in [setup.py](https://github.com/apache/submarine/blob/master/submarine-sdk/pysubmarine/setup.py)
 2. Install Python packages
 
