@@ -75,6 +75,7 @@ jobs:
         run: |
           df -h
           sed -i "s/tensorflow>=2.6.0,<2.10.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          sed -i "s/tensorflow-estimator>=2.6.0,<2.10.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: List installed packages
         run: pip list && pipdeptree
