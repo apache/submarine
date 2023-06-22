@@ -163,9 +163,11 @@ jobs:
       - name: Install tf2 dependencies
         if: startsWith(matrix.tf-version, '2.')
         run: |
+          df -h
           pip install --upgrade pip setuptools wheel
-          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
+          sed -i "s/tensorflow>=2.6.0,<2.10.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          sed -i "s/tensorflow-estimator>=2.6.0,<2.10.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          pip install -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: List installed packages
         run: pip list
