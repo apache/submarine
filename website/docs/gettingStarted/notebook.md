@@ -94,7 +94,7 @@ worker_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M',
                                  replicas=1)
 ps_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M',
                                  replicas=1)
-code_spec = CodeSpec(sync_mode='git', url='https://github.com/apache/submarine.git')
+code_spec = CodeSpec(sync_mode="git", git=GitCodeSpec(url="https://github.com/apache/submarine.git"))
 
 experiment_spec = ExperimentSpec(meta=experiment_meta,
                                  environment=environment,

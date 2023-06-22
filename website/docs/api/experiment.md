@@ -77,7 +77,19 @@ Currently only support pulling from github. HDFS, NFS and s3 are in development
 | Field Name | Type                          | Description             | Required |
 | ---------- | ----------------------------- | ----------------------- | :------: |
 | syncMode   | String \(git\|hdfs\|nfs\|s3\) | sync mode of code spec. |    o     |
-| url        | String                        | url of code spec.       |    o     |
+| url        | GitCodeSpec                   | git code spec.          |    x     |
+
+#### **GitCodeSpec**
+
+Pull variables supported by the git code.
+
+| Field Name | Type    | Description                              | Required |
+| ---------- | ------- | ---------------------------------------- | :------: |
+| url        | String  | url of git repo.                         |    o     |
+| branch     | String  | the branch of git repo, default is main. |    x     |
+| username   | String  | the username of git repo.                |    x     |
+| password   | String  | the password of git repo.                |    x     |
+| trustCerts | Boolean | accept a self-signed certificate host.   |    x     |
 
 ### Example
 <details>
@@ -381,7 +393,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688-00
 | meta        | ExperimentMeta                  | body | Meta data of the experiment template.   |    o     |
 | environment | EnvironmentSpec                 | body | Environment of the experiment template. |    o     |
 | spec        | Map<String, ExperimentTaskSpec> | body | Spec of pods.                           |    o     |
-| code        | CodeSpec                        | body | TODO                                    |    x     |
+| code        | CodeSpec                        | body | Experiment codespec.                    |    x     |
 ### Example
 
 <details>
