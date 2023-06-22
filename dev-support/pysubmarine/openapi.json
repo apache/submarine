@@ -174,33 +174,68 @@
         }
       }
     },
-    "/v1/experiment/{name}" : {
-      "post" : {
+    "/v1/experiment/logs/{id}" : {
+      "get" : {
         "tags" : [ "experiment" ],
-        "summary" : "use experiment template to create an experiment",
-        "operationId" : "SubmitExperimentTemplate",
+        "summary" : "Log experiment by id",
+        "operationId" : "getLog",
         "parameters" : [ {
-          "name" : "name",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/yaml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
               }
-            },
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
+            }
+          },
+          "404" : {
+            "description" : "Experiment not found"
+          }
+        }
+      }
+    },
+    "/v1/experiment/ping" : {
+      "get" : {
+        "tags" : [ "experiment" ],
+        "summary" : "Ping submarine server",
+        "description" : "Return the Pong message for test the connectivity",
+        "operationId" : "ping",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "string"
+                }
               }
             }
           }
-        },
+        }
+      }
+    },
+    "/v1/experiment/logs" : {
+      "get" : {
+        "tags" : [ "experiment" ],
+        "summary" : "List experiment's log",
+        "operationId" : "listLog",
+        "parameters" : [ {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "responses" : {
           "default" : {
             "description" : "successful operation",
@@ -254,6 +289,47 @@
             "application/json" : {
               "schema" : {
                 "$ref" : "#/components/schemas/ExperimentSpec"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/experiment/{name}" : {
+      "post" : {
+        "tags" : [ "experiment" ],
+        "summary" : "use experiment template to create an experiment",
+        "operationId" : "SubmitExperimentTemplate",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
               }
             }
           }
@@ -402,58 +478,6 @@
         }
       }
     },
-    "/v1/experiment/logs/{id}" : {
-      "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "Log experiment by id",
-        "operationId" : "getLog",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Experiment not found"
-          }
-        }
-      }
-    },
-    "/v1/experiment/mlflow" : {
-      "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "Get mlflow's information",
-        "operationId" : "getMLflowInfo",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "MLflow not found"
-          }
-        }
-      }
-    },
     "/v1/experiment/tensorboard" : {
       "get" : {
         "tags" : [ "experiment" ],
@@ -476,18 +500,11 @@
         }
       }
     },
-    "/v1/experiment/logs" : {
+    "/v1/experiment/mlflow" : {
       "get" : {
         "tags" : [ "experiment" ],
-        "summary" : "List experiment's log",
-        "operationId" : "listLog",
-        "parameters" : [ {
-          "name" : "status",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
+        "summary" : "Get mlflow's information",
+        "operationId" : "getMLflowInfo",
         "responses" : {
           "default" : {
             "description" : "successful operation",
@@ -498,26 +515,9 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/v1/experiment/ping" : {
-      "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "Ping submarine server",
-        "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping",
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
+          },
+          "404" : {
+            "description" : "MLflow not found"
           }
         }
       }
@@ -679,6 +679,26 @@
         }
       }
     },
+    "/v1/model-version/ping" : {
+      "get" : {
+        "tags" : [ "model-version" ],
+        "summary" : "Ping submarine server",
+        "description" : "Return the Pong message for test the connectivity",
+        "operationId" : "ping_1",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/model-version" : {
       "post" : {
         "tags" : [ "model-version" ],
@@ -731,6 +751,107 @@
             }
           }
         },
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "ModelVersionEntity not found"
+          }
+        }
+      }
+    },
+    "/v1/model-version/{name}" : {
+      "get" : {
+        "tags" : [ "model-version" ],
+        "summary" : "List model versions",
+        "operationId" : "listModelVersions",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/model-version/{name}/{version}" : {
+      "get" : {
+        "tags" : [ "model-version" ],
+        "summary" : "Get detailed info about the model version",
+        "operationId" : "getModelVersion",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "ModelVersionEntity not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "model-version" ],
+        "summary" : "Delete the model version",
+        "operationId" : "deleteModelVersion",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
         "responses" : {
           "default" : {
             "description" : "successful operation",
@@ -828,113 +949,12 @@
         }
       }
     },
-    "/v1/model-version/{name}/{version}" : {
+    "/v1/notebook/ping" : {
       "get" : {
-        "tags" : [ "model-version" ],
-        "summary" : "Get detailed info about the model version",
-        "operationId" : "getModelVersion",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "version",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "ModelVersionEntity not found"
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "model-version" ],
-        "summary" : "Delete the model version",
-        "operationId" : "deleteModelVersion",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "version",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "ModelVersionEntity not found"
-          }
-        }
-      }
-    },
-    "/v1/model-version/{name}" : {
-      "get" : {
-        "tags" : [ "model-version" ],
-        "summary" : "List model versions",
-        "operationId" : "listModelVersions",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/model-version/ping" : {
-      "get" : {
-        "tags" : [ "model-version" ],
+        "tags" : [ "notebook" ],
         "summary" : "Ping submarine server",
         "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping_1",
+        "operationId" : "ping_2",
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -1064,12 +1084,12 @@
         }
       }
     },
-    "/v1/notebook/ping" : {
+    "/v1/registered-model/ping" : {
       "get" : {
-        "tags" : [ "notebook" ],
+        "tags" : [ "registered-model" ],
         "summary" : "Ping submarine server",
         "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping_2",
+        "operationId" : "ping_3",
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -1120,72 +1140,6 @@
             }
           }
         },
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/registered-model/tag" : {
-      "post" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "Create a registered model tag instance",
-        "operationId" : "createRegisteredModelTag",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "tag",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "Delete a registered model tag instance",
-        "operationId" : "deleteRegisteredModelTag",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "tag",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        } ],
         "responses" : {
           "default" : {
             "description" : "successful operation",
@@ -1301,12 +1255,78 @@
         }
       }
     },
-    "/v1/registered-model/ping" : {
-      "get" : {
+    "/v1/registered-model/tag" : {
+      "post" : {
         "tags" : [ "registered-model" ],
+        "summary" : "Create a registered model tag instance",
+        "operationId" : "createRegisteredModelTag",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "registered-model" ],
+        "summary" : "Delete a registered model tag instance",
+        "operationId" : "deleteRegisteredModelTag",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/serve/ping" : {
+      "get" : {
+        "tags" : [ "serve" ],
         "summary" : "Ping submarine server",
         "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping_3",
+        "operationId" : "ping_4",
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -1382,26 +1402,6 @@
           }
         }
       }
-    },
-    "/v1/serve/ping" : {
-      "get" : {
-        "tags" : [ "serve" ],
-        "summary" : "Ping submarine server",
-        "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping_4",
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
@@ -1473,28 +1473,14 @@
           }
         }
       },
-      "ExperimentTemplateSubmit" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string"
-          },
-          "params" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "CodeSpec" : {
         "type" : "object",
         "properties" : {
           "syncMode" : {
             "type" : "string"
           },
-          "url" : {
-            "type" : "string"
+          "git" : {
+            "$ref" : "#/components/schemas/GitCodeSpec"
           }
         }
       },
@@ -1581,14 +1567,48 @@
               "type" : "string"
             }
           },
+          "memory" : {
+            "type" : "string"
+          },
           "cpu" : {
             "type" : "string"
           },
           "gpu" : {
             "type" : "string"
-          },
-          "memory" : {
+          }
+        }
+      },
+      "GitCodeSpec" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
             "type" : "string"
+          },
+          "branch" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "trustCerts" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ExperimentTemplateSubmit" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "params" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -1721,13 +1741,13 @@
           "resources" : {
             "type" : "string"
           },
+          "memory" : {
+            "type" : "string"
+          },
           "cpu" : {
             "type" : "string"
           },
           "gpu" : {
-            "type" : "string"
-          },
-          "memory" : {
             "type" : "string"
           }
         }
