@@ -147,7 +147,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build Image locally
-        run: .github/scripts/build-image-locally-v3.sh
+        run: 
+          .github/scripts/build-image-locally-v3.sh
+          mvn clean
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Setup python environment
@@ -190,6 +192,8 @@ jobs:
           kubectl get pods
           kubectl -n default get events --sort-by='{.lastTimestamp}'
           df -h
+          du -sh /
+          du -sh /mnt
         if: ${{ failure() }}
 
   sonarcloud:
