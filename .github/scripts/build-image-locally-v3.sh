@@ -33,5 +33,7 @@ do
   echo "Execute ./dev-support/docker-images/${FOLDER_LIST[i]}/build.sh"
   ./dev-support/docker-images/"${FOLDER_LIST[i]}"/build.sh
   kind load docker-image "${IMAGE_LIST[i]}"
+  # remove docker image to reduce current space
+  docker rmi "${IMAGE_LIST[i]}"
 done
 
