@@ -189,6 +189,7 @@ jobs:
           kubectl describe nodes
           kubectl get pods
           kubectl -n default get events --sort-by='{.lastTimestamp}'
+          df -h
         if: ${{ failure() }}
 
   sonarcloud:
