@@ -73,8 +73,9 @@ jobs:
       - name: Install pysubmarine with tf2 and pytorch
         if: startsWith(matrix.tf-version, '2.')
         run: |
+          df -h
+          sed -i '' "s/tensorflow>=2.6.0,<2.10.0/tensorflow>=2.6.0,~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
       - name: List installed packages
         run: pip list && pipdeptree
       - name: Run unit test
