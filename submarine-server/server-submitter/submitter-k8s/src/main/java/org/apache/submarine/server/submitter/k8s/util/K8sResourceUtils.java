@@ -17,49 +17,21 @@
  * under the License.
  */
 
-export interface ExperimentMeta {
-  name: string;
-  description?: string;
-  framework: string;
-  cmd: string;
-  envVars?: {
-    [key: string]: string;
-  };
-  tags: string[];
-}
+package org.apache.submarine.server.submitter.k8s.util;
 
-export interface EnvironmentSpec {
-  image: string;
-}
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarBuilder;
 
-export interface Specs {
-  [name: string]: {
-    replicas: string;
-    resources: string;
-    resourceMap?: {
-      memory: string;
-      cpu: string;
-      gpu: string;
-    };
-  };
-}
+/**
+ * Provides some common processing methods for k8s resources
+ */
+public class K8sResourceUtils {
 
-export interface CodeSpec {
-  syncMode: string;
-  git: GitCodeSpec;
-}
+  /**
+   * Create {@link V1EnvVar} with key and value
+   */
+  public static V1EnvVar createEnvVar(String key, String value) {
+    return new V1EnvVarBuilder().withName(key).withValue(value).build();
+  }
 
-// Git code spec
-export interface GitCodeSpec {
-  url: string;
-  branch?: string; // default branch should be main
-  username?: string;
-  password?: string;
-}
-
-export interface ExperimentSpec {
-  meta: ExperimentMeta;
-  environment: EnvironmentSpec;
-  spec: Specs;
-  code?: CodeSpec;
 }

@@ -27,7 +27,7 @@
 <div>
   <form [formGroup]="experiment">
     <div [ngSwitch]="step" style="margin-top: 30px">
-      <div *ngSwitchCase="0" id="firstStep">
+      <div *ngSwitchCase="0" id="firstStep" style="max-height: 450px; overflow-y: auto" >
         <div class="single-field-group">
           <label for="experimentName">
             <span class="red-star">*</span>
@@ -132,6 +132,43 @@
           <ng-template #suffixTemplateInfo>
             <i nz-icon nz-tooltip nzTitle="{{'Copy git repo to /code/current in container.' | translate}}" nzType="info-circle"></i>
           </ng-template>
+        </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="gitBranch">
+            {{'Git branch' | translate}}
+          </label>
+          <input
+            nz-input
+            type="text"
+            name="gitBranch"
+            id="gitBranch"
+            placeholder="main"
+            formControlName="gitBranch"
+          />
+        </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="gitUsername">
+            {{'Git username' | translate}}
+          </label>
+          <input
+            nz-input
+            type="text"
+            name="gitUsername"
+            id="gitUsername"
+            formControlName="gitUsername"
+          />
+        </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="gitPassword">
+            {{'Git password' | translate}}
+          </label>
+          <input
+            nz-input
+            name="gitPassword"
+            type="password"
+            formControlName="gitPassword"
+            id="gitPassword"
+          />
         </div>
         <div *ngIf="ADVANCED">
           <ul formArrayName="envs" class="list-container">

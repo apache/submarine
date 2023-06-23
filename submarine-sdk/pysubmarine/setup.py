@@ -52,7 +52,7 @@ setup(
             "keras>=2.6.0",
             "protobuf>=3.9.2,<3.20",
             "tensorflow-addons==0.17.0",
-            "tensorflow-estimator>=2.9.0rc0,<2.10.0",
+            "tensorflow-estimator>=2.6.0,<2.10.0",
             "tf_slim==1.1.0",
             # todo(cdmikechen): Based on SUBMARINE-1372, typeguard has recently been upgraded to version 3.0,
             #                   which will restrict some python syntax and types more tightly.

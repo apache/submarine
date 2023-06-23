@@ -40,6 +40,7 @@ from submarine.client.models.experiment_template_param_spec import (
 )
 from submarine.client.models.experiment_template_spec import ExperimentTemplateSpec
 from submarine.client.models.experiment_template_submit import ExperimentTemplateSubmit
+from submarine.client.models.git_code_spec import GitCodeSpec
 from submarine.client.models.json_response import JsonResponse
 from submarine.client.models.kernel_spec import KernelSpec
 from submarine.client.models.model_version_entity import ModelVersionEntity

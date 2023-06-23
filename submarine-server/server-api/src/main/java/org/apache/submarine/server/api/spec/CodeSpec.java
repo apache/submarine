@@ -19,12 +19,14 @@
 
 package org.apache.submarine.server.api.spec;
 
+import org.apache.submarine.server.api.spec.code.GitCodeSpec;
+
 public class CodeSpec {
-  
+
   private String syncMode;
-  
-  private String url;
-  
+
+  private GitCodeSpec git;
+
   public String getSyncMode() {
     return syncMode;
   }
@@ -33,11 +35,11 @@ public class CodeSpec {
     this.syncMode = syncMode;
   }
 
-  public String getUrl() {
-    return url;
+  public GitCodeSpec getGit() {
+    return git;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setGit(GitCodeSpec git) {
+    this.git = git;
   }
 }

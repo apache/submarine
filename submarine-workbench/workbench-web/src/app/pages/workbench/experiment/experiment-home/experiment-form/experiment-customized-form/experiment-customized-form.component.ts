@@ -74,7 +74,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   framework = 'Tensorflow';
   currentSpecPage = 1;
 
-
   // About update
   @Input() targetId: string = null;
   @Input() targetSpec: ExperimentSpec = null;
@@ -95,7 +94,10 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')]),
-      gitRepo: new FormControl(null, [])
+      gitRepo: new FormControl(null, []),
+      gitBranch: new FormControl(null, []),
+      gitUsername: new FormControl(null, []),
+      gitPassword: new FormControl(null, [])
     });
 
     this.experimentService.fetchExperimentList().subscribe(
@@ -188,6 +190,15 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   }
   get gitRepo() {
     return this.experiment.get('gitRepo');
+  }
+  get gitBranch() {
+    return this.experiment.get('gitBranch');
+  }
+  get gitGitUsername() {
+    return this.experiment.get('gitUsername');
+  }
+  get gitGitPassword() {
+    return this.experiment.get('gitPassword');
   }
 
   /**
@@ -367,7 +378,12 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
     const code: CodeSpec = {
       syncMode: 'git',
-      url: this.gitRepo.value
+      git: {
+        url: this.gitRepo.value,
+        branch: this.gitBranch.value,
+        username: this.gitGitUsername.value,
+        password: this.gitGitPassword.value
+      }
     };
 
     const newExperimentSpec: ExperimentSpec = {
@@ -376,7 +392,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       spec: specs
     };
 
-    if (code.url !== null) {
+    if (code.git.url !== null) {
       newExperimentSpec.code = code;
     }
     return newExperimentSpec;

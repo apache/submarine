@@ -131,10 +131,23 @@ See more details in [environment api](environment.md).
 
 #### **CodeSpec**
 
-| Field Name | Type   | Description             |
-| ---------- | ------ | ----------------------- |
-| syncMode   | String | sync mode of code spec. |
-| url        | String | url of code spec.       |
+| Field Name | Type        | Description             |
+| ---------- | ----------- | ----------------------- |
+| syncMode   | String      | sync mode of code spec. |
+| url        | GitCodeSpec | git code spec.          |
+
+#### **GitCodeSpec**
+
+Pull variables supported by the git code.
+
+| Field Name | Type    | Description                              |
+| ---------- | ------- | ---------------------------------------- |
+| url        | String  | url of git repo.                         |
+| branch     | String  | the branch of git repo, default is main. |
+| username   | String  | the username of git repo.                |
+| password   | String  | the password of git repo.                |
+| trustCerts | Boolean | accept a self-signed certificate host.   |
+
 ### Example
 
 <details>

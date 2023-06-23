@@ -48,24 +48,24 @@ class CodeSpec(object):
       attribute_map (dict): The key is attribute name
                             and the value is json key in definition.
     """
-    openapi_types = {'sync_mode': 'str', 'url': 'str'}
+    openapi_types = {'sync_mode': 'str', 'git': 'GitCodeSpec'}
 
-    attribute_map = {'sync_mode': 'syncMode', 'url': 'url'}
+    attribute_map = {'sync_mode': 'syncMode', 'git': 'git'}
 
-    def __init__(self, sync_mode=None, url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, sync_mode=None, git=None, local_vars_configuration=None):  # noqa: E501
         """CodeSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
         self._sync_mode = None
-        self._url = None
+        self._git = None
         self.discriminator = None
 
         if sync_mode is not None:
             self.sync_mode = sync_mode
-        if url is not None:
-            self.url = url
+        if git is not None:
+            self.git = git
 
     @property
     def sync_mode(self):
@@ -89,25 +89,25 @@ class CodeSpec(object):
         self._sync_mode = sync_mode
 
     @property
-    def url(self):
-        """Gets the url of this CodeSpec.  # noqa: E501
+    def git(self):
+        """Gets the git of this CodeSpec.  # noqa: E501
 
 
-        :return: The url of this CodeSpec.  # noqa: E501
-        :rtype: str
+        :return: The git of this CodeSpec.  # noqa: E501
+        :rtype: GitCodeSpec
         """
-        return self._url
+        return self._git
 
-    @url.setter
-    def url(self, url):
-        """Sets the url of this CodeSpec.
+    @git.setter
+    def git(self, git):
+        """Sets the git of this CodeSpec.
 
 
-        :param url: The url of this CodeSpec.  # noqa: E501
-        :type: str
+        :param git: The git of this CodeSpec.  # noqa: E501
+        :type: GitCodeSpec
         """
 
-        self._url = url
+        self._git = git
 
     def to_dict(self):
         """Returns the model properties as a dict"""
