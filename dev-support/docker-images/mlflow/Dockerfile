@@ -17,7 +17,9 @@ FROM python:3.7-slim
 
 RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential wget
 
-RUN pip install greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3
+# We temporarily downgrade the protobuf version under 3.20.x.
+# Reference: https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
+RUN pip install greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3 "protobuf<3.20"
 
 COPY start.sh /usr/local/bin
 
