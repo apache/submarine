@@ -98,7 +98,7 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
         }
         // Delete redundant rows
         if (currentListSize > newListSize) {
-          this.notebookList = this.notebookList.splice(0, newListSize - currentListSize);
+          this.notebookList = this.notebookList.slice(0, newListSize);
         }
       }
     });

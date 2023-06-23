@@ -294,12 +294,15 @@ public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
       // The exception that obtaining CRD resources is not necessarily because the CRD is deleted,
       // but maybe due to timeout or API error caused by network and other reasons.
       // Therefore, the status of the notebook should be set to a new enum NOTFOUND.
-      LOG.warn("Get error when submitter is finding notebook: {}", getMetadata().getName());
-      if (notebook == null) {
-        notebook = new Notebook();
-      }
-      notebook.setReason(e.getMessage());
-      notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
+      if (e.getCode() == 404) {
+        LOG.warn(String.format("Get error when submitter is finding notebook: %s",
+            getMetadata().getName()), e);
+        if (notebook == null) {
+          notebook = new Notebook();
+        }
+        notebook.setReason(e.getMessage());
+        notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
+      } else throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return resetName(notebook);
   }
