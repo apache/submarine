@@ -73,7 +73,6 @@ jobs:
       - name: Install pysubmarine with tf2 and pytorch
         if: startsWith(matrix.tf-version, '2.')
         run: |
-          df -h
           sed -i "s/tensorflow>=2.6.0,<2.10.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           sed -i "s/tensorflow-estimator>=2.6.0,<2.10.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
@@ -124,12 +123,12 @@ jobs:
       - name: Install tf2 dependencies
         if: startsWith(matrix.tf-version, '2.')
         run: |
-          df -h
           pip install --upgrade pip setuptools wheel
           sed -i "s/tensorflow>=2.6.0,<2.10.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           sed -i "s/tensorflow-estimator>=2.6.0,<2.10.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+          pip cache purge
       - name: List installed packages
         run: pip list
       - name: Set up JDK 11
@@ -142,7 +141,6 @@ jobs:
           maven-version: 3.6.3
       - name: Check version
         run: |
-          df -h
           mvn --version
           java -version
       - name: Create kind cluster
