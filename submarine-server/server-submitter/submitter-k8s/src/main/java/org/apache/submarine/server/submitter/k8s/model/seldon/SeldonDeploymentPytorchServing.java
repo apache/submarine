@@ -85,12 +85,11 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
       }
       api.getSeldonDeploymentClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
-              getDeleteOptions(getApiVersion()))
-          .throwsApiException();
+              getDeleteOptions(getApiVersion()));
       return this;
-    } catch (ApiException e) {
+    } catch (Exception e) {
       LOG.error(e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 
