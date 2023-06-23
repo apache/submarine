@@ -183,7 +183,7 @@ public class TFJob extends MLJob {
               new V1Patch(JsonUtils.toJson(this)), patchOptions)
           .throwsApiException().getObject();
       return parseExperimentResponseObject(tfJob, TFJob.class);
-    }  catch (ApiException e) {
+    } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
@@ -198,10 +198,10 @@ public class TFJob extends MLJob {
       V1Status status = api.getTfJobClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(this))
-          .throwsApiException().getStatus();
+          .getStatus();
       return parseExperimentResponseStatus(status);
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 

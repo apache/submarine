@@ -186,10 +186,10 @@ public class XGBoostJob extends MLJob {
       V1Status status = api.getXGBoostJobClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(this))
-          .throwsApiException().getStatus();
+          .getStatus();
       return parseExperimentResponseStatus(status);
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 }
