@@ -19,7 +19,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends default-libmysq
 
 # We temporarily downgrade the protobuf version under 3.20.x.
 # Reference: https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
-RUN pip install greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3 "protobuf<3.20"
+RUN pip install --no-cache-dir greenlet==1.1.3 mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58 pymysql==0.9.3 "protobuf<3.20" && pip cache purge
 
 COPY start.sh /usr/local/bin
 
