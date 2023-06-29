@@ -91,7 +91,7 @@ tf-job-operator-6bb69fd44-zmlmr                   1/1     Running   1          6
   ```
 
 2. View workbench
-  If you use method 1, go to `http://{minikube ip}:32080`. For example, `http://192.168.49.2:32080`. If you use method 2, go to `http://0.0.0.0:32080`.
+  If you use method 1, go to `http://{minikube ip}:32080`. For example, `http://192.168.49.2:32080`. If you use method 2, go to `localhost:32080`.
   ![](/img/quickstart-worbench.png)
 
 ## Example: Submit a mnist distributed example
