@@ -29,12 +29,13 @@ A brief introduction about these components:
 1. **tf-operator**: Enable users to run TensorFlow jobs distributedly
 2. **pytorch-operator**: Enable users to run PyTorch jobs distributedly
 3. **notebook-controller**: Jupyter Notebook controller
-4. **submarine-traefik**: Kubernetes Ingress controller
+4. **submarine-istio**: Kubernetes Ingress controller
 5. **submarine-database**: A MySQL database to store metadata
 6. **submarine-minio**: An object store for machine learning artifacts
 7. **submarine-mlflow**: A platform for model management
 8. **submarine-tensorboard**: A visualization tool for distributed training experiments
 9. **submarine-server**: Handle API requests, and submit distributed training experiments to Kubernetes.
+10. **submarine-agent**: Listening to the status of experiments and notebooks
 
 # Submarine Development
 ## Video
@@ -147,7 +148,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```
 ## Develop operator
 
-For details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
+For details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v3/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v3/docs/developer-guide.md) on GitHub.
 
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
