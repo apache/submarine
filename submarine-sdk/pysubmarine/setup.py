@@ -59,6 +59,11 @@ setup(
             #                   We are not upgrading this in submarine 0.8.0 for now,
             #                   and will fix version compatibility issues in 0.8.1 or 0.9.0.
             "typeguard<3.0.0",
+            # todo(cdmikechen): SUBMARINE-1389. From scipy 1.11.0 (https://github.com/scipy/scipy/releases/tag/v1.11.0), 
+            #                   scipy need numpy 1.21.6 or geater in python 3.9. 
+            #                   So that we need to restrict scipy < 1.11.0 to support tf2.6.
+            #                   From submarine 0.8.1 or 0.9.0, we may no longer support tensorflow 2.6
+            "scipy<1.11.0",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
