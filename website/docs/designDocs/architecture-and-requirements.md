@@ -1,5 +1,5 @@
 ---
-title: Architecture and Requirment
+title: Architecture and Requirements
 ---
 
 <!--
