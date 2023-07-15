@@ -100,10 +100,14 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       gitPassword: new FormControl(null, [])
     });
 
+    // Initialise the list of image, the default values of image are from the current experiment list images
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
         list.forEach((item) => {
-          this.imageList.push(item.spec.environment.image);
+          const envImage = item.spec.environment.image;
+          if (this.imageList.indexOf(envImage) === -1) {
+            this.imageList.push(envImage)
+          }
         });
       },
       (error) => {
@@ -160,9 +164,14 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   }
 
   addItem(input: HTMLInputElement): void {
-    const value = input.value;
-    if (this.imageList.indexOf(value) === -1) {
-      this.imageList = [...this.imageList, input.value || `New item ${this.imageIndex++}`];
+    let value = input.value;
+    if (value === null || typeof value === "undefined") {
+      return;
+    } else {
+      value = value.replace(/\s+/g, "");
+      if (value !== "" && this.imageList.indexOf(value) === -1) {
+        this.imageList = [...this.imageList, value];
+      }
     }
   }
 
