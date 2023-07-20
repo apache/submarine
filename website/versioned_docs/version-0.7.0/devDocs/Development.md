@@ -29,7 +29,7 @@ A brief introduction about these components:
 1. **tf-operator**: Enable users to run TensorFlow jobs distributedly
 2. **pytorch-operator**: Enable users to run PyTorch jobs distributedly
 3. **notebook-controller**: Jupyter Notebook controller
-4. **submarine-traefik**: Kubernetes Ingress controller
+4. **submarine-istio**: Kubernetes Ingress controller
 5. **submarine-database**: A MySQL database to store metadata
 6. **submarine-minio**: An object store for machine learning artifacts
 7. **submarine-mlflow**: A platform for model management
@@ -147,7 +147,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```
 ## Develop operator
 
-For details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
+For details, please check out the [README](https://github.com/apache/submarine/tree/rel/release-0.7.0/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/tree/rel/release-0.7.0/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
 
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
@@ -159,7 +159,7 @@ To update the website, click “Edit this page” on the website.
 ![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
 
 ### Add a new page
-If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js).
+If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/tree/rel/release-0.7.0/website/sidebars.js).
 
 ### Installation
 We use the yarn package manager to install all dependencies for the website
