@@ -59,8 +59,8 @@ git remote -v
 ```
 
 ### Step3: Create a new Jira in Submarine project
-* New contributors need privilege to create JIRA issues. Please email kaihsun@apache.org with your Jira username. In addition, the email title should be "[New Submarine Contributor]".
-* Check [Jira issue tracker](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE-748?filter=allopenissues) for existing issues.
+* New contributors need privilege to create JIRA issues. Public signup for Apache Jira is disabled, we need to go to [Apache Self serve sign up page](https://selfserve.apache.org/jira-account.html) to request an account.
+* After Jira account created, check [Jira issue tracker](https://issues.apache.org/jira/projects/SUBMARINE/issues?filter=allopenissues) for existing issues.
 * Create a new Jira issue in Submarine project. When the issue is created, a Jira number (eg. SUBMARINE-748) will be assigned to the issue automatically. 
 ![jira_number_example](/img/jira_number_example.png)
 
