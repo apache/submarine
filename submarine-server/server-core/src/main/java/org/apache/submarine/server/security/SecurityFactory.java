@@ -59,10 +59,10 @@ public class SecurityFactory {
     String authType = SubmarineConfiguration.getInstance()
             .getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
     if (providerMap.containsKey(authType)) {
-      return Optional.ofNullable(providerMap.get(authType));
+      return Optional.of(providerMap.get(authType));
     } else {
-      LOG.warn("current auth type is {} but we can not recognize, so use none!", authType);
-      return Optional.empty();
+      LOG.warn("current auth type is {} but we can not recognize, so use simple!", authType);
+      return Optional.of(getSimpleSecurityProvider());
     }
   }
 
