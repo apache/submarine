@@ -33,6 +33,7 @@ from __future__ import absolute_import
 __version__ = "0.8.0-SNAPSHOT"
 
 # import apis into sdk package
+from submarine.client.api.auth_api import AuthApi
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api.experiment_template_api import ExperimentTemplateApi
@@ -67,6 +68,7 @@ from submarine.client.models.experiment_template_submit import ExperimentTemplat
 from submarine.client.models.git_code_spec import GitCodeSpec
 from submarine.client.models.json_response import JsonResponse
 from submarine.client.models.kernel_spec import KernelSpec
+from submarine.client.models.login_param import LoginParam
 from submarine.client.models.model_version_entity import ModelVersionEntity
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec

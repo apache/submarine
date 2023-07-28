@@ -20,6 +20,7 @@ package org.apache.submarine.server.rest.workbench;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,6 +66,7 @@ public class LoginRestApi {
   @Path("/login")
   @SubmarineApi
   @NoneAuth
+  @Hidden
   public Response login(String loginParams) {
     HashMap<String, String> mapParams
         = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
@@ -131,6 +133,7 @@ public class LoginRestApi {
   @Consumes(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get submarine user token",
           description = "Return user token by username and password",
+          tags = {"auth"},
           responses = {
                   @ApiResponse(responseCode = "200", description = "successfully get token",
                           content = @Content(schema = @Schema(implementation = String.class)))})
@@ -169,15 +172,16 @@ public class LoginRestApi {
   @POST
   @Path("/2step-code")
   @SubmarineApi
+  @Hidden
   public Response step() {
     String data = "{stepCode:1}";
-
     return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result(data).build();
   }
 
   @POST
   @Path("/logout")
   @SubmarineApi
+  @Hidden
   public Response logout() {
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(true).build();
   }

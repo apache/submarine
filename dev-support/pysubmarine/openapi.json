@@ -174,6 +174,47 @@
         }
       }
     },
+    "/v1/experiment/{name}" : {
+      "post" : {
+        "tags" : [ "experiment" ],
+        "summary" : "use experiment template to create an experiment",
+        "operationId" : "SubmitExperimentTemplate",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/experiment" : {
       "get" : {
         "tags" : [ "experiment" ],
@@ -331,91 +372,6 @@
         }
       }
     },
-    "/v1/experiment/mlflow" : {
-      "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "Get mlflow's information",
-        "operationId" : "getMLflowInfo",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "MLflow not found"
-          }
-        }
-      }
-    },
-    "/v1/experiment/tensorboard" : {
-      "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "Get tensorboard's information",
-        "operationId" : "getTensorboardInfo",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Tensorboard not found"
-          }
-        }
-      }
-    },
-    "/v1/experiment/{name}" : {
-      "post" : {
-        "tags" : [ "experiment" ],
-        "summary" : "use experiment template to create an experiment",
-        "operationId" : "SubmitExperimentTemplate",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/yaml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
-              }
-            },
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSubmit"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/experiment/artifacts/{id}" : {
       "get" : {
         "tags" : [ "experiment" ],
@@ -476,6 +432,76 @@
         }
       }
     },
+    "/v1/experiment/mlflow" : {
+      "get" : {
+        "tags" : [ "experiment" ],
+        "summary" : "Get mlflow's information",
+        "operationId" : "getMLflowInfo",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "MLflow not found"
+          }
+        }
+      }
+    },
+    "/v1/experiment/tensorboard" : {
+      "get" : {
+        "tags" : [ "experiment" ],
+        "summary" : "Get tensorboard's information",
+        "operationId" : "getTensorboardInfo",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Tensorboard not found"
+          }
+        }
+      }
+    },
+    "/v1/experiment/logs" : {
+      "get" : {
+        "tags" : [ "experiment" ],
+        "summary" : "List experiment's log",
+        "operationId" : "listLog",
+        "parameters" : [ {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/experiment/ping" : {
       "get" : {
         "tags" : [ "experiment" ],
@@ -496,11 +522,11 @@
         }
       }
     },
-    "/v1/experiment/logs" : {
+    "/v1/template" : {
       "get" : {
-        "tags" : [ "experiment" ],
-        "summary" : "List experiment's log",
-        "operationId" : "listLog",
+        "tags" : [ "experimentTemplates" ],
+        "summary" : "List of ExperimentTemplates",
+        "operationId" : "listExperimentTemplate",
         "parameters" : [ {
           "name" : "status",
           "in" : "query",
@@ -508,6 +534,37 @@
             "type" : "string"
           }
         } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "experimentTemplate" ],
+        "summary" : "Create a experimentTemplate",
+        "operationId" : "createExperimentTemplate",
+        "requestBody" : {
+          "content" : {
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSpec"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentTemplateSpec"
+              }
+            }
+          }
+        },
         "responses" : {
           "default" : {
             "description" : "successful operation",
@@ -618,63 +675,6 @@
           },
           "404" : {
             "description" : "ExperimentTemplate not found"
-          }
-        }
-      }
-    },
-    "/v1/template" : {
-      "get" : {
-        "tags" : [ "experimentTemplates" ],
-        "summary" : "List of ExperimentTemplates",
-        "operationId" : "listExperimentTemplate",
-        "parameters" : [ {
-          "name" : "status",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "experimentTemplate" ],
-        "summary" : "Create a experimentTemplate",
-        "operationId" : "createExperimentTemplate",
-        "requestBody" : {
-          "content" : {
-            "application/yaml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSpec"
-              }
-            },
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentTemplateSpec"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
           }
         }
       }
@@ -1084,6 +1084,122 @@
         }
       }
     },
+    "/v1/registered-model" : {
+      "get" : {
+        "tags" : [ "registered-model" ],
+        "summary" : "List registered models",
+        "operationId" : "listRegisteredModels",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "registered-model" ],
+        "summary" : "Create a registered model instance",
+        "operationId" : "createRegisteredModel",
+        "requestBody" : {
+          "content" : {
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisteredModelEntity"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisteredModelEntity"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/registered-model/tag" : {
+      "post" : {
+        "tags" : [ "registered-model" ],
+        "summary" : "Create a registered model tag instance",
+        "operationId" : "createRegisteredModelTag",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "registered-model" ],
+        "summary" : "Delete a registered model tag instance",
+        "operationId" : "deleteRegisteredModelTag",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/registered-model/{name}" : {
       "get" : {
         "tags" : [ "registered-model" ],
@@ -1181,122 +1297,6 @@
           },
           "404" : {
             "description" : "RegisteredModelEntity not found"
-          }
-        }
-      }
-    },
-    "/v1/registered-model/tag" : {
-      "post" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "Create a registered model tag instance",
-        "operationId" : "createRegisteredModelTag",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "tag",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "Delete a registered model tag instance",
-        "operationId" : "deleteRegisteredModelTag",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "tag",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/registered-model" : {
-      "get" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "List registered models",
-        "operationId" : "listRegisteredModels",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "registered-model" ],
-        "summary" : "Create a registered model instance",
-        "operationId" : "createRegisteredModel",
-        "requestBody" : {
-          "content" : {
-            "application/yaml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/RegisteredModelEntity"
-              }
-            },
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/RegisteredModelEntity"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json; charset=utf-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
-                }
-              }
-            }
           }
         }
       }
@@ -1402,6 +1402,35 @@
           }
         }
       }
+    },
+    "/auth/token" : {
+      "post" : {
+        "tags" : [ "auth" ],
+        "summary" : "Get submarine user token",
+        "description" : "Return user token by username and password",
+        "operationId" : "token",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginParam"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successfully get token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1468,6 +1497,20 @@
           "pipDependencies" : {
             "type" : "array",
             "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "ExperimentTemplateSubmit" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "params" : {
+            "type" : "object",
+            "additionalProperties" : {
               "type" : "string"
             }
           }
@@ -1567,13 +1610,13 @@
               "type" : "string"
             }
           },
+          "gpu" : {
+            "type" : "string"
+          },
           "memory" : {
             "type" : "string"
           },
           "cpu" : {
-            "type" : "string"
-          },
-          "gpu" : {
             "type" : "string"
           }
         }
@@ -1595,20 +1638,6 @@
           },
           "trustCerts" : {
             "type" : "boolean"
-          }
-        }
-      },
-      "ExperimentTemplateSubmit" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string"
-          },
-          "params" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "string"
-            }
           }
         }
       },
@@ -1741,13 +1770,13 @@
           "resources" : {
             "type" : "string"
           },
+          "gpu" : {
+            "type" : "string"
+          },
           "memory" : {
             "type" : "string"
           },
           "cpu" : {
-            "type" : "string"
-          },
-          "gpu" : {
             "type" : "string"
           }
         }
@@ -1816,6 +1845,17 @@
             "type" : "string"
           },
           "modelURI" : {
+            "type" : "string"
+          }
+        }
+      },
+      "LoginParam" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string"
+          },
+          "password" : {
             "type" : "string"
           }
         }

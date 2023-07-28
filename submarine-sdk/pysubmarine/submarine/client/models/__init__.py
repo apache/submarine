@@ -43,6 +43,7 @@ from submarine.client.models.experiment_template_submit import ExperimentTemplat
 from submarine.client.models.git_code_spec import GitCodeSpec
 from submarine.client.models.json_response import JsonResponse
 from submarine.client.models.kernel_spec import KernelSpec
+from submarine.client.models.login_param import LoginParam
 from submarine.client.models.model_version_entity import ModelVersionEntity
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
