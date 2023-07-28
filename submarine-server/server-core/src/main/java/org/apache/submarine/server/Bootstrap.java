@@ -73,6 +73,7 @@ public class Bootstrap extends HttpServlet {
                     "org.apache.submarine.server.rest.ServeRestApi",
                     "org.apache.submarine.server.rest.workbench.LoginRestApi"));
     oasConfig.setSortOutput(true);
+    oasConfig.setPrettyPrint(true);
     try {
       new JaxrsOpenApiContextBuilder()
               .openApiConfiguration(oasConfig)

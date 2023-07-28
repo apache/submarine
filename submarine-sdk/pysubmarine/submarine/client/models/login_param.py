@@ -48,45 +48,24 @@ class LoginParam(object):
       attribute_map (dict): The key is attribute name
                             and the value is json key in definition.
     """
-    openapi_types = {'username': 'str', 'password': 'str'}
+    openapi_types = {'password': 'str', 'username': 'str'}
 
-    attribute_map = {'username': 'username', 'password': 'password'}
+    attribute_map = {'password': 'password', 'username': 'username'}
 
-    def __init__(self, username=None, password=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, password=None, username=None, local_vars_configuration=None):  # noqa: E501
         """LoginParam - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._username = None
         self._password = None
+        self._username = None
         self.discriminator = None
 
-        if username is not None:
-            self.username = username
         if password is not None:
             self.password = password
-
-    @property
-    def username(self):
-        """Gets the username of this LoginParam.  # noqa: E501
-
-
-        :return: The username of this LoginParam.  # noqa: E501
-        :rtype: str
-        """
-        return self._username
-
-    @username.setter
-    def username(self, username):
-        """Sets the username of this LoginParam.
-
-
-        :param username: The username of this LoginParam.  # noqa: E501
-        :type: str
-        """
-
-        self._username = username
+        if username is not None:
+            self.username = username
 
     @property
     def password(self):
@@ -108,6 +87,27 @@ class LoginParam(object):
         """
 
         self._password = password
+
+    @property
+    def username(self):
+        """Gets the username of this LoginParam.  # noqa: E501
+
+
+        :return: The username of this LoginParam.  # noqa: E501
+        :rtype: str
+        """
+        return self._username
+
+    @username.setter
+    def username(self, username):
+        """Sets the username of this LoginParam.
+
+
+        :param username: The username of this LoginParam.  # noqa: E501
+        :type: str
+        """
+
+        self._username = username
 
     def to_dict(self):
         """Returns the model properties as a dict"""
