@@ -263,7 +263,6 @@ public abstract class AbstractSubmarineServerTest {
     PostMethod postMethod = new PostMethod(URL + path);
     postMethod.setRequestBody(request);
     postMethod.setRequestHeader("Content-type", mediaType);
-    //postMethod.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 
     if (userAndPasswordAreNotBlank(user, pwd)) {
       postMethod.setRequestHeader("Authorization", "Bearer " + createToken(user, pwd));
