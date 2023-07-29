@@ -116,7 +116,7 @@ jobs:
       - name: Build Image locally
         run: |
           .github/scripts/build-image-locally-v3.sh
-          .github/scripts/build-image-experiment-prehandler.sh
+          sh .github/scripts/build-image-experiment-prehandler.sh
       - name: Install Golang Dependencies
         working-directory: submarine-cloud-v3
         run: go mod vendor
@@ -264,7 +264,7 @@ jobs:
       - name: Build Image locally
         run: |
           .github/scripts/build-image-locally-v3.sh
-          .github/scripts/build-image-experiment-prehandler.sh
+          sh .github/scripts/build-image-experiment-prehandler.sh
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Test
