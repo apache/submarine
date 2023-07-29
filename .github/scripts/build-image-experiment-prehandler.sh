@@ -17,10 +17,8 @@
 #
 
 SUBMARINE_VERSION="0.8.0-SNAPSHOT"
-
 echo "Build Image apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}"
 echo "Execute ./dev-support/docker-images/experiment-prehandler/build.sh"
 ./dev-support/docker-images/experiment-prehandler/build.sh
 kind load docker-image apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}
-# remove docker image to reduce current space
 docker rmi apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}
