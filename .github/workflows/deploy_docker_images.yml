@@ -53,49 +53,67 @@ jobs:
       - name: Build submarine server
         run: ./dev-support/docker-images/submarine/build.sh
       - name: Push submarine-server docker image
-        run: docker push apache/submarine:server-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:server-$SUBMARINE_VERSION
+          docker rmi apache/submarine:server-$SUBMARINE_VERSION
 
       - name: Build submarine agent
         run: ./dev-support/docker-images/agent/build.sh
       - name: Push submarine-agent docker image
-        run: docker push apache/submarine:agent-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:agent-$SUBMARINE_VERSION
+          docker rmi apache/submarine:agent-$SUBMARINE_VERSION
 
       - name: Build submarine database
         run: ./dev-support/docker-images/database/build.sh
       - name: Push submarine-database docker image
-        run: docker push apache/submarine:database-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:database-$SUBMARINE_VERSION
+          docker rmi apache/submarine:database-$SUBMARINE_VERSION
 
       - name: Build submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
       - name: Push submarine-jupyter docker image
-        run: docker push apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
+          docker rmi apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
 
       - name: Build submarine jupyter gpu
         run: ./dev-support/docker-images/jupyter-gpu/build.sh
       - name: Push submarine-jupyter-gpu docker image
-        run: docker push apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
+          docker rmi apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
 
       - name: Build submarine operator
         run: ./dev-support/docker-images/operator-v3/build.sh
       - name: Push submarine-operator docker image
-        run: docker push apache/submarine:operator-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:operator-$SUBMARINE_VERSION
+          docker rmi apache/submarine:operator-$SUBMARINE_VERSION
 
       - name: Build submarine mlflow
         run: ./dev-support/docker-images/mlflow/build.sh
       - name: Push submarine-mlflow docker image
-        run: docker push apache/submarine:mlflow-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:mlflow-$SUBMARINE_VERSION
+          docker rmi apache/submarine:mlflow-$SUBMARINE_VERSION
 
-      - name: Build submarine serve
-        run: ./dev-support/docker-images/serve/build.sh
-      - name: Push submarine-serve docker image
-        run: docker push apache/submarine:serve-$SUBMARINE_VERSION
+      # - name: Build submarine serve
+      #   run: ./dev-support/docker-images/serve/build.sh
+      # - name: Push submarine-serve docker image
+      #   run: docker push apache/submarine:serve-$SUBMARINE_VERSION
 
       - name: Build submarine quickstart
         run: ./dev-support/examples/quickstart/build.sh
       - name: Push submarine quickstart docker image
-        run: docker push apache/submarine:quickstart-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:quickstart-$SUBMARINE_VERSION
+          docker rmi apache/submarine:quickstart-$SUBMARINE_VERSION
 
       - name: Build submarine cicd
         run: ./dev-support/cicd/build.sh
       - name: Push submarine-cicd docker image
-        run: docker push apache/submarine:cicd-$SUBMARINE_VERSION
+        run: |
+          docker push apache/submarine:cicd-$SUBMARINE_VERSION
+          docker rmi apache/submarine:cicd-$SUBMARINE_VERSION
