@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM nvidia/cuda:12.2.0-base-ubuntu20.04
+FROM nvidia/cuda:11.0.3-base-ubuntu20.04
 
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
