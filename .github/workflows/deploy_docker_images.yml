@@ -20,7 +20,7 @@ on:
   push:
     branches: [master]
 jobs:
-  deploy-images:
+  deploy-server:
     if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -64,12 +64,30 @@ jobs:
           docker push apache/submarine:agent-$SUBMARINE_VERSION
           docker rmi apache/submarine:agent-$SUBMARINE_VERSION
 
+      ## TODO(cdmikechen): In the future, we will not include the database as a built-in image 
+      ##                   to facilitate subsequent upgrades.
       - name: Build submarine database
         run: ./dev-support/docker-images/database/build.sh
       - name: Push submarine-database docker image
         run: |
           docker push apache/submarine:database-$SUBMARINE_VERSION
           docker rmi apache/submarine:database-$SUBMARINE_VERSION
+
+  deploy-builtin-images:
+    if: github.repository == 'apache/submarine'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SUBMARINE_VERSION: 0.8.0-SNAPSHOT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: apache/submarine
+      - uses: docker/login-action@v1
+        name: Login to Docker Hub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
@@ -85,13 +103,6 @@ jobs:
           docker push apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
           docker rmi apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
 
-      - name: Build submarine operator
-        run: ./dev-support/docker-images/operator-v3/build.sh
-      - name: Push submarine-operator docker image
-        run: |
-          docker push apache/submarine:operator-$SUBMARINE_VERSION
-          docker rmi apache/submarine:operator-$SUBMARINE_VERSION
-
       - name: Build submarine mlflow
         run: ./dev-support/docker-images/mlflow/build.sh
       - name: Push submarine-mlflow docker image
@@ -99,17 +110,35 @@ jobs:
           docker push apache/submarine:mlflow-$SUBMARINE_VERSION
           docker rmi apache/submarine:mlflow-$SUBMARINE_VERSION
 
-      # - name: Build submarine serve
-      #   run: ./dev-support/docker-images/serve/build.sh
-      # - name: Push submarine-serve docker image
-      #   run: docker push apache/submarine:serve-$SUBMARINE_VERSION
-
       - name: Build submarine quickstart
         run: ./dev-support/examples/quickstart/build.sh
       - name: Push submarine quickstart docker image
         run: |
           docker push apache/submarine:quickstart-$SUBMARINE_VERSION
           docker rmi apache/submarine:quickstart-$SUBMARINE_VERSION
+
+  deploy-operator-and-cicd:
+    if: github.repository == 'apache/submarine'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SUBMARINE_VERSION: 0.8.0-SNAPSHOT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: apache/submarine
+      - uses: docker/login-action@v1
+        name: Login to Docker Hub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build submarine operator
+        run: ./dev-support/docker-images/operator-v3/build.sh
+      - name: Push submarine-operator docker image
+        run: |
+          docker push apache/submarine:operator-$SUBMARINE_VERSION
+          docker rmi apache/submarine:operator-$SUBMARINE_VERSION
 
       - name: Build submarine cicd
         run: ./dev-support/cicd/build.sh
