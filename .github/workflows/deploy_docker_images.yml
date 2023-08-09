@@ -23,7 +23,7 @@ on: [push, pull_request]
 
 jobs:
   deploy-server:
-    if: github.repository == 'apache/submarine'
+    # if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
@@ -76,7 +76,7 @@ jobs:
       #     docker rmi apache/submarine:database-$SUBMARINE_VERSION
 
   deploy-builtin-images:
-    if: github.repository == 'apache/submarine'
+    # if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
@@ -120,7 +120,7 @@ jobs:
       #     docker rmi apache/submarine:quickstart-$SUBMARINE_VERSION
 
   deploy-cloud-native-and-cicd:
-    if: github.repository == 'apache/submarine'
+    # if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
