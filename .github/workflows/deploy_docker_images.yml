@@ -32,11 +32,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: apache/submarine
-      - uses: docker/login-action@v1
-        name: Login to Docker Hub
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - uses: docker/login-action@v1
+      #   name: Login to Docker Hub
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
@@ -85,11 +85,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: apache/submarine
-      - uses: docker/login-action@v1
-        name: Login to Docker Hub
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - uses: docker/login-action@v1
+      #   name: Login to Docker Hub
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
@@ -129,11 +129,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: apache/submarine
-      - uses: docker/login-action@v1
-        name: Login to Docker Hub
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - uses: docker/login-action@v1
+      #   name: Login to Docker Hub
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build submarine operator
         run: ./dev-support/docker-images/operator-v3/build.sh
