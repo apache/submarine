@@ -22,7 +22,7 @@ on:
 
 jobs:
   deploy-server:
-    # if: github.repository == 'apache/submarine'
+    if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
