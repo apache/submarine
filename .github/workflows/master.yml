@@ -431,7 +431,7 @@ jobs:
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
-      - name: Build submarine-server-database
+      - name: Build submarine-server-core
         env:
           MODULES: "-pl :submarine-server-core"
         run: |
