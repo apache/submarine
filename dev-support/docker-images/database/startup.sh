@@ -19,7 +19,6 @@ CREATE DATABASE submarine_test;
 CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';
 use submarine_test; source /tmp/database/submarine.sql; source /tmp/database/submarine-model.sql;
-source /tmp/database/submarine-data.sql;
 CREATE DATABASE submarine;
 CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';
