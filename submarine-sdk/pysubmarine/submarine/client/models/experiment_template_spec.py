@@ -49,31 +49,31 @@ class ExperimentTemplateSpec(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'name': 'str',
         'author': 'str',
         'description': 'str',
-        'parameters': 'list[ExperimentTemplateParamSpec]',
         'experiment_spec': 'ExperimentSpec',
         'experiment_template_param_spec': 'list[ExperimentTemplateParamSpec]',
+        'name': 'str',
+        'parameters': 'list[ExperimentTemplateParamSpec]',
     }
 
     attribute_map = {
-        'name': 'name',
         'author': 'author',
         'description': 'description',
-        'parameters': 'parameters',
         'experiment_spec': 'experimentSpec',
         'experiment_template_param_spec': 'experimentTemplateParamSpec',
+        'name': 'name',
+        'parameters': 'parameters',
     }
 
     def __init__(
         self,
-        name=None,
         author=None,
         description=None,
-        parameters=None,
         experiment_spec=None,
         experiment_template_param_spec=None,
+        name=None,
+        parameters=None,
         local_vars_configuration=None,
     ):  # noqa: E501
         """ExperimentTemplateSpec - a model defined in OpenAPI"""  # noqa: E501
@@ -81,47 +81,26 @@ class ExperimentTemplateSpec(object):
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._name = None
         self._author = None
         self._description = None
-        self._parameters = None
         self._experiment_spec = None
         self._experiment_template_param_spec = None
+        self._name = None
+        self._parameters = None
         self.discriminator = None
 
-        if name is not None:
-            self.name = name
         if author is not None:
             self.author = author
         if description is not None:
             self.description = description
-        if parameters is not None:
-            self.parameters = parameters
         if experiment_spec is not None:
             self.experiment_spec = experiment_spec
         if experiment_template_param_spec is not None:
             self.experiment_template_param_spec = experiment_template_param_spec
-
-    @property
-    def name(self):
-        """Gets the name of this ExperimentTemplateSpec.  # noqa: E501
-
-
-        :return: The name of this ExperimentTemplateSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        """Sets the name of this ExperimentTemplateSpec.
-
-
-        :param name: The name of this ExperimentTemplateSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._name = name
+        if name is not None:
+            self.name = name
+        if parameters is not None:
+            self.parameters = parameters
 
     @property
     def author(self):
@@ -166,27 +145,6 @@ class ExperimentTemplateSpec(object):
         self._description = description
 
     @property
-    def parameters(self):
-        """Gets the parameters of this ExperimentTemplateSpec.  # noqa: E501
-
-
-        :return: The parameters of this ExperimentTemplateSpec.  # noqa: E501
-        :rtype: list[ExperimentTemplateParamSpec]
-        """
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, parameters):
-        """Sets the parameters of this ExperimentTemplateSpec.
-
-
-        :param parameters: The parameters of this ExperimentTemplateSpec.  # noqa: E501
-        :type: list[ExperimentTemplateParamSpec]
-        """
-
-        self._parameters = parameters
-
-    @property
     def experiment_spec(self):
         """Gets the experiment_spec of this ExperimentTemplateSpec.  # noqa: E501
 
@@ -227,6 +185,48 @@ class ExperimentTemplateSpec(object):
         """
 
         self._experiment_template_param_spec = experiment_template_param_spec
+
+    @property
+    def name(self):
+        """Gets the name of this ExperimentTemplateSpec.  # noqa: E501
+
+
+        :return: The name of this ExperimentTemplateSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Sets the name of this ExperimentTemplateSpec.
+
+
+        :param name: The name of this ExperimentTemplateSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._name = name
+
+    @property
+    def parameters(self):
+        """Gets the parameters of this ExperimentTemplateSpec.  # noqa: E501
+
+
+        :return: The parameters of this ExperimentTemplateSpec.  # noqa: E501
+        :rtype: list[ExperimentTemplateParamSpec]
+        """
+        return self._parameters
+
+    @parameters.setter
+    def parameters(self, parameters):
+        """Sets the parameters of this ExperimentTemplateSpec.
+
+
+        :param parameters: The parameters of this ExperimentTemplateSpec.  # noqa: E501
+        :type: list[ExperimentTemplateParamSpec]
+        """
+
+        self._parameters = parameters
 
     def to_dict(self):
         """Returns the model properties as a dict"""

@@ -33,8 +33,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
 
 public class Bootstrap extends HttpServlet {
   @Override
@@ -63,17 +62,18 @@ public class Bootstrap extends HttpServlet {
 
     SwaggerConfiguration oasConfig = new SwaggerConfiguration()
             .openAPI(oas)
-            .resourcePackages(Stream.of("org.apache.submarine.server.rest")
-                    .collect(Collectors.toSet()))
-            .resourceClasses(Stream.of("org.apache.submarine.server.rest.EnvironmentRestApi",
+            .resourcePackages(Set.of("org.apache.submarine.server.rest",
+                    "org.apache.submarine.server.rest.workbench"))
+            .resourceClasses(Set.of("org.apache.submarine.server.rest.EnvironmentRestApi",
                     "org.apache.submarine.server.rest.ExperimentRestApi",
                     "org.apache.submarine.server.rest.ExperimentTemplateRestApi",
                     "org.apache.submarine.server.rest.ModelVersionRestApi",
                     "org.apache.submarine.server.rest.NotebookRestApi",
                     "org.apache.submarine.server.rest.RegisteredModelRestApi",
-                    "org.apache.submarine.server.rest.ServeRestApi")
-                    .collect(Collectors.toSet()));
-
+                    "org.apache.submarine.server.rest.ServeRestApi",
+                    "org.apache.submarine.server.rest.workbench.LoginRestApi"));
+    oasConfig.setSortOutput(true);
+    oasConfig.setPrettyPrint(true);
     try {
       new JaxrsOpenApiContextBuilder()
               .openApiConfiguration(oasConfig)

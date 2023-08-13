@@ -49,109 +49,46 @@ class NotebookPodSpec(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'env_vars': 'dict(str, str)',
-        'resources': 'str',
-        'memory': 'str',
         'cpu': 'str',
+        'env_vars': 'dict(str, str)',
         'gpu': 'str',
+        'memory': 'str',
+        'resources': 'str',
     }
 
     attribute_map = {
-        'env_vars': 'envVars',
-        'resources': 'resources',
-        'memory': 'memory',
         'cpu': 'cpu',
+        'env_vars': 'envVars',
         'gpu': 'gpu',
+        'memory': 'memory',
+        'resources': 'resources',
     }
 
     def __init__(
-        self, env_vars=None, resources=None, memory=None, cpu=None, gpu=None, local_vars_configuration=None
+        self, cpu=None, env_vars=None, gpu=None, memory=None, resources=None, local_vars_configuration=None
     ):  # noqa: E501
         """NotebookPodSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._env_vars = None
-        self._resources = None
-        self._memory = None
         self._cpu = None
+        self._env_vars = None
         self._gpu = None
+        self._memory = None
+        self._resources = None
         self.discriminator = None
 
-        if env_vars is not None:
-            self.env_vars = env_vars
-        if resources is not None:
-            self.resources = resources
-        if memory is not None:
-            self.memory = memory
         if cpu is not None:
             self.cpu = cpu
+        if env_vars is not None:
+            self.env_vars = env_vars
         if gpu is not None:
             self.gpu = gpu
-
-    @property
-    def env_vars(self):
-        """Gets the env_vars of this NotebookPodSpec.  # noqa: E501
-
-
-        :return: The env_vars of this NotebookPodSpec.  # noqa: E501
-        :rtype: dict(str, str)
-        """
-        return self._env_vars
-
-    @env_vars.setter
-    def env_vars(self, env_vars):
-        """Sets the env_vars of this NotebookPodSpec.
-
-
-        :param env_vars: The env_vars of this NotebookPodSpec.  # noqa: E501
-        :type: dict(str, str)
-        """
-
-        self._env_vars = env_vars
-
-    @property
-    def resources(self):
-        """Gets the resources of this NotebookPodSpec.  # noqa: E501
-
-
-        :return: The resources of this NotebookPodSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._resources
-
-    @resources.setter
-    def resources(self, resources):
-        """Sets the resources of this NotebookPodSpec.
-
-
-        :param resources: The resources of this NotebookPodSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._resources = resources
-
-    @property
-    def memory(self):
-        """Gets the memory of this NotebookPodSpec.  # noqa: E501
-
-
-        :return: The memory of this NotebookPodSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._memory
-
-    @memory.setter
-    def memory(self, memory):
-        """Sets the memory of this NotebookPodSpec.
-
-
-        :param memory: The memory of this NotebookPodSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._memory = memory
+        if memory is not None:
+            self.memory = memory
+        if resources is not None:
+            self.resources = resources
 
     @property
     def cpu(self):
@@ -175,6 +112,27 @@ class NotebookPodSpec(object):
         self._cpu = cpu
 
     @property
+    def env_vars(self):
+        """Gets the env_vars of this NotebookPodSpec.  # noqa: E501
+
+
+        :return: The env_vars of this NotebookPodSpec.  # noqa: E501
+        :rtype: dict(str, str)
+        """
+        return self._env_vars
+
+    @env_vars.setter
+    def env_vars(self, env_vars):
+        """Sets the env_vars of this NotebookPodSpec.
+
+
+        :param env_vars: The env_vars of this NotebookPodSpec.  # noqa: E501
+        :type: dict(str, str)
+        """
+
+        self._env_vars = env_vars
+
+    @property
     def gpu(self):
         """Gets the gpu of this NotebookPodSpec.  # noqa: E501
 
@@ -194,6 +152,48 @@ class NotebookPodSpec(object):
         """
 
         self._gpu = gpu
+
+    @property
+    def memory(self):
+        """Gets the memory of this NotebookPodSpec.  # noqa: E501
+
+
+        :return: The memory of this NotebookPodSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._memory
+
+    @memory.setter
+    def memory(self, memory):
+        """Sets the memory of this NotebookPodSpec.
+
+
+        :param memory: The memory of this NotebookPodSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._memory = memory
+
+    @property
+    def resources(self):
+        """Gets the resources of this NotebookPodSpec.  # noqa: E501
+
+
+        :return: The resources of this NotebookPodSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._resources
+
+    @resources.setter
+    def resources(self, resources):
+        """Sets the resources of this NotebookPodSpec.
+
+
+        :param resources: The resources of this NotebookPodSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._resources = resources
 
     def to_dict(self):
         """Returns the model properties as a dict"""

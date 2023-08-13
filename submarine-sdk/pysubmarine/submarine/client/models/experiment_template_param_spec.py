@@ -48,32 +48,53 @@ class ExperimentTemplateParamSpec(object):
       attribute_map (dict): The key is attribute name
                             and the value is json key in definition.
     """
-    openapi_types = {'name': 'str', 'required': 'str', 'description': 'str', 'value': 'str'}
+    openapi_types = {'description': 'str', 'name': 'str', 'required': 'str', 'value': 'str'}
 
-    attribute_map = {'name': 'name', 'required': 'required', 'description': 'description', 'value': 'value'}
+    attribute_map = {'description': 'description', 'name': 'name', 'required': 'required', 'value': 'value'}
 
     def __init__(
-        self, name=None, required=None, description=None, value=None, local_vars_configuration=None
+        self, description=None, name=None, required=None, value=None, local_vars_configuration=None
     ):  # noqa: E501
         """ExperimentTemplateParamSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
+        self._description = None
         self._name = None
         self._required = None
-        self._description = None
         self._value = None
         self.discriminator = None
 
+        if description is not None:
+            self.description = description
         if name is not None:
             self.name = name
         if required is not None:
             self.required = required
-        if description is not None:
-            self.description = description
         if value is not None:
             self.value = value
+
+    @property
+    def description(self):
+        """Gets the description of this ExperimentTemplateParamSpec.  # noqa: E501
+
+
+        :return: The description of this ExperimentTemplateParamSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        """Sets the description of this ExperimentTemplateParamSpec.
+
+
+        :param description: The description of this ExperimentTemplateParamSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._description = description
 
     @property
     def name(self):
@@ -116,27 +137,6 @@ class ExperimentTemplateParamSpec(object):
         """
 
         self._required = required
-
-    @property
-    def description(self):
-        """Gets the description of this ExperimentTemplateParamSpec.  # noqa: E501
-
-
-        :return: The description of this ExperimentTemplateParamSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._description
-
-    @description.setter
-    def description(self, description):
-        """Sets the description of this ExperimentTemplateParamSpec.
-
-
-        :param description: The description of this ExperimentTemplateParamSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._description = description
 
     @property
     def value(self):

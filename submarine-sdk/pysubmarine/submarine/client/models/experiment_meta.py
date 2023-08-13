@@ -49,33 +49,33 @@ class ExperimentMeta(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'experiment_id': 'str',
-        'name': 'str',
-        'namespace': 'str',
-        'framework': 'str',
         'cmd': 'str',
         'env_vars': 'dict(str, str)',
+        'experiment_id': 'str',
+        'framework': 'str',
+        'name': 'str',
+        'namespace': 'str',
         'tags': 'list[str]',
     }
 
     attribute_map = {
-        'experiment_id': 'experimentId',
-        'name': 'name',
-        'namespace': 'namespace',
-        'framework': 'framework',
         'cmd': 'cmd',
         'env_vars': 'envVars',
+        'experiment_id': 'experimentId',
+        'framework': 'framework',
+        'name': 'name',
+        'namespace': 'namespace',
         'tags': 'tags',
     }
 
     def __init__(
         self,
-        experiment_id=None,
-        name=None,
-        namespace=None,
-        framework=None,
         cmd=None,
         env_vars=None,
+        experiment_id=None,
+        framework=None,
+        name=None,
+        namespace=None,
         tags=None,
         local_vars_configuration=None,
     ):  # noqa: E501
@@ -84,113 +84,29 @@ class ExperimentMeta(object):
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._experiment_id = None
-        self._name = None
-        self._namespace = None
-        self._framework = None
         self._cmd = None
         self._env_vars = None
+        self._experiment_id = None
+        self._framework = None
+        self._name = None
+        self._namespace = None
         self._tags = None
         self.discriminator = None
 
-        if experiment_id is not None:
-            self.experiment_id = experiment_id
-        if name is not None:
-            self.name = name
-        if namespace is not None:
-            self.namespace = namespace
-        if framework is not None:
-            self.framework = framework
         if cmd is not None:
             self.cmd = cmd
         if env_vars is not None:
             self.env_vars = env_vars
+        if experiment_id is not None:
+            self.experiment_id = experiment_id
+        if framework is not None:
+            self.framework = framework
+        if name is not None:
+            self.name = name
+        if namespace is not None:
+            self.namespace = namespace
         if tags is not None:
             self.tags = tags
-
-    @property
-    def experiment_id(self):
-        """Gets the experiment_id of this ExperimentMeta.  # noqa: E501
-
-
-        :return: The experiment_id of this ExperimentMeta.  # noqa: E501
-        :rtype: str
-        """
-        return self._experiment_id
-
-    @experiment_id.setter
-    def experiment_id(self, experiment_id):
-        """Sets the experiment_id of this ExperimentMeta.
-
-
-        :param experiment_id: The experiment_id of this ExperimentMeta.  # noqa: E501
-        :type: str
-        """
-
-        self._experiment_id = experiment_id
-
-    @property
-    def name(self):
-        """Gets the name of this ExperimentMeta.  # noqa: E501
-
-
-        :return: The name of this ExperimentMeta.  # noqa: E501
-        :rtype: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        """Sets the name of this ExperimentMeta.
-
-
-        :param name: The name of this ExperimentMeta.  # noqa: E501
-        :type: str
-        """
-
-        self._name = name
-
-    @property
-    def namespace(self):
-        """Gets the namespace of this ExperimentMeta.  # noqa: E501
-
-
-        :return: The namespace of this ExperimentMeta.  # noqa: E501
-        :rtype: str
-        """
-        return self._namespace
-
-    @namespace.setter
-    def namespace(self, namespace):
-        """Sets the namespace of this ExperimentMeta.
-
-
-        :param namespace: The namespace of this ExperimentMeta.  # noqa: E501
-        :type: str
-        """
-
-        self._namespace = namespace
-
-    @property
-    def framework(self):
-        """Gets the framework of this ExperimentMeta.  # noqa: E501
-
-
-        :return: The framework of this ExperimentMeta.  # noqa: E501
-        :rtype: str
-        """
-        return self._framework
-
-    @framework.setter
-    def framework(self, framework):
-        """Sets the framework of this ExperimentMeta.
-
-
-        :param framework: The framework of this ExperimentMeta.  # noqa: E501
-        :type: str
-        """
-
-        self._framework = framework
 
     @property
     def cmd(self):
@@ -233,6 +149,90 @@ class ExperimentMeta(object):
         """
 
         self._env_vars = env_vars
+
+    @property
+    def experiment_id(self):
+        """Gets the experiment_id of this ExperimentMeta.  # noqa: E501
+
+
+        :return: The experiment_id of this ExperimentMeta.  # noqa: E501
+        :rtype: str
+        """
+        return self._experiment_id
+
+    @experiment_id.setter
+    def experiment_id(self, experiment_id):
+        """Sets the experiment_id of this ExperimentMeta.
+
+
+        :param experiment_id: The experiment_id of this ExperimentMeta.  # noqa: E501
+        :type: str
+        """
+
+        self._experiment_id = experiment_id
+
+    @property
+    def framework(self):
+        """Gets the framework of this ExperimentMeta.  # noqa: E501
+
+
+        :return: The framework of this ExperimentMeta.  # noqa: E501
+        :rtype: str
+        """
+        return self._framework
+
+    @framework.setter
+    def framework(self, framework):
+        """Sets the framework of this ExperimentMeta.
+
+
+        :param framework: The framework of this ExperimentMeta.  # noqa: E501
+        :type: str
+        """
+
+        self._framework = framework
+
+    @property
+    def name(self):
+        """Gets the name of this ExperimentMeta.  # noqa: E501
+
+
+        :return: The name of this ExperimentMeta.  # noqa: E501
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Sets the name of this ExperimentMeta.
+
+
+        :param name: The name of this ExperimentMeta.  # noqa: E501
+        :type: str
+        """
+
+        self._name = name
+
+    @property
+    def namespace(self):
+        """Gets the namespace of this ExperimentMeta.  # noqa: E501
+
+
+        :return: The namespace of this ExperimentMeta.  # noqa: E501
+        :rtype: str
+        """
+        return self._namespace
+
+    @namespace.setter
+    def namespace(self, namespace):
+        """Sets the namespace of this ExperimentMeta.
+
+
+        :param namespace: The namespace of this ExperimentMeta.  # noqa: E501
+        :type: str
+        """
+
+        self._namespace = namespace
 
     @property
     def tags(self):

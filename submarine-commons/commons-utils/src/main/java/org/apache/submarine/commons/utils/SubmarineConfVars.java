@@ -92,7 +92,7 @@ public class SubmarineConfVars {
     SUBMARINE_COOKIE_SAMESITE("submarine.cookie.samesite", ""),
 
     /* auth */
-    SUBMARINE_AUTH_TYPE("submarine.auth.type", "none"),
+    SUBMARINE_AUTH_TYPE("submarine.auth.type", "simple"),
     SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", "SUBMARINE_SECRET_12345678901234567890"),
     SUBMARINE_AUTH_MAX_AGE_ENV("submarine.auth.maxAge", 60 * 60 * 24);
 

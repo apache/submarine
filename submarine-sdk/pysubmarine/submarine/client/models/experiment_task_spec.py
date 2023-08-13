@@ -49,40 +49,40 @@ class ExperimentTaskSpec(object):
                             and the value is json key in definition.
     """
     openapi_types = {
+        'cmd': 'str',
+        'cpu': 'str',
+        'env_vars': 'dict(str, str)',
+        'gpu': 'str',
+        'image': 'str',
+        'memory': 'str',
+        'name': 'str',
         'replicas': 'int',
         'resources': 'str',
-        'name': 'str',
-        'image': 'str',
-        'cmd': 'str',
-        'env_vars': 'dict(str, str)',
-        'memory': 'str',
-        'cpu': 'str',
-        'gpu': 'str',
     }
 
     attribute_map = {
+        'cmd': 'cmd',
+        'cpu': 'cpu',
+        'env_vars': 'envVars',
+        'gpu': 'gpu',
+        'image': 'image',
+        'memory': 'memory',
+        'name': 'name',
         'replicas': 'replicas',
         'resources': 'resources',
-        'name': 'name',
-        'image': 'image',
-        'cmd': 'cmd',
-        'env_vars': 'envVars',
-        'memory': 'memory',
-        'cpu': 'cpu',
-        'gpu': 'gpu',
     }
 
     def __init__(
         self,
+        cmd=None,
+        cpu=None,
+        env_vars=None,
+        gpu=None,
+        image=None,
+        memory=None,
+        name=None,
         replicas=None,
         resources=None,
-        name=None,
-        image=None,
-        cmd=None,
-        env_vars=None,
-        memory=None,
-        cpu=None,
-        gpu=None,
         local_vars_configuration=None,
     ):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
@@ -90,35 +90,182 @@ class ExperimentTaskSpec(object):
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
+        self._cmd = None
+        self._cpu = None
+        self._env_vars = None
+        self._gpu = None
+        self._image = None
+        self._memory = None
+        self._name = None
         self._replicas = None
         self._resources = None
-        self._name = None
-        self._image = None
-        self._cmd = None
-        self._env_vars = None
-        self._memory = None
-        self._cpu = None
-        self._gpu = None
         self.discriminator = None
 
+        if cmd is not None:
+            self.cmd = cmd
+        if cpu is not None:
+            self.cpu = cpu
+        if env_vars is not None:
+            self.env_vars = env_vars
+        if gpu is not None:
+            self.gpu = gpu
+        if image is not None:
+            self.image = image
+        if memory is not None:
+            self.memory = memory
+        if name is not None:
+            self.name = name
         if replicas is not None:
             self.replicas = replicas
         if resources is not None:
             self.resources = resources
-        if name is not None:
-            self.name = name
-        if image is not None:
-            self.image = image
-        if cmd is not None:
-            self.cmd = cmd
-        if env_vars is not None:
-            self.env_vars = env_vars
-        if memory is not None:
-            self.memory = memory
-        if cpu is not None:
-            self.cpu = cpu
-        if gpu is not None:
-            self.gpu = gpu
+
+    @property
+    def cmd(self):
+        """Gets the cmd of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The cmd of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._cmd
+
+    @cmd.setter
+    def cmd(self, cmd):
+        """Sets the cmd of this ExperimentTaskSpec.
+
+
+        :param cmd: The cmd of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._cmd = cmd
+
+    @property
+    def cpu(self):
+        """Gets the cpu of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The cpu of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._cpu
+
+    @cpu.setter
+    def cpu(self, cpu):
+        """Sets the cpu of this ExperimentTaskSpec.
+
+
+        :param cpu: The cpu of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._cpu = cpu
+
+    @property
+    def env_vars(self):
+        """Gets the env_vars of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The env_vars of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: dict(str, str)
+        """
+        return self._env_vars
+
+    @env_vars.setter
+    def env_vars(self, env_vars):
+        """Sets the env_vars of this ExperimentTaskSpec.
+
+
+        :param env_vars: The env_vars of this ExperimentTaskSpec.  # noqa: E501
+        :type: dict(str, str)
+        """
+
+        self._env_vars = env_vars
+
+    @property
+    def gpu(self):
+        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._gpu
+
+    @gpu.setter
+    def gpu(self, gpu):
+        """Sets the gpu of this ExperimentTaskSpec.
+
+
+        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._gpu = gpu
+
+    @property
+    def image(self):
+        """Gets the image of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The image of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._image
+
+    @image.setter
+    def image(self, image):
+        """Sets the image of this ExperimentTaskSpec.
+
+
+        :param image: The image of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._image = image
+
+    @property
+    def memory(self):
+        """Gets the memory of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The memory of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._memory
+
+    @memory.setter
+    def memory(self, memory):
+        """Sets the memory of this ExperimentTaskSpec.
+
+
+        :param memory: The memory of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._memory = memory
+
+    @property
+    def name(self):
+        """Gets the name of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The name of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Sets the name of this ExperimentTaskSpec.
+
+
+        :param name: The name of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._name = name
 
     @property
     def replicas(self):
@@ -161,153 +308,6 @@ class ExperimentTaskSpec(object):
         """
 
         self._resources = resources
-
-    @property
-    def name(self):
-        """Gets the name of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The name of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        """Sets the name of this ExperimentTaskSpec.
-
-
-        :param name: The name of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._name = name
-
-    @property
-    def image(self):
-        """Gets the image of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The image of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._image
-
-    @image.setter
-    def image(self, image):
-        """Sets the image of this ExperimentTaskSpec.
-
-
-        :param image: The image of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._image = image
-
-    @property
-    def cmd(self):
-        """Gets the cmd of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The cmd of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._cmd
-
-    @cmd.setter
-    def cmd(self, cmd):
-        """Sets the cmd of this ExperimentTaskSpec.
-
-
-        :param cmd: The cmd of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._cmd = cmd
-
-    @property
-    def env_vars(self):
-        """Gets the env_vars of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The env_vars of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: dict(str, str)
-        """
-        return self._env_vars
-
-    @env_vars.setter
-    def env_vars(self, env_vars):
-        """Sets the env_vars of this ExperimentTaskSpec.
-
-
-        :param env_vars: The env_vars of this ExperimentTaskSpec.  # noqa: E501
-        :type: dict(str, str)
-        """
-
-        self._env_vars = env_vars
-
-    @property
-    def memory(self):
-        """Gets the memory of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The memory of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._memory
-
-    @memory.setter
-    def memory(self, memory):
-        """Sets the memory of this ExperimentTaskSpec.
-
-
-        :param memory: The memory of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._memory = memory
-
-    @property
-    def cpu(self):
-        """Gets the cpu of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The cpu of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._cpu
-
-    @cpu.setter
-    def cpu(self, cpu):
-        """Sets the cpu of this ExperimentTaskSpec.
-
-
-        :param cpu: The cpu of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._cpu = cpu
-
-    @property
-    def gpu(self):
-        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._gpu
-
-    @gpu.setter
-    def gpu(self, gpu):
-        """Sets the gpu of this ExperimentTaskSpec.
-
-
-        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._gpu = gpu
 
     def to_dict(self):
         """Returns the model properties as a dict"""

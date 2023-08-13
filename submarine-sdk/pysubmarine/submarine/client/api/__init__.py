@@ -16,6 +16,7 @@
 from __future__ import absolute_import
 
 # import apis into api package
+from submarine.client.api.auth_api import AuthApi
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api.experiment_template_api import ExperimentTemplateApi
