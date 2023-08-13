@@ -440,9 +440,13 @@ jobs:
       - name: Test submarine-server-core
         env:
           TEST_MODULES: "-pl :submarine-server-core"
+        # TODO(cdmikechen) There are some databases that are hardcoded to cause data judgement anomalies,
+        #                  here is a temporary fix for this issue.
+        #                  This variable should be removed when SUBMARINE-1297 is resolved.
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           export SUBMARINE_S3_ENDPOINT=http://localhost:9000
+          export JDBC_URL=jdbc:mysql://127.0.0.1:3306/submarine_test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false
           mvn $TEST_FLAG $TEST_MODULES -B
       - name: Build submarine-serve
         env:
