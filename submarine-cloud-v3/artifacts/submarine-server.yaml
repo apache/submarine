@@ -118,7 +118,7 @@ spec:
             secretKeyRef:
               name: submarine-minio-secret
               key: MINIO_SECRET_KEY
-        image: "apache/submarine:server-0.8.0-SNAPSHOT"
+        image: "apache/submarine:server-0.8.0-RC0"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

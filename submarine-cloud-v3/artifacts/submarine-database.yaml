@@ -62,7 +62,7 @@ spec:
       serviceAccountName: "submarine-storage"
       containers:
         - name: "submarine-database"
-          image: "apache/submarine:database-0.8.0-SNAPSHOT"
+          image: "apache/submarine:database-0.8.0-RC0"
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 3306

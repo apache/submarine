@@ -50,7 +50,7 @@ def test_all_environment_e2e():
     environment_spec = EnvironmentSpec(
         name="mytest",
         kernel_spec=kernel_spec,
-        docker_image="apache/submarine:jupyter-notebook-gpu-0.8.0-SNAPSHOT",
+        docker_image="apache/submarine:jupyter-notebook-gpu-0.8.0-RC0",
     )
 
     environment = submarine_client.create_environment(environment_spec=environment_spec)
