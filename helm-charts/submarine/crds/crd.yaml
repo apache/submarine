@@ -21,7 +21,7 @@ metadata:
   name: submarines.submarine.apache.org
   labels:
     app.kubernetes.io/name: submarine-operator
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/version: "0.8.0-RC0"
     app.kubernetes.io/component: submarine-operator
     app.kubernetes.io/managed-by: Helm
 spec:

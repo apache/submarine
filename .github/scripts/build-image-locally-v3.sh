@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-SUBMARINE_VERSION="0.8.0-SNAPSHOT"
+SUBMARINE_VERSION="0.8.0-RC0"
 FOLDER_LIST=("database" "mlflow" "submarine" "operator-v3" "agent")
 IMAGE_LIST=(
   "apache/submarine:database-${SUBMARINE_VERSION}"

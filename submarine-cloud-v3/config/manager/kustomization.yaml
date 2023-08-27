@@ -30,4 +30,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: apache/submarine
-  newTag: operator-0.8.0-SNAPSHOT
+  newTag: operator-0.8.0-RC0
