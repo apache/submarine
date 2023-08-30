@@ -131,7 +131,7 @@ $ gpg --keyserver pgpkeys.mit.edu --send-key <key id>
 
 ### 1.4 Check whether the key is created successfully
 
-Through the following URL, use the email to check whether the upload is successful or not. It will take about a minute to find out. When searching, check the show full-key hashes under advance on http://keys.gnupg.net.
+Through the following URL, use the email to check whether the upload is successful or not. It will take about a minute to find out. When searching, check the show full-key hashes under advance on http://pgpkeys.mit.edu .
 
 The query results are as follows:
 
