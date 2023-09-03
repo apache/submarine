@@ -232,9 +232,10 @@ In the maven configuration file ~/.m2/settings.xml, add the following `<server>`
 **Create a tag with signature**
 
 ```shell
-$ git_tag=${release_version}-${rc_version}
+$ git_tag=release-${release_version}-${rc_version}
 $ git tag -s $git_tag -m "Tagging the ${release_version} first Releae Candidate (Candidates start at zero)"
 # If a error happened like gpg: signing failed: secret key not available, set the private key first.
+# Note: if you use zsh, you need to run the following command first: export GPG_TTY=$(tty)
 $ git config user.signingkey ${KEY_ID}
 ```
 
@@ -256,7 +257,7 @@ cd /tmp/apache-submarine-${release_version}-${rc_version} # Enter the source pac
 tar xzvf apache-submarine-${release_version}-src.tar.gz # Unzip the source package.
 cd apache-submarine-${release_version} # Enter the source directory.
 mvn compile clean install package -DskipTests # Compile.
-cp ./submarine-distribution/target/apache-submarine-${release_version}-bin.tar.gz /tmp/apache-submarine-${release_version}-${rc_version}/  # Copy the binary package to the source package directory to facilitate signing the package in the next step.
+cp ./submarine-dist/target/submarine-dist-${release_version}-${rc_version}.tar.gz /tmp/apache-submarine-${release_version}-${rc_version}/ # Copy the binary package to the source package directory to facilitate signing the package in the next step.
 ```
 
 ### 3.5 Sign the source package/binary package/sha512
@@ -290,7 +291,8 @@ mvn -DskipTests deploy -Papache-release -Dmaven.javadoc.skip=true  # Start uploa
 ### 4.2 Upload the tag to git repository
 
 ```shell
-git push origin ${release_version}-${rc_version}
+# Push to a remote repository, e.g.: https://gitbox.apache.org/repos/asf/submarine.git or https://github.com/apache/submarine.git
+git push ${YOUR_REMOTE_NAME} ${git_tag}
 ```
 
 ### 4.3 Upload the compiled file to dist
@@ -329,6 +331,15 @@ svn commit -m "prepare for ${release_version} ${rc_version}"     # Submit to svn
    The link should look like: `https://repository.apache.org/content/repositories/orgapachesubmarine-xxxx`
 
 WARN: Please note that clicking Close may fail, please check the reason for the failure and deal with it.
+
+Alternatively, you can create apache staging repository directly with one command as follows:
+```shell
+export GPG_PASSPHRASE=yourPassphase
+export ASF_USERID=yourApacheId
+export ASF_PASSWORD=yourApachePwd
+cd $SUBMARINE_HOME/dev-support/cicd
+./publish_release.sh ${release_version}-${rc_version} ${git_tag}
+```
 
 ## 5. Enter voting
 
