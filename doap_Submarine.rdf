@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl"?>
 <rdf:RDF xml:lang="en"
-         xmlns="http://usefulinc.com/ns/doap#" 
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-         xmlns:asfext="http://projects.apache.org/ns/asfext#"
-         xmlns:foaf="http://xmlns.com/foaf/0.1/">
-<!--
+  xmlns="http://usefulinc.com/ns/doap#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:asfext="http://projects.apache.org/ns/asfext#"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -39,31 +39,43 @@
         <created>2019-01-16</created>
         <revision>0.1.0</revision>
       </Version>
+    </release>
+    <release>
       <Version>
         <name>Apache Submarine 0.2.0</name>
         <created>2019-07-02</created>
         <revision>0.2.0</revision>
       </Version>
+    </release>
+    <release>
       <Version>
         <name>Apache Submarine 0.3.0</name>
         <created>2020-02-01</created>
         <revision>0.3.0</revision>
       </Version>
-            <Version>
+    </release>
+    <release>
+      <Version>
         <name>Apache Submarine 0.4.0</name>
         <created>2020-07-05</created>
         <revision>0.4.0</revision>
       </Version>
-            <Version>
+    </release>
+    <release>
+      <Version>
         <name>Apache Submarine 0.5.0</name>
         <created>2020-12-17</created>
         <revision>0.5.0</revision>
       </Version>
+    </release>
+    <release>
       <Version>
         <name>Apache Submarine 0.6.0</name>
         <created>2021-10-21</created>
         <revision>0.6.0</revision>
       </Version>
+    </release>
+    <release>
       <Version>
         <name>Apache Submarine 0.7.0</name>
         <created>2022-04-25</created>
@@ -79,9 +91,8 @@
     <maintainer>
       <foaf:Person>
         <foaf:name>Apache Submarine PMC</foaf:name>
-          <foaf:mbox rdf:resource="mailto:dev@submarine.apache.org"/>
+        <foaf:mbox rdf:resource="mailto:dev@submarine.apache.org"/>
       </foaf:Person>
     </maintainer>
   </Project>
 </rdf:RDF>
-
