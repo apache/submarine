@@ -465,3 +465,17 @@ https://submarine.apache.org/docs/next/releases/submarine-release-${release_vers
 BR,
 XXXX
 ```
+
+### 6.5. Update doap_Submarine.rdf
+
+Update the DOAP file with the release version and release date.
+
+```xml
+<release>
+  <Version>
+    <name>Apache Submarine x.y.z</name>
+    <created>YYYY-MM-DD</created>
+    <revision>x.y.z</revision>
+  </Version>
+</release>
+```
