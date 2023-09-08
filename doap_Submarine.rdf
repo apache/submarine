@@ -32,7 +32,12 @@
     <mailing-list rdf:resource="https://issues.apache.org/jira/projects/SUBMARINE" />
     <download-page rdf:resource="https://submarine.apache.org/docs/next/download" />
     <programming-language>Java</programming-language>
+
     <category rdf:resource="https://projects.apache.org/category/cloud" />
+    <category rdf:resource="https://projects.apache.org/category/java"/>
+    <category rdf:resource="https://projects.apache.org/category/python"/>
+    <category rdf:resource="https://projects.apache.org/category/go"/>
+
     <release>
       <Version>
         <name>Apache Submarine 0.1.0</name>
@@ -88,6 +93,7 @@
         <browse rdf:resource="https://github.com/apache/submarine"/>
       </GitRepository>
     </repository>
+
     <maintainer>
       <foaf:Person>
         <foaf:name>Apache Submarine PMC</foaf:name>
