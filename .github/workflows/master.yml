@@ -214,7 +214,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 50
+          fetch-depth: 1
+      - name: Free Disk Space
+        run: bash ./.github/scripts/free-disk-space.sh
       - name: Cache jacoco.exec
         uses: actions/cache@v2
         with:
