@@ -428,9 +428,74 @@ Your Submarine Release Manager
 
 ## 6. Officially released
 
-### 6.1 Merge the changes from the release-${release_version} branch to the master branch
+### 6.1 Update release candidate version (like 0.8.0-RC0) to release version (like 0.8.0) in files from the release branch
 
-### 6.2 Release the version in the Apache Staging repository
+### 6.2 Release the jira version
+
+Access [submarine project version page](https://issues.apache.org/jira/projects/SUBMARINE?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased). Click the version to be released, and then click the "Release" button. It will request the release date. We can fill it with the end-of-vote date.
+
+### 6.3 Tag the release
+```shell
+# please replace the version to the right version
+export git_tag=rel/release-$release_version
+git tag -s $git_tag -m "Submarine ${release_version} release"
+git push ${YOUR_REMOTE_NAME} $git_tag
+```
+
+### 6.4 Package the source code
+
+```shell
+mkdir /tmp/apache-submarine-${release_version}
+git archive --format=tar.gz --output="/tmp/apache-submarine-${release_version}/apache-submarine-${release_version}-src.tar.gz" --prefix="apache-submarine-${release_version}/" $git_tag
+```
+
+### 6.5 Packaged binary package
+
+```shell
+cd /tmp/apache-submarine-${release_version} 
+tar xzvf apache-submarine-${release_version}-src.tar.gz 
+cd apache-submarine-${release_version} 
+mvn compile clean install package -DskipTests 
+cp ./submarine-dist/target/submarine-dist-${release_version}.tar.gz /tmp/apache-submarine-${release_version}/  
+```
+
+### 3.5 Sign and check the source package/binary package/sha512
+
+Sign:
+
+```shell
+for i in *.tar.gz; do echo $i; gpg --print-md SHA512 $i > $i.sha512 ; done 
+for i in *.tar.gz; do echo $i; gpg --armor --output $i.asc --detach-sig $i ; done 
+```
+
+Check:
+
+```shell
+for i in *.tar.gz; do echo $i; gpg --verify $i.asc $i ; done
+```
+
+### 6.4 Copy release artifacts to apache dist server
+
+```shell
+svn co --depth immediates https://dist.apache.org/repos/dist /tmp/submarine-dist-release
+cd /tmp/submarine-dist-release
+svn update --set-depth immediates dev/submarine
+
+# upload to dev
+cd dev/submarine
+mkdir $release_version
+cp /tmp/apache-submarine-${release_version}/*tar.gz* ${release_version}/
+svn add $release_version
+svn ci -m "Publishing the bits for submarine release ${release_version} to apache dist dev folder"
+
+# upload to release
+cd /tmp/submarine-dist-release
+svn update --set-depth immediates release/submarine
+svn copy dev/submarine/$release_version release/submarine/
+svn ci -m "Publishing the bits for submarine release ${release_version}"
+```
+
+### 6.5 Release the version in the Apache Staging repository
 
 > Please make sure all artifacts are fine.
 
@@ -440,9 +505,9 @@ Your Submarine Release Manager
 4. Click the `Release` button above, and a series of checks will be carried out during this process.
    **It usually takes 24 hours to wait for the repository to synchronize to other data sources**
 
-### 6.3 Update official website link
+### 6.6 Update official website link
 
-### 6.4. Send an email to`dev@submarine.apache.org`
+### 6.7 Send an email to`dev@submarine.apache.org`
 
 **Please make sure that the repository in 6.4 has been successfully released, generally the email is sent 24 hours after 6.4**
 
@@ -466,7 +531,7 @@ BR,
 XXXX
 ```
 
-### 6.5. Update doap_Submarine.rdf
+### 6.8 Update doap_Submarine.rdf
 
 Update the DOAP file with the release version and release date.
 
