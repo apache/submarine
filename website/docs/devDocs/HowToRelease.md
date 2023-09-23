@@ -430,6 +430,8 @@ Your Submarine Release Manager
 
 ### 6.1 Update release candidate version (like 0.8.0-RC0) to release version (like 0.8.0) in files from the release branch
 
+In the meantime, we also need to change the version from 0.x.x.dev to 0.x.x in `submarine-sdk/pysubmarine/setup.py`.
+
 ### 6.2 Release the jira version
 
 Access [submarine project version page](https://issues.apache.org/jira/projects/SUBMARINE?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased). Click the version to be released, and then click the "Release" button. It will request the release date. We can fill it with the end-of-vote date.
