@@ -550,7 +550,7 @@ The highlighted features are:
 
 Tons of thanks to our contributors and community!
 Let's keep fighting! *Apache Submarine ${release_version} released*:
-https://submarine.apache.org/docs/next/releases/submarine-release-${release_version}
+https://submarine.apache.org/releases/submarine-release-${release_version}
 
 BR,
 XXXX
