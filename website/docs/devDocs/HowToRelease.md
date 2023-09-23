@@ -442,16 +442,12 @@ git tag -s $git_tag -m "Submarine ${release_version} release"
 git push ${YOUR_REMOTE_NAME} $git_tag
 ```
 
-### 6.4 Package the source code
+### 6.4 Package the source code and binary package
 
 ```shell
 mkdir /tmp/apache-submarine-${release_version}
 git archive --format=tar.gz --output="/tmp/apache-submarine-${release_version}/apache-submarine-${release_version}-src.tar.gz" --prefix="apache-submarine-${release_version}/" $git_tag
-```
 
-### 6.5 Packaged binary package
-
-```shell
 cd /tmp/apache-submarine-${release_version} 
 tar xzvf apache-submarine-${release_version}-src.tar.gz 
 cd apache-submarine-${release_version} 
@@ -459,7 +455,7 @@ mvn compile clean install package -DskipTests
 cp ./submarine-dist/target/submarine-dist-${release_version}.tar.gz /tmp/apache-submarine-${release_version}/  
 ```
 
-### 3.5 Sign and check the source package/binary package/sha512
+### 6.5 Sign and check the source package/binary package/sha512
 
 Sign:
 
@@ -474,7 +470,7 @@ Check:
 for i in *.tar.gz; do echo $i; gpg --verify $i.asc $i ; done
 ```
 
-### 6.4 Copy release artifacts to apache dist server
+### 6.6 Copy release artifacts to apache dist server
 
 ```shell
 svn co --depth immediates https://dist.apache.org/repos/dist /tmp/submarine-dist-release
@@ -495,7 +491,12 @@ svn copy dev/submarine/$release_version release/submarine/
 svn ci -m "Publishing the bits for submarine release ${release_version}"
 ```
 
-### 6.5 Release the version in the Apache Staging repository
+### 6.7 Release the version in the Apache Staging repository
+
+You need to execute the deploy command again.
+```shell
+mvn -DskipTests deploy -Papache-release -Dmaven.javadoc.skip=true
+```
 
 > Please make sure all artifacts are fine.
 
@@ -505,9 +506,31 @@ svn ci -m "Publishing the bits for submarine release ${release_version}"
 4. Click the `Release` button above, and a series of checks will be carried out during this process.
    **It usually takes 24 hours to wait for the repository to synchronize to other data sources**
 
-### 6.6 Update official website link
+### 6.8 Release Python SDK
 
-### 6.7 Send an email to`dev@submarine.apache.org`
+More details can be found in https://github.com/apache/submarine/blob/master/website/docs/userDocs/submarine-sdk/pysubmarine/development.md#upload-package-to-pypi .
+
+### 6.9 Update official website link
+
+Create a new folder `website/versioned_docs/version-${release_version}`, and copy the files under `website/docs/*` to `website/versioned_docs/version-${release_version}`.
+
+This may need a new PR and be committed to the master branch.
+
+### 6.10 Update doap_Submarine.rdf
+
+Update the DOAP file with the release version and release date.
+
+```xml
+<release>
+  <Version>
+    <name>Apache Submarine x.y.z</name>
+    <created>YYYY-MM-DD</created>
+    <revision>x.y.z</revision>
+  </Version>
+</release>
+```
+
+### 6.11 Send an email to`dev@submarine.apache.org`
 
 **Please make sure that the repository in 6.4 has been successfully released, generally the email is sent 24 hours after 6.4**
 
@@ -529,18 +552,4 @@ https://submarine.apache.org/docs/next/releases/submarine-release-${release_vers
 
 BR,
 XXXX
-```
-
-### 6.8 Update doap_Submarine.rdf
-
-Update the DOAP file with the release version and release date.
-
-```xml
-<release>
-  <Version>
-    <name>Apache Submarine x.y.z</name>
-    <created>YYYY-MM-DD</created>
-    <revision>x.y.z</revision>
-  </Version>
-</release>
 ```
