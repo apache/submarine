@@ -1,0 +1,76 @@
+{
+    "docs": [
+        {
+            "Getting Started": [
+                "gettingStarted/quickstart",
+                "gettingStarted/notebook",
+                "gettingStarted/python-sdk",
+                "gettingStarted/helm"
+            ],
+            "User Docs": [
+                {
+                    "Submarine SDK": [
+                        "userDocs/submarine-sdk/submarine-cli",
+                        "userDocs/submarine-sdk/submarine-client",
+                        "userDocs/submarine-sdk/experiment-client",
+                        "userDocs/submarine-sdk/tracking"
+                    ]
+                },
+                {
+                    "Others": [
+                        "userDocs/others/mlflow",
+                        "userDocs/others/tensorboard"
+                    ]
+                }
+            ],
+            "Developer Docs": [
+                "devDocs/README",
+                "devDocs/Dependencies",
+                "devDocs/BuildFromCode",
+                "devDocs/Development",
+                "devDocs/IntegrationTestK8s",
+                "devDocs/IntegrationTestE2E",
+                "devDocs/HowToRelease",
+                "devDocs/HowToVerify"
+            ],
+            "Community": [
+                "community/README",
+                "community/Bylaws",
+                "community/HowToCommit",
+                "community/contributing",
+                "community/HowToVoteCommitterOrPMC",
+                "community/HowToBecomeCommitter",
+                "community/Resources"
+            ],
+            "Design Docs": [
+                "designDocs/architecture-and-requirements",
+                "designDocs/implementation-notes",
+                "designDocs/environments-implementation",
+                "designDocs/experiment-implementation",
+                "designDocs/notebook-implementation",
+                "designDocs/storage-implementation",
+                {
+                    "Submarine Server": [
+                        "designDocs/submarine-server/architecture",
+                        "designDocs/submarine-server/experimentSpec"
+                    ]
+                },
+                {
+                    "WIP Design Docs": [
+                        "designDocs/wip-designs/submarine-launcher",
+                        "designDocs/wip-designs/security-implementation"
+                    ]
+                }
+            ]
+        }
+    ],
+    "api": [
+        "api/environment",
+        "api/experiment",
+        "api/experiment-template",
+        "api/notebook",
+        "api/register-model",
+        "api/model-version",
+        "api/serve"
+    ]
+}
