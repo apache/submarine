@@ -32,7 +32,7 @@ cp -r ${SUBMARINE_HOME}/submarine-cloud-v2/ "${CURRENT_PATH}/tmp/submarine-cloud
 
 cd ${CURRENT_PATH}
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ${SUBMARINE_IMAGE_NAME} .
 
 # clean temp file
 rm -rf "${CURRENT_PATH}/tmp"
