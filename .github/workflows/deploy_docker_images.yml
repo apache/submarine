@@ -19,13 +19,14 @@ name: Deploy submarine docker images
 on:
   push:
     branches: [master]
+
 jobs:
-  deploy-images:
+  deploy-server:
     if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
-      SUBMARINE_VERSION: 0.8.0-SNAPSHOT
+      SUBMARINE_VERSION: 0.9.0-SNAPSHOT
     steps:
       - uses: actions/checkout@v2
         with:
@@ -56,8 +57,26 @@ jobs:
       - name: Build and push submarine agent
         run: ./dev-support/docker-images/agent/build.sh
 
+      ## TODO(cdmikechen): In the future, we will not include the database as a built-in image
+      ##                   to facilitate subsequent upgrades.
       - name: Build and push submarine database
         run: ./dev-support/docker-images/database/build.sh
+
+  deploy-builtin-images:
+    if: github.repository == 'apache/submarine'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SUBMARINE_VERSION: 0.9.0-SNAPSHOT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: apache/submarine
+      - uses: docker/login-action@v1
+        name: Login to Docker Hub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
@@ -65,17 +84,30 @@ jobs:
       - name: Build and push submarine jupyter gpu
         run: ./dev-support/docker-images/jupyter-gpu/build.sh
 
-      - name: Build and push submarine operator
-        run: ./dev-support/docker-images/operator-v3/build.sh
-
       - name: Build and push submarine mlflow
         run: ./dev-support/docker-images/mlflow/build.sh
 
-      - name: Build and push submarine serve
-        run: ./dev-support/docker-images/serve/build.sh
-
       - name: Build and push submarine quickstart
         run: ./dev-support/examples/quickstart/build.sh
+
+  deploy-cloud-native-and-cicd:
+    if: github.repository == 'apache/submarine'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      SUBMARINE_VERSION: 0.9.0-SNAPSHOT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: apache/submarine
+      - uses: docker/login-action@v1
+        name: Login to Docker Hub
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push submarine operator
+        run: ./dev-support/docker-images/operator-v3/build.sh
 
       - name: Build and push submarine cicd
         run: ./dev-support/cicd/build.sh

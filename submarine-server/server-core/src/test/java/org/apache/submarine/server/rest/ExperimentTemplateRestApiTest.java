@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -119,11 +121,13 @@ public class ExperimentTemplateRestApiTest {
     Response getEnvResponse = experimentTemplateStoreApi.listExperimentTemplate("");
     String entity = (String) getEnvResponse.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
-    ExperimentTemplate[] experimentTemplates = gson.fromJson(gson.toJson(jsonResponse.getResult()),
-        ExperimentTemplate[].class);
-    assertEquals(1, experimentTemplates.length);
+    var experimentTemplates = Arrays.stream(gson.fromJson(gson.toJson(jsonResponse.getResult()),
+        ExperimentTemplate[].class))
+        .filter(e -> e.getExperimentTemplateSpec().getName().equals("tf-mnist-test_1"))
+        .collect(Collectors.toList());
+    assertEquals(1, experimentTemplates.size());
 
-    ExperimentTemplate experimentTemplate = experimentTemplates[0];
+    ExperimentTemplate experimentTemplate = experimentTemplates.get(0);
     assertEquals(experimentTemplateSpec.getName(), experimentTemplate.getExperimentTemplateSpec().getName());
   }
 

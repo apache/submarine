@@ -27,7 +27,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 
   },
   "environment": {
-    "image": "nn-pytorch:0.8.0-SNAPSHOT"
+    "image": "nn-pytorch:0.9.0-SNAPSHOT"
   },
   "spec": {
     "Worker": {

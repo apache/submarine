@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-IMAGE="apache/submarine:cicd-0.8.0-SNAPSHOT"
+IMAGE="apache/submarine:cicd-0.9.0-SNAPSHOT"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
