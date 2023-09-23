@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine</artifactId>
-    <version>0.8.0-RC0</version>
+    <version>0.8.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

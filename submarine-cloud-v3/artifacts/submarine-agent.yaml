@@ -41,7 +41,7 @@ spec:
         env:
         - name: JDBC_URL
           value: "jdbc:mysql://submarine-database:3306/submarine?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"
-        image: "apache/submarine:agent-0.8.0-RC0"
+        image: "apache/submarine:agent-0.8.0"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

@@ -17,7 +17,7 @@
 
 name: submarine-operator
 replicas: 1
-image: apache/submarine:operator-0.8.0-RC0
+image: apache/submarine:operator-0.8.0
 # ImagePullSecrets for submarine operator, list of secrets in the same namespace
 # to use for pulling any images in pods that reference this ServiceAccount.
 # Must be set with private docker registry.

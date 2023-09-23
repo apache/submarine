@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "mirrored:0.8.0-RC0"
+    "image": "mirrored:0.8.0"
   },
   "spec": {
     "Worker": {

@@ -19,7 +19,7 @@ name: Submarine
 on: [push, pull_request]
 
 env:
-  VERSION: "0.8.0-RC0"
+  VERSION: "0.8.0"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
 jobs:
@@ -127,7 +127,7 @@ jobs:
         # Running commands manually instead.
         run: |
           cd config/manager
-          kustomize edit set image controller=apache/submarine:operator-0.8.0-RC0
+          kustomize edit set image controller=apache/submarine:operator-0.8.0
           kustomize build ../default | kubectl apply -f -
       - name: Install Helm Dependencies
         run: |

@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-SUBMARINE_VERSION="0.8.0-RC0"
+SUBMARINE_VERSION="0.8.0"
 echo "Build Image apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}"
 echo "Execute ./dev-support/docker-images/experiment-prehandler/build.sh"
 ./dev-support/docker-images/experiment-prehandler/build.sh

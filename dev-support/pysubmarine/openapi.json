@@ -11,7 +11,7 @@
     },
     "termsOfService" : "http://swagger.io/terms/",
     "title" : "Submarine API",
-    "version" : "0.8.0-RC0"
+    "version" : "0.8.0"
   },
   "servers" : [ {
     "url" : "/api"

@@ -20,12 +20,12 @@ kind: Submarine
 metadata:
   name: example-submarine
 spec:
-  version: "0.8.0-RC0"
+  version: "0.8.0"
   server:
-    image: "apache/submarine:server-0.8.0-RC0" # overwrite the image when development
+    image: "apache/submarine:server-0.8.0" # overwrite the image when development
     replicas: 1
   database:
-    image: "apache/submarine:database-0.8.0-RC0" # overwrite the image when development
+    image: "apache/submarine:database-0.8.0" # overwrite the image when development
     storageSize: "1Gi"
     # mysqlRootPasswordSecret: ""
   virtualservice:
