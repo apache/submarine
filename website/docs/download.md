@@ -27,7 +27,7 @@ The latest release of Apache Submarine is `0.8.0`.
   - Binary package:
     [submarine-dist-0.8.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/submarine-dist-0.8.0.tar.gz) (126 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.asc))
   - Source:
-    [apache-submarine-0.8.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz) (9.7 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.asc)))
+    [apache-submarine-0.8.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz) (9.7 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.asc))
   - Docker images:
     - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.8.0/images/sha256-3885aadbf8e7806c3e9f08f025856d851036e881d617d2b08eaedbe0c92c2fcf) `docker pull apache/submarine:server-0.8.0`
     - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.8.0/images/sha256-c13466bd95c92e9abdb1d507ce6a57f26ec00e6e75a474d65ead1e3f7e8b34aa) `docker pull apache/submarine:database-0.8.0`

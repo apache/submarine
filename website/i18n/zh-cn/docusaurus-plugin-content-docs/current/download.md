@@ -21,7 +21,37 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-Apache Submarine 的最新版本是 `0.7.0`.
+Apache Submarine 的最新版本是 `0.8.0`.
+
+- Apache Submarine `0.78.0` 于2023年9月23日发布 ([发布公告](/zh-cn/releases/submarine-release-0.8.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.8.0))
+  - 二进制部署包:
+    [submarine-dist-0.8.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/submarine-dist-0.8.0.tar.gz) (126 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.asc))
+  - 源代码:
+    [apache-submarine-0.8.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz) (9.7 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.asc))
+  - Docker 镜像:
+    - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.8.0/images/sha256-3885aadbf8e7806c3e9f08f025856d851036e881d617d2b08eaedbe0c92c2fcf) `docker pull apache/submarine:server-0.8.0`
+    - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.8.0/images/sha256-c13466bd95c92e9abdb1d507ce6a57f26ec00e6e75a474d65ead1e3f7e8b34aa) `docker pull apache/submarine:database-0.8.0`
+    - [submarine jupyter-notebook](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-0.8.0/images/sha256-44d1e768fa85180ede8b05517f5a9749ce68905147100763a44cca54fa5f25ea) `docker pull apache/submarine:jupyter-notebook-0.8.0`
+    - [submarine jupyter-notebook-gpu](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-gpu-0.8.0/images/sha256-8154a754b1741e4667e74bf6532904c5b3e2687e543b8847f549e1392a4ad196) `docker pull apache/submarine:jupyter-notebook-gpu-0.8.0`
+    - [submarine quickstart](https://hub.docker.com/layers/apache/submarine/quickstart-0.8.0/images/sha256-45d04388ec03f5111af112eb4cb55faa99e2db0e530fe37785f96ae0195dc9de) `docker pull apache/submarine:quickstart-0.8.0`
+    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.8.0/images/sha256-a80817973c16a830a5c1ff3258dab7f852820e246b8444d9cdbb800009097b6e) `docker pull apache/submarine:mlflow-0.8.0`
+    - [submarine operator](https://hub.docker.com/layers/apache/submarine/operator-0.8.0/images/sha256-e4e055ea2a209a261e72b72dc09f65a932654f9037bac1ebeb521f7d9d84dbf6) `docker pull apache/submarine:operator-0.8.0`
+    - [submarine agent](https://hub.docker.com/layers/apache/submarine/agent-0.8.0/images/sha256-68869cd841e0edaf2493bf1886e4d51cb35cad595eb474c4196a5e959997b0a8) `docker pull apache/submarine:agent-0.8.0`
+
+  - SDK:
+    - [PySubmarine](https://pypi.org/project/apache-submarine/0.8.0/) `pip install apache-submarine==0.8.0`
+
+## 验证文件完整性
+
+您必须使用 PGP 或 MD5 签名来 [验证](https://www.apache.org/info/verification.html) 下载文件的完整性。 
+此签名应与 [KEYS](https://www.apache.org/dist/submarine/KEYS) 文件匹配。
+
+```
+gpg --import KEYS
+gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
+```
+
+## 旧版本
 
 - Apache Submarine `0.7.0` 于2022年4月25日发布 ([发布公告](/zh-cn/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - 二进制部署包:
@@ -40,18 +70,6 @@ Apache Submarine 的最新版本是 `0.7.0`.
 
   - SDK:
     - [PySubmarine](https://pypi.org/project/apache-submarine/0.7.0/) `pip install apache-submarine==0.7.0`
-
-## 验证文件完整性
-
-您必须使用 PGP 或 MD5 签名来 [验证](https://www.apache.org/info/verification.html) 下载文件的完整性。 
-此签名应与 [KEYS](https://www.apache.org/dist/submarine/KEYS) 文件匹配。
-
-```
-gpg --import KEYS
-gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
-```
-
-## 旧版本
 
 - Apache Submarine `0.6.0` 于2021年10月21日发布 ([发布公告](/zh-cn/releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
   - 二进制部署包:
