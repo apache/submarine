@@ -21,7 +21,36 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-The latest release of Apache Submarine is `0.7.0`.
+The latest release of Apache Submarine is `0.8.0`.
+
+- Apache Submarine `0.8.0` released on September 23, 2023 ([release notes](https://submarine.apache.org/releases/submarine-release-0.8.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.8.0))
+  - Binary package:
+    [submarine-dist-0.8.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/submarine-dist-0.8.0.tar.gz) (126 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/submarine-dist-0.8.0.tar.gz.asc))
+  - Source:
+    [apache-submarine-0.8.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz) (9.7 MB, [checksum](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/0.8.0/apache-submarine-0.8.0-src.tar.gz.asc))
+  - Docker images:
+    - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.8.0/images/sha256-3885aadbf8e7806c3e9f08f025856d851036e881d617d2b08eaedbe0c92c2fcf) `docker pull apache/submarine:server-0.8.0`
+    - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.8.0/images/sha256-c13466bd95c92e9abdb1d507ce6a57f26ec00e6e75a474d65ead1e3f7e8b34aa) `docker pull apache/submarine:database-0.8.0`
+    - [submarine jupyter-notebook](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-0.8.0/images/sha256-44d1e768fa85180ede8b05517f5a9749ce68905147100763a44cca54fa5f25ea) `docker pull apache/submarine:jupyter-notebook-0.8.0`
+    - [submarine jupyter-notebook-gpu](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-gpu-0.8.0/images/sha256-8154a754b1741e4667e74bf6532904c5b3e2687e543b8847f549e1392a4ad196) `docker pull apache/submarine:jupyter-notebook-gpu-0.8.0`
+    - [submarine quickstart](https://hub.docker.com/layers/apache/submarine/quickstart-0.8.0/images/sha256-45d04388ec03f5111af112eb4cb55faa99e2db0e530fe37785f96ae0195dc9de) `docker pull apache/submarine:quickstart-0.8.0`
+    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.8.0/images/sha256-a80817973c16a830a5c1ff3258dab7f852820e246b8444d9cdbb800009097b6e) `docker pull apache/submarine:mlflow-0.8.0`
+    - [submarine operator](https://hub.docker.com/layers/apache/submarine/operator-0.8.0/images/sha256-e4e055ea2a209a261e72b72dc09f65a932654f9037bac1ebeb521f7d9d84dbf6) `docker pull apache/submarine:operator-0.8.0`
+    - [submarine agent](https://hub.docker.com/layers/apache/submarine/agent-0.8.0/images/sha256-68869cd841e0edaf2493bf1886e4d51cb35cad595eb474c4196a5e959997b0a8) `docker pull apache/submarine:agent-0.8.0`
+
+  - SDK:
+    - [PySubmarine](https://pypi.org/project/apache-submarine/0.8.0/) `pip install apache-submarine==0.8.0`
+
+## Verify the integrity of the files
+
+It is essential that you [verify](https://www.apache.org/info/verification.html) the integrity of the downloaded files using the PGP or MD5 signatures. This signature should be matched against the [KEYS](https://www.apache.org/dist/submarine/KEYS) file.
+
+```
+gpg --import KEYS
+gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
+```
+
+## Old releases
 
 - Apache Submarine `0.7.0` released on April 25, 2022 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - Binary package:
@@ -34,23 +63,12 @@ The latest release of Apache Submarine is `0.7.0`.
     - [submarine jupyter-notebook](https://hub.docker.com/layers/submarine/apache/submarine/jupyter-notebook-0.7.0/images/sha256-0cacc189c7d2f220c23a89e6c9f0a542c274985f3a349e71613b5a92a0afea31?context=explore) `docker pull apache/submarine:jupyter-notebook-0.7.0`
     - [submarine quickstart](https://hub.docker.com/layers/submarine/apache/submarine/quickstart-0.7.0/images/sha256-eefbfde93d279a5bb69aecd74111addbdee4a5462eb0adb1805a0116532e75cb?context=explore) `docker pull apache/submarine:quickstart-0.7.0`
     - [submarine serve](https://hub.docker.com/layers/submarine/apache/submarine/serve-0.7.0/images/sha256-0bfed0744174c8c1d87fe8441f9fe006ab060ffcc2b207b4d013eef45267d103?context=explore) `docker pull apache/submarine:serve-0.7.0`
-    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.6.0/images/sha256-b395838b6c30e21c48c3304f20315788e2416bb4cf410779ad2d1530688e7fa9?context=explore) `docker pull apache/submarine:mlflow-0.7.0`
+    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.7.0/images/sha256-3cc868ef73793119206ed57340f80cf3d321f41b6315f8e02f98596a4180525d?context=explore) `docker pull apache/submarine:mlflow-0.7.0`
     - [submarine operator](https://hub.docker.com/layers/submarine/apache/submarine/operator-0.7.0/images/sha256-cd8b9a3c1e4a367ecf9df45e4ea8e78b9be0d347db5a70b3910cca87e73c4f28?context=explore) `docker pull apache/submarine:operator-0.7.0`
     - [submarine agent](https://hub.docker.com/layers/submarine/apache/submarine/agent-0.7.0/images/sha256-9c14c62478786eb9d7bbe74ca1aed48cd6ae4cb318bd9da149456926cd5c6474?context=explore) `docker pull apache/submarine:agent-0.7.0`
 
   - SDK:
     - [PySubmarine](https://pypi.org/project/apache-submarine/0.7.0/) `pip install apache-submarine==0.7.0`
-
-## Verify the integrity of the files
-
-It is essential that you [verify](https://www.apache.org/info/verification.html) the integrity of the downloaded files using the PGP or MD5 signatures. This signature should be matched against the [KEYS](https://www.apache.org/dist/submarine/KEYS) file.
-
-```
-gpg --import KEYS
-gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
-```
-
-## Old releases
 
 - Apache Submarine `0.6.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
   - Binary package:
