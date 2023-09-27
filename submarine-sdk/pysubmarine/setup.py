@@ -20,7 +20,7 @@ with open("README.md") as f:
 
 setup(
     name="apache-submarine",
-    version="0.8.0.dev",
+    version="0.8.0",
     description="A python SDK for submarine",
     long_description=long_description,
     long_description_content_type="text/markdown",
