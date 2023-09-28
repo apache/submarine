@@ -178,14 +178,30 @@ in your local directory
 python setup.py bdist_wheel
 ```
 
-4. Upload python package to TestPyPI for testing
+4. Config 2FA token (optional)
+
+Beginning 2023/06/01, all uploads from user accounts with 2FA enabled will be required to use an API Token or Trusted Publisher configuration in place of their password. (https://blog.pypi.org/posts/2023-06-01-2fa-enforcement-for-upload/)
+So if you have 2FA enabled, you will need to configure your token in `~/.pypirc`. 
+
+```
+[pypi]
+  repository = https://upload.pypi.org/legacy/
+  username = __token__
+  password = pypi-${your_pypi_token}
+
+[testpypi]
+  username = __token__
+  password = pypi-${your_testpypi_token}
+```
+
+5. Upload python package to TestPyPI for testing
 
 ```bash
 python -m twine upload --repository testpypi dist/*
 ```
 
-5. Upload python package to PyPi
+6. Upload python package to PyPi
 
 ```bash
-python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+python -m twine upload --repository pypi dist/*
 ```
