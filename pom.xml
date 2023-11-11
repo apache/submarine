@@ -137,7 +137,7 @@
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>18.0.1</k8s.client-java.version>
     <kotlin-stdlib.version>1.6.10</kotlin-stdlib.version>
-    <k8s.fabric8.version>6.9.2</k8s.fabric8.version>
+    <k8s.fabric8.version>6.7.2</k8s.fabric8.version>
     <jersey.test-framework>2.27</jersey.test-framework>
 
     <!-- integration test-->
