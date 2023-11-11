@@ -19,8 +19,6 @@
 
 package org.apache.submarine.server.k8s.agent;
 
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.javaoperatorsdk.operator.Operator;
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider;
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
@@ -49,10 +47,8 @@ public class SubmarineAgentListener {
   public static final DateTimeFormatter DTF = DateTimeFormatter.ISO_DATE_TIME;
 
   public static void main(String[] args) throws IOException {
-    // create kubernetes client
-    KubernetesClient client = new KubernetesClientBuilder().build();
     // create operator
-    Operator operator = new Operator(client);
+    Operator operator = new Operator();
     // scan all Reconciler implemented subclasses
     Reflections reflections = new Reflections("org.apache.submarine.server.k8s.agent");
     Set<Class<? extends Reconciler>> reconcilers = reflections.getSubTypesOf(Reconciler.class);
@@ -69,8 +65,6 @@ public class SubmarineAgentListener {
         }
     );
     LOGGER.info("Starting agent with SUBMARINE_UID={}", OwnerReferenceConfig.getSubmarineUid());
-    // Adds a shutdown hook that automatically calls stop() when the app shuts down.
-    operator.installShutdownHook();
     // start operator
     operator.start();
     // Provide a lightweight service to handle health checks
