@@ -149,7 +149,7 @@
     <guice-servlet.version>3.0</guice-servlet.version>
     <guice.version>3.0</guice.version>
     <!--  server API  -->
-    <protobuf-java.version>3.21.10</protobuf-java.version>
+    <protobuf-java.version>3.22.0</protobuf-java.version>
     <joda-time.version>2.10.8</joda-time.version>
     <!--  pac4j  -->
     <pac4j.version>5.6.1</pac4j.version>
