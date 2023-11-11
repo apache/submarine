@@ -24,9 +24,7 @@ import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
-import io.fabric8.kubernetes.internal.KubernetesDeserializer;
 import io.javaoperatorsdk.operator.Operator;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -103,10 +101,10 @@ public class SubmitSubmarineAgentTest {
 
     // set client and operator
     client = server.getClient();
-    operator = new Operator(client);
+    operator = new Operator(client, null);
 
     // create notbook resource
-    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1","Notebook", NotebookResource.class);
+    client.getKubernetesSerialization().registerKubernetesResource("apiextensions.k8s.io/v1","Notebook", NotebookResource.class);
     CustomResourceDefinition notebookCrd = client
             .apiextensions().v1()
             .customResourceDefinitions()
@@ -116,7 +114,7 @@ public class SubmitSubmarineAgentTest {
     client.apiextensions().v1().customResourceDefinitions().createOrReplace(notebookCrd);
 
     // create tf resource
-    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1", "TFJob", TFJob.class);
+    client.getKubernetesSerialization().registerKubernetesResource("apiextensions.k8s.io/v1", "TFJob", TFJob.class);
     CustomResourceDefinition tfCrd = client
             .apiextensions().v1()
             .customResourceDefinitions()
@@ -126,7 +124,7 @@ public class SubmitSubmarineAgentTest {
     client.apiextensions().v1().customResourceDefinitions().create(tfCrd);
 
     // create pytorch resource
-    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1", "PyTorchJob", PyTorchJob.class);
+    client.getKubernetesSerialization().registerKubernetesResource("apiextensions.k8s.io/v1", "PyTorchJob", PyTorchJob.class);
     CustomResourceDefinition ptCrd = client
             .apiextensions().v1()
             .customResourceDefinitions()
@@ -136,7 +134,7 @@ public class SubmitSubmarineAgentTest {
     client.apiextensions().v1().customResourceDefinitions().create(ptCrd);
 
     // create xgboost resource
-    KubernetesDeserializer.registerCustomKind("apiextensions.k8s.io/v1", "XGBoostJob", XGBoostJob.class);
+    client.getKubernetesSerialization().registerKubernetesResource("apiextensions.k8s.io/v1", "XGBoostJob", XGBoostJob.class);
     CustomResourceDefinition xgbCrd = client
             .apiextensions().v1()
             .customResourceDefinitions()
