@@ -45,13 +45,11 @@ setup(
         "pyaml",
     ],
     extras_require={
-        "tf": ["tensorflow==1.15.5", "numpy>=1.16.0,<1.19.0", "protobuf>=3.6.1,<3.20"],
         "tf2": [
             "tensorflow>=2.12.0,<2.15.0",
             "numpy>=1.14.5",
             "keras>=2.6.0",
-            "protobuf>=3.9.2,<3.20",
-            "tensorflow-addons==0.17.0",
+            "tensorflow-addons>=0.17.0",
             "tensorflow-estimator>=2.12.0,<2.15.0",
             "tf_slim==1.1.0",
             # todo(cdmikechen): Based on SUBMARINE-1372, typeguard has recently been upgraded to version 3.0,
@@ -59,12 +57,6 @@ setup(
             #                   We are not upgrading this in submarine 0.8.0 for now,
             #                   and will fix version compatibility issues in 0.8.1 or 0.9.0.
             "typeguard<3.0.0",
-            # todo(cdmikechen): SUBMARINE-1389. From scipy 1.11.0
-            #                   (https://github.com/scipy/scipy/releases/tag/v1.11.0),
-            #                   scipy need numpy 1.21.6 or geater in python 3.9.
-            #                   So that we need to restrict scipy < 1.11.0 to support tf2.6.
-            #                   From submarine 0.8.1 or 0.9.0, we may no longer support tensorflow 2.6
-            "scipy<1.11.0",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
