@@ -75,16 +75,17 @@ RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 # Install conda
 USER $NB_UID
 ARG PYTHON_VERSION=default
-# update conda version to 4.11.0
-ENV MINICONDA_VERSION=4.11.0 \
-    MINICONDA_MD5=7675bd23411179956bcc4692f16ef27d \
-    CONDA_VERSION=4.11.0
+# update conda version to 23.10.0-1
+ENV MINICONDA_VERSION=23.10.0-1 \
+    MINICONDA_SHA256=d0643508fa49105552c94a523529f4474f91730d3e0d1f168f1700c43ae67595 \
+    CONDA_VERSION=23.10.0
 
 WORKDIR /tmp
-RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "${MINICONDA_MD5} *Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
-    /bin/bash Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+# repo in https://repo.anaconda.com/miniconda/
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "${MINICONDA_SHA256} *Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh" | sha256sum -c - && \
+    /bin/bash Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh && \
     echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
