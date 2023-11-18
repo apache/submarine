@@ -16,9 +16,7 @@
 name: Test building submarine docker images
 
 # Trigger the workflow on master branch push
-on:
-  push:
-    branches: [push, pull_request]
+on: [push, pull_request]
 
 jobs:
   jupyter-images:
