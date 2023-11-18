@@ -111,7 +111,10 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
     # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
     conda clean -a -y
 
-RUN pip --no-cache-dir install pyqlib==0.8.6
+### We removed the qlib dependency because the project currently does not have good support for python 3.9 and above. 
+### If you need this project, you can choose the py38 or py39 miniconda and rebuild the secondary image
+# RUN pip --no-cache-dir install pyqlib==0.9.3
+# RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.9.3/examples/workflow_by_code.ipynb -P $HOME
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone --depth=1 https://github.com/apache/submarine && \
@@ -119,9 +122,6 @@ RUN git clone --depth=1 https://github.com/apache/submarine && \
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
-
-# Add qlib example in notebook
-RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.8.6/examples/workflow_by_code.ipynb -P $HOME
 
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
