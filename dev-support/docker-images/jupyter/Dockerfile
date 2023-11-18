@@ -96,8 +96,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
     conda init bash && \
     source ~/.bashrc && conda activate && \
     # it is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab==3.5.2 jupyterlab-git==0.41.0 && \
-    pip install cvxpy==1.2.2 && \
+    conda install --freeze-installed -c conda-forge nodejs jupyterlab==4.0.8 jupyterlab-git==0.44.0 && \
+    conda install --freeze-installed -c conda-forge cvxpy && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
