@@ -96,7 +96,11 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
     conda init bash && \
     source ~/.bashrc && conda activate && \
     # it is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs jupyterlab==4.0.8 jupyterlab-git==0.44.0 && \
+    conda install --freeze-installed -c conda-forge nodejs jupyterlab==4.0.8 && \
+    # todo: jupyterlab 4.0 was not supported before jupyterlab-git 0.5.0, so we temporarily used 0.50.0rc0. 
+    #       More details can be found in the issue:
+    #       https://github.com/jupyterlab/jupyterlab-git/issues/1245
+    pip --no-cache-dir install --pre "jupyterlab-git==0.50.0rc0" && \
     conda install --freeze-installed -c conda-forge cvxpy && \
     jupyter lab build && \
     # remove node_modules
