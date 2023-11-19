@@ -1,0 +1,57 @@
+# submarine dic
+LICENSE
+LICENSE-binary
+NOTICE
+NOTICE-binary
+README.md
+bin/
+conf/
+dev-support/
+doap_Submarine.rdf
+helm-charts/
+licenses-binary
+pom.xml
+pyproject.toml
+submarine-all/
+submarine-client/
+submarine-cloud-v2/
+submarine-cloud-v3/
+submarine-commons/
+submarine-dist/
+submarine-experiment-prehandler/
+submarine-serve/
+submarine-server/
+submarine-test/
+submarine-workbench/
+submarine-workbench-v2/
+submarine.iml
+target/
+venv/
+webapps/
+website/
+.git/
+.idea/
+.github/
+
+# Allow files in pysubmarine
+!submarine-sdk/pysubmarine/*
+# Allow files in pysubmarine
+!dev-support/docker-images/*
+
+# ignore python Distribution / packaging
+.Python
+**/env/
+**/build/
+**/develop-eggs/
+**/dist/
+**/downloads/
+**/eggs/
+**/lib/
+**/lib64/
+**/parts/
+**/sdist/
+**/var/
+**/.mypy_cache/
+**/*.egg-info/
+**/.installed.cfg
+**/*.egg

@@ -116,19 +116,20 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
 # RUN pip --no-cache-dir install pyqlib==0.9.3
 # RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.9.3/examples/workflow_by_code.ipynb -P $HOME
 
-# Install latest sumbarine python sdk and notebook
-COPY submarine/submarine-sdk/pysubmarine ./submarine/submarine-sdk/pysubmarine
+# Install sumbarine python sdk and notebook
+RUN mkdir -p submarine/submarine-sdk/pysubmarine
+COPY submarine-sdk/pysubmarine/* submarine/submarine-sdk/pysubmarine
 RUN pip --no-cache-dir install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     # Add DeepFM example into notebook
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
-    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME &&
+    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME
 
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio
 
+COPY --chown=${NB_USER}:users dev-support/docker-images/jupyter/start-notebook.sh /usr/local/bin
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
-COPY --chown=${NB_USER}:users start-notebook.sh /usr/local/bin
 WORKDIR ${HOME}
