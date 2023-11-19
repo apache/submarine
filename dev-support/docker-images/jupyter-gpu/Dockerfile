@@ -93,9 +93,15 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
     conda config --system --set channel_priority flexible && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --freeze-installed --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    # nodejs is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab==3.5.2 jupyterlab-git==0.41.0 && \
-    pip install cvxpy==1.2.2 && \
+    conda init bash && \
+    source ~/.bashrc && conda activate && \
+    # it is used for jupyter lab build
+    conda install --freeze-installed -c conda-forge nodejs jupyterlab==4.0.8 && \
+    # todo: jupyterlab 4.0 was not supported before jupyterlab-git 0.5.0, so we temporarily used 0.50.0rc0. 
+    #       More details can be found in the issue:
+    #       https://github.com/jupyterlab/jupyterlab-git/issues/1245
+    pip --no-cache-dir install --pre "jupyterlab-git==0.50.0rc0" && \
+    conda install --freeze-installed -c conda-forge cvxpy && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -105,22 +111,22 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
     # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
     conda clean -a -y
 
-# Install latest stable qlib
-RUN pip --no-cache-dir install pyqlib==0.8.6
+### We removed the qlib dependency because the project currently does not have good support for python 3.9 and above. 
+### If you need this project, you can choose the py38 or py39 miniconda and rebuild the secondary image
+# RUN pip --no-cache-dir install pyqlib==0.9.3
+# RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.9.3/examples/workflow_by_code.ipynb -P $HOME
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone --depth=1 https://github.com/apache/submarine && \
-    # replace numpy==1.19.2 to numpy>=1.20.0
-    sed -i "s/numpy==1.19.2/numpy>=1.20.0/" submarine/submarine-sdk/pysubmarine/setup.py && \
     pip --no-cache-dir install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     # Add DeepFM example into notebook
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
 
-# Add qlib example in notebook
-RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.8.6/examples/workflow_by_code.ipynb -P $HOME
-
+ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
+ENV AWS_ACCESS_KEY_ID submarine_minio
+ENV AWS_SECRET_ACCESS_KEY submarine_minio
 
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]
