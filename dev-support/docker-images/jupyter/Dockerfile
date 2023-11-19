@@ -118,8 +118,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICOND
 
 # Install sumbarine python sdk and notebook
 RUN mkdir -p submarine/submarine-sdk/pysubmarine
-COPY submarine-sdk/pysubmarine/* submarine/submarine-sdk/pysubmarine
-RUN pip --no-cache-dir install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
+COPY submarine-sdk/pysubmarine/ submarine/submarine-sdk/pysubmarine
+RUN pip --no-cache-dir install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     # Add DeepFM example into notebook
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME

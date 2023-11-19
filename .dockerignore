@@ -26,20 +26,20 @@ submarine-workbench/
 submarine-workbench-v2/
 submarine.iml
 target/
-venv/
 webapps/
 website/
-.git/
-.idea/
-.github/
+**/.git/
+**/.idea/
+**/.github/
 
 # Allow files in pysubmarine
-!submarine-sdk/pysubmarine/*
+!submarine-sdk/pysubmarine/**
 # Allow files in pysubmarine
-!dev-support/docker-images/*
+!dev-support/docker-images/**
 
 # ignore python Distribution / packaging
 .Python
+**/venv/
 **/env/
 **/build/
 **/develop-eggs/
