@@ -29,4 +29,4 @@ SUBMARINE_HOME=${CURRENT_PATH}/../../..
 # build image
 echo "Start building the ${JUPYTER_IMAGE} docker image ..."
 cd ${CURRENT_PATH}
-docker build -t ${JUPYTER_IMAGE} .
+docker build -t ${JUPYTER_IMAGE} -f ${SUBMARINE_HOME}/dev-support/docker-images/jupyter/Dockerfile ${SUBMARINE_HOME}/

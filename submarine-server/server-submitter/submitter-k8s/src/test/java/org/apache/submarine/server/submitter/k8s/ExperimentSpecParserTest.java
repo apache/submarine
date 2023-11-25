@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Volume;
 
-import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -62,6 +61,9 @@ import org.junit.Test;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
 import io.kubernetes.client.openapi.models.V1EnvVar;
+
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION;
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
@@ -359,11 +361,11 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     String minVersion = "minVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+            ENVIRONMENT_CONDA_MIN_VERSION)
         + "\";";
     String maxVersion = "maxVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+            ENVIRONMENT_CONDA_MAX_VERSION)
         + "\";";
     String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
     Assert.assertEquals(
@@ -371,8 +373,10 @@ public class ExperimentSpecParserTest extends SpecBuilder {
             + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
                + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
                     + "!= \"$currentVersion\" ]; then echo \"Conda version " +
-                    "should be between minVersion=\"4.0.1\"; " +
-                    "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
+                    "should be between minVersion=\""
+                    + ENVIRONMENT_CONDA_MIN_VERSION.getStringValue() + "\"; "
+                    + "and maxVersion=\"" + ENVIRONMENT_CONDA_MAX_VERSION.getStringValue()
+                    + "\";\"; exit 1; else echo "
                     + "\"Conda current version is " + currentVersion + ". "
                         + "Moving forward with env creation and activation.\"; "
                         + "fi && " +

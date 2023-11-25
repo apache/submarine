@@ -83,8 +83,8 @@ public class SubmarineConfVars {
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
     SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
     SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", "submarine-server"),
-    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
-    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10"),
+    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "23.1.0"),
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "23.12.10"),
 
     /* cookie setting */
     SUBMARINE_COOKIE_HTTP_ONLY("submarine.cookie.http.only", false),
