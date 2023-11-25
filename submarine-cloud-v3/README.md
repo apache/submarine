@@ -19,6 +19,12 @@
 
 `submarine-cloud-v3`, i.e. **submarine-operator**, implements the operator for Submarine application. The operator provides a new option for users to deploy the Submarine service to their Kubernetes clusters. The **submarine-operator** can fix some errors automatically. However, if the Submarine service is deployed with Helm, the errors need to be fixed by human operators.
 
+The `submarine-cloud-v3` project to use [operator-sdk](https://sdk.operatorframework.io/) to create, and the operator-sdk version is 1.25.0. 
+The build command is this:
+```shell
+operator-sdk init --domain submarine.apache.org --repo github.com/apache.org/submarine-cloud-v3
+```
+
 # Development
 
 Please check out the [Developer Guide](./docs/developer-guide.md).
