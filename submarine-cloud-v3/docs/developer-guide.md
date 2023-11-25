@@ -17,8 +17,8 @@
 
 # Developer Guide
 
-Golang version: `1.17`
-Kubernetes version: `1.22` - `1.24`
+Golang version: `1.19`
+Kubernetes version: `1.24` - `1.27`
 
 ## Prerequisites
 
