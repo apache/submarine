@@ -27,7 +27,7 @@
               },
               {
                 "name": "INSTALL_ENVIRONMENT_COMMAND",
-                "value": "minVersion=\"4.0.1\";maxVersion=\"4.11.10\";currentVersion=$(conda -V | cut -f2 -d' ');if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V | head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo \"Conda version should be between minVersion=\"4.0.1\"; and maxVersion=\"4.11.10\";\"; exit 1; else echo \"Conda current version is currentVersion=$(conda -V | cut -f2 -d' ');. Moving forward with env creation and activation.\"; fi"
+                "value": "minVersion=\"23.1.0\";maxVersion=\"23.12.10\";currentVersion=$(conda -V | cut -f2 -d' ');if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V | head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo \"Conda version should be between minVersion=\"23.1.0\"; and maxVersion=\"23.12.10\";\"; exit 1; else echo \"Conda current version is currentVersion=$(conda -V | cut -f2 -d' ');. Moving forward with env creation and activation.\"; fi"
               }
             ],
             "image": "syharbor.sypesco.com:5000/apache/submarine:jupyter-notebook-0.7.0-syzh",
