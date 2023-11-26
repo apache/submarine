@@ -30,4 +30,4 @@ export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 # build image
 cd ${CURRENT_PATH}
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ${SUBMARINE_IMAGE_NAME} .

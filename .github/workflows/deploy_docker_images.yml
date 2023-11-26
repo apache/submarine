@@ -51,28 +51,16 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
-      - name: Build submarine server
+      - name: Build and push submarine server
         run: ./dev-support/docker-images/submarine/build.sh
-      - name: Push submarine-server docker image
-        run: |
-          docker push apache/submarine:server-$SUBMARINE_VERSION
-          docker rmi apache/submarine:server-$SUBMARINE_VERSION
 
-      - name: Build submarine agent
+      - name: Build and push submarine agent
         run: ./dev-support/docker-images/agent/build.sh
-      - name: Push submarine-agent docker image
-        run: |
-          docker push apache/submarine:agent-$SUBMARINE_VERSION
-          docker rmi apache/submarine:agent-$SUBMARINE_VERSION
 
-      ## TODO(cdmikechen): In the future, we will not include the database as a built-in image 
+      ## TODO(cdmikechen): In the future, we will not include the database as a built-in image
       ##                   to facilitate subsequent upgrades.
-      - name: Build submarine database
+      - name: Build and push submarine database
         run: ./dev-support/docker-images/database/build.sh
-      - name: Push submarine-database docker image
-        run: |
-          docker push apache/submarine:database-$SUBMARINE_VERSION
-          docker rmi apache/submarine:database-$SUBMARINE_VERSION
 
   deploy-builtin-images:
     if: github.repository == 'apache/submarine'
@@ -90,33 +78,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build submarine jupyter
+      - name: Build and push submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
-      - name: Push submarine-jupyter docker image
-        run: |
-          docker push apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
-          docker rmi apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
 
-      - name: Build submarine jupyter gpu
+      - name: Build and push submarine jupyter gpu
         run: ./dev-support/docker-images/jupyter-gpu/build.sh
-      - name: Push submarine-jupyter-gpu docker image
-        run: |
-          docker push apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
-          docker rmi apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
 
-      - name: Build submarine mlflow
+      - name: Build and push submarine mlflow
         run: ./dev-support/docker-images/mlflow/build.sh
-      - name: Push submarine-mlflow docker image
-        run: |
-          docker push apache/submarine:mlflow-$SUBMARINE_VERSION
-          docker rmi apache/submarine:mlflow-$SUBMARINE_VERSION
 
-      - name: Build submarine quickstart
+      - name: Build and push submarine quickstart
         run: ./dev-support/examples/quickstart/build.sh
-      - name: Push submarine quickstart docker image
-        run: |
-          docker push apache/submarine:quickstart-$SUBMARINE_VERSION
-          docker rmi apache/submarine:quickstart-$SUBMARINE_VERSION
 
   deploy-cloud-native-and-cicd:
     if: github.repository == 'apache/submarine'
@@ -134,16 +106,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build submarine operator
+      - name: Build and push submarine operator
         run: ./dev-support/docker-images/operator-v3/build.sh
-      - name: Push submarine-operator docker image
-        run: |
-          docker push apache/submarine:operator-$SUBMARINE_VERSION
-          docker rmi apache/submarine:operator-$SUBMARINE_VERSION
 
-      - name: Build submarine cicd
+      - name: Build and push submarine cicd
         run: ./dev-support/cicd/build.sh
-      - name: Push submarine-cicd docker image
-        run: |
-          docker push apache/submarine:cicd-$SUBMARINE_VERSION
-          docker rmi apache/submarine:cicd-$SUBMARINE_VERSION

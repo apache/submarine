@@ -29,4 +29,4 @@ SUBMARINE_HOME=${CURRENT_PATH}/../../..
 # build image
 echo "Start building the ${IMAGE} docker image ..."
 cd ${CURRENT_PATH}
-docker build -t ${IMAGE} .
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ${IMAGE} .

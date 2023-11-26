@@ -32,7 +32,7 @@ cp -rf "${SUBMARINE_HOME}/dev-support/database" "${CURRENT_PATH}"
 # build image
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 cd ${CURRENT_PATH}
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ${SUBMARINE_IMAGE_NAME} .
 
 # clean template file
 rm -rf ${CURRENT_PATH}/database

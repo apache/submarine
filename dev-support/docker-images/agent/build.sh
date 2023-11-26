@@ -44,7 +44,7 @@ cp ${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/targe
 cd ${CURRENT_PATH}
 
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ${SUBMARINE_IMAGE_NAME} .
 
 # clean temp file
 rm -rf "${CURRENT_PATH}/tmp"
