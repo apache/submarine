@@ -51,6 +51,11 @@ public class SubmarineConfVars {
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
 
+    SUBMARINE_METADATA_INIT("submarine.metadata.init", false),
+    SUBMARINE_METADATA_VALIDATE("submarine.metadata.validate", true),
+    SUBMARINE_METADATA_VERSION("submarine.metadata.version", "0.7.0"),
+    SUBMARINE_METADATA_LOCATION("submarine.metadata.location", "classpath:db/migration"),
+
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
         "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&" +

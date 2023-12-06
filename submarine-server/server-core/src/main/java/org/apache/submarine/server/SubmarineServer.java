@@ -20,6 +20,7 @@ package org.apache.submarine.server;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.database.initialization.DatabaseMetadataService;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.security.SecurityFactory;
@@ -136,8 +137,11 @@ public class SubmarineServer extends ResourceConfig {
     // setupClusterServer();
 
     setupWebSocketServer(webApp, conf, sharedServiceLocator);
-    startServer();
 
+    // init database metadata
+    new DatabaseMetadataService().initDatabaseMetadata();
+
+    startServer();
   }
 
   @Inject
