@@ -20,7 +20,7 @@ with open("README.md") as f:
 
 setup(
     name="apache-submarine",
-    version="0.8.0-SNAPSHOT",
+    version="0.8.0.dev",
     description="A python SDK for submarine",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -45,24 +45,27 @@ setup(
         "pyaml",
     ],
     extras_require={
-        "tf": ["tensorflow==1.15.5", "numpy>=1.16.0,<1.19.0", "protobuf>=3.6.1,<3.20"],
         "tf2": [
-            "tensorflow>=2.6.0,<2.10.0",
+            "tensorflow>=2.12.0,<2.15.0",
             "numpy>=1.14.5",
             "keras>=2.6.0",
-            "protobuf>=3.9.2,<3.20",
-            "tensorflow-addons==0.17.0",
-            "tensorflow-estimator>=2.9.0rc0,<2.10.0",
+            "tensorflow-addons>=0.17.0",
+            "tensorflow-estimator>=2.12.0,<2.15.0",
             "tf_slim==1.1.0",
+            # todo(cdmikechen): Based on SUBMARINE-1372, typeguard has recently been upgraded to version 3.0,
+            #                   which will restrict some python syntax and types more tightly.
+            #                   We are not upgrading this in submarine 0.8.0 for now,
+            #                   and will fix version compatibility issues in 0.8.1 or 0.9.0.
+            "typeguard<3.0.0",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
     classifiers=[
         "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     entry_points={
         "console_scripts": [

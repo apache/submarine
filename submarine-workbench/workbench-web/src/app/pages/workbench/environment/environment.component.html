@@ -21,15 +21,15 @@
   <div style="background-color: white; padding-left: 30px; padding-top: 20px">
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <a>Home</a>
+        <a>{{ 'Home' | translate }}</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'environment']">environment</a>
+        <a [routerLink]="['/', 'workbench', 'environment']">{{ 'environment' | translate }}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <div>
       <br />
-      <h2>Environment</h2>
+      <h2>{{ 'Environment' | translate }}</h2>
     </div>
     <br />
   </div>

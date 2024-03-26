@@ -23,6 +23,7 @@ import { SysUser } from '@submarine/interfaces';
 import { SysDeptSelect } from '@submarine/interfaces/sys-dept-select';
 import { DepartmentService, UserService } from '@submarine/services';
 import { NzMessageService } from 'ng-zorro-antd';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-manager-user',
@@ -62,8 +63,10 @@ export class UserComponent implements OnInit {
     private userService: UserService,
     private deptService: DepartmentService,
     private fb: FormBuilder,
-    private nzMessageService: NzMessageService
-  ) {}
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit() {
     this.fetchUserList();
@@ -123,10 +126,10 @@ export class UserComponent implements OnInit {
 
     this.userService.changePassword(id, password).subscribe(
       () => {
-        this.nzMessageService.success('Change password success!');
+        this.nzMessageService.success(this.translate.instant('Change password success!'));
       },
       () => {
-        this.nzMessageService.error('Change password error');
+        this.nzMessageService.error(this.translate.instant('Change password error'));
       }
     );
   }
@@ -147,7 +150,7 @@ export class UserComponent implements OnInit {
     if (formData.id) {
       this.userService.updateUser(formData).subscribe(
         () => {
-          this.nzMessageService.success('Update user success!');
+          this.nzMessageService.success(this.translate.instant('Update user success!'));
           this.queryUserList();
         },
         (err) => {
@@ -157,7 +160,7 @@ export class UserComponent implements OnInit {
     } else {
       this.userService.createUser(formData).subscribe(
         () => {
-          this.nzMessageService.success('Add user success!');
+          this.nzMessageService.success(this.translate.instant('Add user success!'));
           this.queryUserList();
         },
         (err) => {
@@ -170,7 +173,7 @@ export class UserComponent implements OnInit {
   onDeleteUser(data: SysUser) {
     this.userService.deleteUser(data.id).subscribe(
       () => {
-        this.nzMessageService.success('Delete user success!');
+        this.nzMessageService.success(this.translate.instant('Delete user success!'));
         this.fetchUserList();
       },
       (err) => {

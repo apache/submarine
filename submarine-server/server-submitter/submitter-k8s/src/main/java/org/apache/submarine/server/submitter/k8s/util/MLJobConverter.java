@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.util;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import io.kubernetes.client.openapi.models.V1JobCondition;
 import io.kubernetes.client.openapi.models.V1JobStatus;
@@ -26,8 +27,8 @@ import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.openapi.models.V1StatusDetails;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
-import org.joda.time.DateTime;
 
 /**
  * Converter for different types.
@@ -37,9 +38,9 @@ public class MLJobConverter {
   public static Experiment toJobFromMLJob(MLJob mlJob) {
     Experiment experiment = new Experiment();
     experiment.setUid(mlJob.getMetadata().getUid());
-    DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
+    OffsetDateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
-      experiment.setAcceptedTime(dateTime.toString());
+      experiment.setAcceptedTime(K8sUtils.castOffsetDatetimeToString(dateTime));
       experiment.setStatus(Experiment.Status.STATUS_ACCEPTED.getValue());
     }
 
@@ -47,7 +48,7 @@ public class MLJobConverter {
     if (status != null) {
       dateTime = status.getStartTime();
       if (dateTime != null) {
-        experiment.setCreatedTime(dateTime.toString());
+        experiment.setCreatedTime(K8sUtils.castOffsetDatetimeToString(dateTime));
         experiment.setStatus(Experiment.Status.STATUS_CREATED.getValue());
       }
 
@@ -57,7 +58,7 @@ public class MLJobConverter {
         for (V1JobCondition condition : conditions) {
           if (condition.getType().toLowerCase().equals("running")) {
             dateTime = condition.getLastTransitionTime();
-            experiment.setRunningTime(dateTime.toString());
+            experiment.setRunningTime(K8sUtils.castOffsetDatetimeToString(dateTime));
             break;
           }
         }
@@ -65,7 +66,7 @@ public class MLJobConverter {
 
       dateTime = status.getCompletionTime();
       if (conditions != null && dateTime != null) {
-        experiment.setFinishedTime(dateTime.toString());
+        experiment.setFinishedTime(K8sUtils.castOffsetDatetimeToString(dateTime));
         if ("Succeeded".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
           experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
         } else if ("Failed".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {

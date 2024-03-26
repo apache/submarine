@@ -16,13 +16,14 @@
 certifi>=14.05.14
 freezegun==1.2.2
 moto[s3]==4.0.5
-pandas>=1.2.0,<=1.3.5  # 1.4.x does not support cp37
+pandas>=1.2.0
 pylint==2.15.2
 PyMySQL==1.0.2
 pytest==7.1.3
 pytest-cov==3.0.0
 pytest-localserver==0.7.0
 python_dateutil>=2.5.3
-scikit-learn>=0.24.2,<=1.0.2  # 1.1.x does not support cp37
+scikit-learn>=0.24.2
 setuptools>=21.0.0
 urllib3>=1.15.1
+pipdeptree==2.5.2

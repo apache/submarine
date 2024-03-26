@@ -22,6 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { parse } from 'yaml';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-environment-form',
@@ -38,8 +39,10 @@ export class EnvironmentFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private environmentService: EnvironmentService,
-    private nzMessageService: NzMessageService
-  ) {}
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit() {
     this.environmentForm = this.fb.group({
@@ -85,7 +88,7 @@ export class EnvironmentFormComponent implements OnInit {
     reader.readAsText(file);
     reader.onload = () => {
       this.previewCondaConfig = reader.result.toString();
-      this.nzMessageService.success(`${file.name} file read successfully.`);
+      this.nzMessageService.success(`${file.name} ` + this.translate.instant('file read successfully.'));
       const config = parse(reader.result.toString());
     };
     return false;
@@ -114,7 +117,7 @@ export class EnvironmentFormComponent implements OnInit {
         config['dependencies'].map((e: object | string) => {
           if (typeof e === 'object') {
             if (!e['pip']) {
-              this.nzMessageService.error('dependencies include unknown object');
+              this.nzMessageService.error(this.translate.instant('dependencies include unknown object'));
               throw Error('dependencies include unknown object');
             } else {
               config['pipDependencies'] = e['pip'];
@@ -125,7 +128,7 @@ export class EnvironmentFormComponent implements OnInit {
         });
       }
     } catch (error) {
-      this.nzMessageService.error('Unable to parse the conda config file');
+      this.nzMessageService.error(this.translate.instant('Unable to parse the conda config file'));
       throw error;
     }
     return config;
@@ -136,11 +139,11 @@ export class EnvironmentFormComponent implements OnInit {
     const newEnvironmentSpec = this.createEnvironmentSpec();
     this.environmentService.createEnvironment(newEnvironmentSpec).subscribe(
       () => {
-        this.nzMessageService.success('Create Environment Success!');
+        this.nzMessageService.success(this.translate.instant('Create Environment Success!'));
         this.sendUpdate();
       },
       (err) => {
-        this.nzMessageService.error(`${err}, please try again`, {
+        this.nzMessageService.error(`${err}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       }

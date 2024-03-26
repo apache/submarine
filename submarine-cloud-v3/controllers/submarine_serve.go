@@ -20,7 +20,7 @@ package controllers
 import (
 	"context"
 	"fmt"
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	"github.com/apache/submarine/submarine-cloud-v3/controllers/util"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -31,7 +31,7 @@ import (
 )
 
 // newSubmarineSeldonSecret is a function to create seldon secret which stores minio connection configurations
-func (r *SubmarineReconciler) newSubmarineSeldonSecret(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Secret {
+func (r *SubmarineReconciler) newSubmarineSeldonSecret(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Secret {
 	secret, err := util.ParseSecretYaml(serveYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseSecretYaml")
@@ -57,7 +57,7 @@ func (r *SubmarineReconciler) newSubmarineSeldonSecret(ctx context.Context, subm
 
 // createSubmarineServe is a function to create submarine-serve.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-serve.yaml
-func (r *SubmarineReconciler) createSubmarineServe(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineServe(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineServe")
 
 	// Step 1: Create Seldon Secret

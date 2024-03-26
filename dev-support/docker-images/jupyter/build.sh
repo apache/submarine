@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-JUPYTER_IMAGE="apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT"
+JUPYTER_IMAGE="apache/submarine:jupyter-notebook-0.9.0-SNAPSHOT"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
@@ -29,4 +29,4 @@ SUBMARINE_HOME=${CURRENT_PATH}/../../..
 # build image
 echo "Start building the ${JUPYTER_IMAGE} docker image ..."
 cd ${CURRENT_PATH}
-docker build -t ${JUPYTER_IMAGE} .
+docker build -t ${JUPYTER_IMAGE} -f ${SUBMARINE_HOME}/dev-support/docker-images/jupyter/Dockerfile ${SUBMARINE_HOME}/

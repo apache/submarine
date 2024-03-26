@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -137,12 +138,14 @@ public class EnvironmentRestApiTest {
     String entity = (String) getEnvResponse.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
 
-    // environments.length = 2; One is created in this test, one is get from database
-    Environment[] environments = gson
-        .fromJson(gson.toJson(jsonResponse.getResult()), Environment[].class);
-    assertEquals(2, environments.length);
+    // foo environments size = 2; One is created, one is updated
+    List<Environment> environments = Arrays.stream(gson
+        .fromJson(gson.toJson(jsonResponse.getResult()), Environment[].class))
+        .filter(env -> env.getEnvironmentSpec().getName().equals("foo"))
+        .collect(Collectors.toList());;
+    assertEquals(2, environments.size());
 
-    Environment environment = environments[0];
+    Environment environment = environments.get(0);
     assertEquals("foo", environment.getEnvironmentSpec().getName());
     assertEquals(kernelName,
         environment.getEnvironmentSpec().getKernelSpec().getName());

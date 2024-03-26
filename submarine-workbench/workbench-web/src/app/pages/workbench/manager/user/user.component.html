@@ -21,27 +21,27 @@
   <div class="user-table-operate">
     <form nz-form [nzLayout]="'inline'" [formGroup]="form">
       <nz-form-item>
-        <nz-form-label>User Name</nz-form-label>
+        <nz-form-label>{{ 'User Name' | translate }}</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="userName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label>Department</nz-form-label>
+        <nz-form-label>{{ 'Department' | translate }}</nz-form-label>
         <nz-form-control>
           <nz-tree-select
             style="width: 171px;"
             nzAllowClear
             nzDefaultExpandAll
             nzShowSearch
-            nzPlaceHolder="Please select"
+            nzPlaceHolder="{{ 'Please select' | translate }}"
             formControlName="deptCode"
             [nzNodes]="sysDeptTreeList"
           ></nz-tree-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label>Email</nz-form-label>
+        <nz-form-label>{{ 'Email' | translate }}</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="email" />
         </nz-form-control>
@@ -50,29 +50,29 @@
         <nz-form-control>
           <button nz-button nzType="primary" (click)="queryUserList()">
             <i nz-icon nzType="search"></i>
-            Query
+            {{ 'Query' | translate }}
           </button>
           <button nz-button style="margin-left: 8px;" (click)="onShowUserDrawer()">
             <i nz-icon nzType="plus"></i>
-            Add User
+            {{ 'Add User' | translate }}
           </button>
         </nz-form-control>
       </nz-form-item>
     </form>
   </div>
 
-  <nz-table #table [nzData]="userList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
+  <nz-table #table [nzData]="userList" [nzScroll]="{ x: '1100px' }" nzNoResult="{{ 'No result' | translate }}" nzBordered>
     <thead>
       <tr>
-        <th>User Name</th>
-        <th>Real Name</th>
-        <th>Department</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>Sex</th>
-        <th>Email</th>
-        <th nzWidth="120px">Create Time</th>
-        <th nzWidth="120px" nzRight="0px">Action</th>
+        <th>{{ 'User Name' | translate }}</th>
+        <th>{{ 'Real Name' | translate }}</th>
+        <th>{{ 'Department' | translate }}</th>
+        <th>{{ 'Role' | translate }}</th>
+        <th>{{ 'Status' | translate }}</th>
+        <th>{{ 'Sex' | translate }}</th>
+        <th>{{ 'Email' | translate }}</th>
+        <th nzWidth="120px">{{ 'Create Time' | translate }}</th>
+        <th nzWidth="120px" nzRight="0px">{{ 'Action' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -86,25 +86,25 @@
         <td>{{ data.email }}</td>
         <td>{{ data.createTime }}</td>
         <td class="td-action" nzRight="0px">
-          <a (click)="onShowUserDrawer(data)">Edit</a>
+          <a (click)="onShowUserDrawer(data)">{{ 'Edit' | translate }}</a>
           <a nz-dropdown [nzDropdownMenu]="more">
-            More
+            {{ 'More' | translate }}
             <i nz-icon nzType="down"></i>
           </a>
           <nz-dropdown-menu #more="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li nz-menu-item (click)="onShowUserDrawer(data, true)">Details</li>
-              <li nz-menu-item (click)="onShowResetPasswordModal(data)">Password</li>
+              <li nz-menu-item (click)="onShowUserDrawer(data, true)">{{ 'Details' | translate }}</li>
+              <li nz-menu-item (click)="onShowResetPasswordModal(data)">{{ 'Password' | translate }}</li>
               <li
                 nz-menu-item
                 nz-popconfirm
                 nzPlacement="left"
-                nzTitle="Confirm to delete?"
-                nzCancelText="Cancel"
-                nzOkText="Ok"
+                nzTitle="{{ 'Confirm to delete?' | translate }}"
+                nzCancelText="{{ 'Cancel' | translate }}"
+                nzOkText="{{ 'Ok' | translate }}"
                 (nzOnConfirm)="onDeleteUser(data)"
               >
-                Delete
+                {{ 'Delete' | translate }}
               </li>
             </ul>
           </nz-dropdown-menu>

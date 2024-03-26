@@ -21,7 +21,7 @@ metadata:
   name: submarines.submarine.apache.org
   labels:
     app.kubernetes.io/name: submarine-operator
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/version: "0.9.0-SNAPSHOT"
     app.kubernetes.io/component: submarine-operator
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -37,7 +37,7 @@ spec:
     - all
   scope: Namespaced
   versions:
-    - name: v1alpha1
+    - name: v1
       schema:
         openAPIV3Schema:
           description: Submarine is the Schema for the submarines API
@@ -99,7 +99,6 @@ spec:
                       description: StorageSize is the storage size of the database
                       type: string
                   required:
-                    - mysqlRootPasswordSecret
                     - storageSize
                   type: object
                 minio:

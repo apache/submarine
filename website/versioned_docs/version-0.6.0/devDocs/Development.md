@@ -215,7 +215,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
     helm delete submarine-operator
     ```
 
-For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
+For other details, please check out the [README](https://github.com/apache/submarine/tree/rel/release-0.6.0/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/tree/rel/release-0.6.0/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
 
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
@@ -227,7 +227,7 @@ To update the website, click “Edit this page” on the website.
 ![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
 
 ### Add a new page
-If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js). 
+If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/tree/rel/release-0.6.0/website/sidebars.js). 
 
 ### Installation
 We use the yarn package manager to install all dependencies for the website

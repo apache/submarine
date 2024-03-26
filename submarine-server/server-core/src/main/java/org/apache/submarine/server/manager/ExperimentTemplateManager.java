@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,14 +69,6 @@ public class ExperimentTemplateManager {
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer());
   private static final Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-
-
-
-  /**
-   * ExperimentTemplate Cache.
-   */
-  private final ConcurrentMap<String, ExperimentTemplate> cachedExperimentTemplates =
-        new ConcurrentHashMap<>();
 
   /**
    * Get the singleton instance.
@@ -174,8 +164,6 @@ public class ExperimentTemplateManager {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Unable to parse the experimentTemplate spec: " + e.getMessage());
     }
-    // Update cache
-    cachedExperimentTemplates.put(spec.getName(), experimentTemplate);
 
     return experimentTemplate;
   }
@@ -206,8 +194,6 @@ public class ExperimentTemplateManager {
       experimentTemplateMapper.delete(name);
       sqlSession.commit();
 
-      // Invalidate cache
-      cachedExperimentTemplates.remove(name);
       return tpl;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -239,12 +225,7 @@ public class ExperimentTemplateManager {
    * @throws SubmarineRuntimeException the service error
    */
   public List<ExperimentTemplate> listExperimentTemplates(String status) throws SubmarineRuntimeException {
-    List<ExperimentTemplate> tpls = new ArrayList<>(cachedExperimentTemplates.values());
-
-    // Is it available in cache?
-    if (tpls.size() != 0) {
-      return tpls;
-    }
+    List<ExperimentTemplate> tpls = new ArrayList<>();
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
@@ -253,12 +234,10 @@ public class ExperimentTemplateManager {
       for (ExperimentTemplateEntity experimentTemplateEntity : experimentTemplateEntities) {
         if (experimentTemplateEntity != null) {
           ExperimentTemplate tpl = new ExperimentTemplate();
-
           tpl.setExperimentTemplateSpec(
                 gson.fromJson(experimentTemplateEntity.getExperimentTemplateSpec(),
                 ExperimentTemplateSpec.class));
           tpls.add(tpl);
-          cachedExperimentTemplates.put(tpl.getExperimentTemplateSpec().getName(), tpl);
         }
       }
     } catch (Exception e) {
@@ -276,20 +255,18 @@ public class ExperimentTemplateManager {
     }
   }
 
+  /**
+   * Get experiment template by name
+   *
+   * @param name experiment template name
+   */
   private ExperimentTemplate getExperimentTemplateDetails(String name) throws SubmarineRuntimeException {
-
-    // Is it available in cache?
-    ExperimentTemplate tpl = cachedExperimentTemplates.get(name);
-    if (tpl != null) {
-      return tpl;
-    }
-    ExperimentTemplateEntity experimentTemplateEntity;
+    ExperimentTemplate tpl = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
 
-      experimentTemplateEntity = experimentTemplateMapper.select(name);
-
+      ExperimentTemplateEntity experimentTemplateEntity = experimentTemplateMapper.select(name);
       if (experimentTemplateEntity != null) {
         tpl = new ExperimentTemplate();
         tpl.setExperimentTemplateSpec(

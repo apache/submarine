@@ -24,7 +24,7 @@ import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonDeploymentFa
 import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonDeploymentPytorchServing;
 import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonDeploymentTFServing;
 import org.apache.submarine.server.submitter.k8s.model.seldon.SeldonResource;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

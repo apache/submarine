@@ -65,6 +65,9 @@ import io.kubernetes.client.openapi.apis.CustomObjectsApi;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION;
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION;
+
 @SuppressWarnings("rawtypes")
 public class ExperimentRestApiTest extends AbstractSubmarineServerTest {
   private static final Logger LOG = LoggerFactory.getLogger(ExperimentRestApiTest.class);
@@ -343,8 +346,10 @@ public class ExperimentRestApiTest extends AbstractSubmarineServerTest {
             + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
             + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
             + "!= \"$currentVersion\" ]; then echo \"Conda version " +
-            "should be between minVersion=\"4.0.1\"; " +
-            "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
+            "should be between minVersion=\""
+            + ENVIRONMENT_CONDA_MIN_VERSION.getStringValue() + "\"; " +
+            "and maxVersion=\"" + ENVIRONMENT_CONDA_MAX_VERSION.getStringValue()
+            + "\";\"; exit 1; else echo "
             + "\"Conda current version is " + currentVersion + ". "
             + "Moving forward with env creation and activation.\"; "
             + "fi && ";

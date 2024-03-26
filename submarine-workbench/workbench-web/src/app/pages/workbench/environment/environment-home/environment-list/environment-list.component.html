@@ -17,13 +17,13 @@
   ~ under the License.
   -->
 
-<nz-table id="environmentTable" nzBordered #basicTable [nzData]="environmentList" [nzNoResult]="'No data'">
+<nz-table id="environmentTable" nzBordered #basicTable [nzData]="environmentList" [nzNoResult]="'No data' | translate">
   <thead>
     <tr>
-      <th>Environment Name</th>
-      <th>Docker image</th>
-      <th>Preview</th>
-      <th>Action</th>
+      <th>{{ 'Environment Name' | translate }}</th>
+      <th>{{ 'Docker Image' | translate }}</th>
+      <th>{{ 'Preview' | translate }}</th>
+      <th>{{ 'Action' | translate }}</th>
     </tr>
   </thead>
   <tbody>
@@ -36,7 +36,7 @@
           class="anchor-preview"
           nz-popover
           nzPopoverTrigger="click"
-          nzPopoverTitle="Preview environment Spec"
+          nzPopoverTitle="{{ 'Preview environment Spec' | translate }}"
           nzPopoverPlacement="left"
           nzType="dashed"
           [nzPopoverContent]="contentTemplate"
@@ -51,19 +51,19 @@
       </td>
       <td>
         <a id="btn-downloadEnvironmentSpec{{ i }}" (click)="onDownloadEnvironmentSpec(data.environmentSpec)">
-          Download
+          {{ 'Download' | translate }}
         </a>
         <nz-divider nzType="vertical"></nz-divider>
         <a
           id="btn-deleteEnvironment{{ i }}"
           nz-popconfirm
           nzPlacement="left"
-          nzTitle="Are you sure you want to delete?"
-          nzCancelText="Cancel"
-          nzOkText="Ok"
+          nzTitle="{{ 'Are you sure you want to delete?' | translate }}"
+          nzCancelText="{{ 'Cancel' | translate }}"
+          nzOkText="{{ 'Ok' | translate }}"
           (nzOnConfirm)="onDeleteEnvironment(data.environmentSpec.name)"
         >
-          Delete
+          {{ 'Delete' | translate }}
         </a>
       </td>
     </tr>

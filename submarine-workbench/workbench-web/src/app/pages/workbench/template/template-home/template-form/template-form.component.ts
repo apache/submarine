@@ -24,6 +24,7 @@ import { ExperimentValidatorService } from '@submarine/services/experiment.valid
 import { Specs } from '@submarine/interfaces/experiment-spec';
 import { ExperimentTemplateSpec } from '@submarine/interfaces/experiment-template';
 import { NzMessageService } from 'ng-zorro-antd';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'submarine-template-form',
@@ -61,8 +62,10 @@ export class TemplateFormComponent implements OnInit {
     private experimentValidatorService: ExperimentValidatorService,
     private fb: FormBuilder,
     private experimentService: ExperimentService,
-    private nzMessageService: NzMessageService
-  ) {}
+    private nzMessageService: NzMessageService,
+    private translate: TranslateService
+  ) {
+  }
 
   ngOnInit() {
     //TODO: get tags from server
@@ -282,12 +285,12 @@ export class TemplateFormComponent implements OnInit {
     this.experimentService.createTemplate(templateSpec).subscribe({
       next: () => {},
       error: (msg) => {
-        this.nzMessageService.error(`${msg}, please try again`, {
+        this.nzMessageService.error(`${msg}, ` + this.translate.instant('please try again'), {
           nzPauseOnHover: true,
         });
       },
       complete: () => {
-        this.nzMessageService.success('Template creation succeeds');
+        this.nzMessageService.success(this.translate.instant('Template creation succeeds'));
         this.isVisible = false;
         this.sendUpdate('Update Template List');
       },

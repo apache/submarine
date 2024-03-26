@@ -19,7 +19,7 @@ name: python-sdk
 on: [push, pull_request]
 
 env:
-  KUBERNETES_VERSION: "v1.21.14"
+  KUBERNETES_VERSION: "v1.25.3"
 
 jobs:
   check-style:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          pip install --upgrade pip setuptools==65.7.0 wheel
+          pip install --upgrade pip setuptools wheel
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
       - name: List installed packages
@@ -42,19 +42,12 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        tf-version: ['2.12.0', '2.13.0', '2.14.0']
         exclude:
+            # Support for Python 3.8 has been removed starting with TF 2.14.
           - python-version: '3.8'
-            tf-version: '1.15.0'
-          - python-version: '3.9'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '2.6.0'
-          - python-version: '3.10'
-            tf-version: '2.7.0'
+            tf-version: '2.14.0'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -64,19 +57,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: |
-          pip install --upgrade pip setuptools==65.7.0 wheel
+          pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Install pysubmarine with tf1 and pytorch
-        if: ${{ matrix.tf-version == '1.15.0' }}
-        run: |
-          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
       - name: Install pysubmarine with tf2 and pytorch
-        if: startsWith(matrix.tf-version, '2.')
         run: |
+          sed -i "s/tensorflow>=2.12.0,<2.15.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          sed -i "s/tensorflow-estimator>=2.12.0,<2.15.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
       - name: List installed packages
-        run: pip list
+        run: pip list && pipdeptree
       - name: Run unit test
         working-directory: ./submarine-sdk/pysubmarine
         run: pytest -m "not e2e" --cov-report xml
@@ -91,28 +80,36 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        tf-version: ['2.12.0', '2.13.0', '2.14.0']
         exclude:
           - python-version: '3.8'
-            tf-version: '1.15.0'
-          - python-version: '3.9'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '2.6.0'
-          - python-version: '3.10'
-            tf-version: '2.7.0'
+            tf-version: '2.14.0'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 50
-      - name: Set up JDK 1.8
+          fetch-depth: 1
+      - name: Free Disk Space
+        run: bash ./.github/scripts/free-disk-space.sh
+      - name: Setup python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tf2 dependencies
+        run: |
+          pip install --upgrade pip setuptools wheel
+          sed -i "s/tensorflow>=2.12.0,<2.15.0/tensorflow~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          sed -i "s/tensorflow-estimator>=2.12.0,<2.15.0/tensorflow-estimator~=${{ matrix.tf-version }}/" ./submarine-sdk/pysubmarine/setup.py
+          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+          pip cache purge
+      - name: List installed packages
+        run: pip list
+      - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: "1.8"
+          java-version: "11"
       - name: Set up Maven 3.6.3
         uses: stCarolas/setup-maven@v4
         with:
@@ -123,10 +120,10 @@ jobs:
           java -version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
-      - name: Download Istio 1.13.0
+      - name: Download Istio 1.17.1
         run: |
-          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
-          cd istio-1.13.0
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 sh -
+          cd istio-1.17.1
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
         run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
@@ -145,28 +142,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build Image locally
-        run: .github/scripts/build-image-locally.sh
+        run: 
+          .github/scripts/build-image-locally-v3.sh
+          mvn clean
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
-      - name: Setup python environment
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install tf1 dependencies
-        if: ${{ matrix.tf-version == '1.15.0' }}
-        run: |
-          pip install --upgrade pip setuptools==65.7.0 wheel
-          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Install tf2 dependencies
-        if: startsWith(matrix.tf-version, '2.')
-        run: |
-          pip install --upgrade pip setuptools==65.7.0 wheel
-          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-          pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: List installed packages
-        run: pip list
       - name: Set CLI config for e2e pytest
         run: |
           submarine config set connection.hostname localhost
@@ -202,4 +182,4 @@ jobs:
             args: >
               -Dsonar.organization=apache
               -Dsonar.projectKey=apache_submarine_python_sdk
-              -Dsonar.python.version=3.7,3.8,3.9,3.10
+              -Dsonar.python.version=3.8,3.9,3.10,3.11

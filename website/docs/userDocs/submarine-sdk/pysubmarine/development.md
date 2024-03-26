@@ -132,7 +132,7 @@ to generate pysubmarine client API that used to communicate with submarine serve
     {
       "packageName" : "submarine.client",
       "projectName" : "submarine.client",
-      "packageVersion": "0.8.0-SNAPSHOT"
+      "packageVersion": "0.9.0-SNAPSHOT"
     }
     ```
 
@@ -141,16 +141,6 @@ to generate pysubmarine client API that used to communicate with submarine serve
 2. Execute `./dev-support/pysubmarine/gen-sdk.sh` to generate latest version of SDK.
 
     > Notice: Please install required package before running the script: [lint-requirements.txt](https://github.com/apache/submarine/blob/master/dev-support/style-check/python/lint-requirements.txt)
-3. In `submarine/submarine-sdk/pysubmarine/client/api_client.py` line 74
-
-    Please change
-    ```python
-    "long": int if six.PY3 else long,  # noqa: F821
-    ```
-    to
-    ```python
-    "long": int,
-    ```
 
 ### Model Management Model Development
 
@@ -170,7 +160,7 @@ telepresence --new-deployment submarine-dev
 
 For Apache Submarine committer and PMCs to do a new release.
 
-1. Change the version from 0.x.x-SNAPSHOT to 0.x.x
+1. Change the version from 0.x.x.dev to 0.x.x
    in [setup.py](https://github.com/apache/submarine/blob/master/submarine-sdk/pysubmarine/setup.py)
 2. Install Python packages
 
@@ -188,14 +178,30 @@ in your local directory
 python setup.py bdist_wheel
 ```
 
-4. Upload python package to TestPyPI for testing
+4. Config 2FA token (optional)
+
+Beginning 2023/06/01, all uploads from user accounts with 2FA enabled will be required to use an API Token or Trusted Publisher configuration in place of their password. (https://blog.pypi.org/posts/2023-06-01-2fa-enforcement-for-upload/)
+So if you have 2FA enabled, you will need to configure your token in `~/.pypirc`. 
+
+```
+[pypi]
+  repository = https://upload.pypi.org/legacy/
+  username = __token__
+  password = pypi-${your_pypi_token}
+
+[testpypi]
+  username = __token__
+  password = pypi-${your_testpypi_token}
+```
+
+5. Upload python package to TestPyPI for testing
 
 ```bash
 python -m twine upload --repository testpypi dist/*
 ```
 
-5. Upload python package to PyPi
+6. Upload python package to PyPi
 
 ```bash
-python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+python -m twine upload --repository pypi dist/*
 ```

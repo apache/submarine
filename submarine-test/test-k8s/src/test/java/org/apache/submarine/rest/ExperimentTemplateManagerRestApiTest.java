@@ -135,7 +135,8 @@ public class ExperimentTemplateManagerRestApiTest extends AbstractSubmarineServe
         gson.fromJson(gson.toJson(jsonResponse.getResult()), new TypeToken<List<ExperimentTemplate>>() {
         }.getType());
 
-    Assert.assertEquals(TPL_NAME, getExperimentTemplates.get(0).getExperimentTemplateSpec().getName());
+    Assert.assertTrue(getExperimentTemplates.stream()
+        .anyMatch(t -> TPL_NAME.equals(t.getExperimentTemplateSpec().getName())));
 
     deleteExperimentTemplate();
   }

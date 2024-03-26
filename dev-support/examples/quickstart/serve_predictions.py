@@ -17,6 +17,11 @@ The code is mainly referenced from:
 https://docs.seldon.io/projects/seldon-core/en/latest/examples/tfserving_mnist.html
 https://www.tensorflow.org/tfx/tutorials/serving/rest_simple
 And the parameters of the predictions call have been modified.
+
+In addition to the submarine-sdk lib,
+the following dependencies need to be downloaded separately for this test code:
+pip install tensorflow_datasets==4.7.0
+pip install matplotlib==3.5.3
 """
 
 import numpy as np

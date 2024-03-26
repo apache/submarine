@@ -34,11 +34,11 @@ import org.apache.submarine.server.submitter.k8s.model.K8sResource;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
-import org.joda.time.DateTime;
+import org.apache.submarine.server.utils.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -267,7 +267,7 @@ public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
     } finally {
       if (notebook == null) {
         // add metadata time info
-        this.getMetadata().setDeletionTimestamp(new DateTime());
+        this.getMetadata().setDeletionTimestamp(OffsetDateTime.now());
         // build notebook response
         notebook = NotebookUtils.buildNotebookResponse(this);
         notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
@@ -294,12 +294,15 @@ public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
       // The exception that obtaining CRD resources is not necessarily because the CRD is deleted,
       // but maybe due to timeout or API error caused by network and other reasons.
       // Therefore, the status of the notebook should be set to a new enum NOTFOUND.
-      LOG.warn("Get error when submitter is finding notebook: {}", getMetadata().getName());
-      if (notebook == null) {
-        notebook = new Notebook();
-      }
-      notebook.setReason(e.getMessage());
-      notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
+      if (e.getCode() == 404) {
+        LOG.warn(String.format("Get error when submitter is finding notebook: %s",
+            getMetadata().getName()), e);
+        if (notebook == null) {
+          notebook = new Notebook();
+        }
+        notebook.setReason(e.getMessage());
+        notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
+      } else throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return resetName(notebook);
   }

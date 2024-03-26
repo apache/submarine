@@ -32,7 +32,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -84,6 +83,12 @@ public abstract class AbstractSubmarineServerTest {
 
   protected static File submarineServerHome;
   protected static File confDir;
+  /**
+   * Rest token
+   */
+  protected static String token;
+  protected static final String DEFAULT_USERNAME = "admin";
+  protected static final String DEFAULT_PASSWORD = "admin";
 
   protected static String ENV_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENT;
@@ -215,6 +220,27 @@ public abstract class AbstractSubmarineServerTest {
     }
   }
 
+  protected static String getToken() throws IOException {
+    if (token == null) {
+      LOG.info("Need to create token first!");
+      token = createToken(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+    }
+    LOG.info("Current token = {}", token);
+    return token;
+  }
+
+  protected static String createToken(String username, String password) throws IOException {
+    HttpClient httpClient = new HttpClient();
+    PostMethod postMethod = new PostMethod(URL + "/api/auth/token");
+    postMethod.setRequestBody(String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password));
+    postMethod.setRequestHeader("Content-type", MediaType.APPLICATION_JSON);
+    httpClient.executeMethod(postMethod);
+    String json = postMethod.getResponseBodyAsString();
+    Gson gson = new GsonBuilder().create();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    return (String) jsonResponse.getResult();
+  }
+
   protected static PostMethod httpPost(String path, String body) throws IOException {
     return httpPost(path, body, StringUtils.EMPTY, StringUtils.EMPTY);
   }
@@ -237,10 +263,11 @@ public abstract class AbstractSubmarineServerTest {
     PostMethod postMethod = new PostMethod(URL + path);
     postMethod.setRequestBody(request);
     postMethod.setRequestHeader("Content-type", mediaType);
-    postMethod.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 
     if (userAndPasswordAreNotBlank(user, pwd)) {
-      postMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+      postMethod.setRequestHeader("Authorization", "Bearer " + createToken(user, pwd));
+    } else {
+      postMethod.setRequestHeader("Authorization", "Bearer " + getToken());
     }
 
     httpClient.executeMethod(postMethod);
@@ -263,7 +290,9 @@ public abstract class AbstractSubmarineServerTest {
     RequestEntity entity = new ByteArrayRequestEntity(body.getBytes("UTF-8"));
     putMethod.setRequestEntity(entity);
     if (userAndPasswordAreNotBlank(user, pwd)) {
-      putMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+      putMethod.setRequestHeader("Authorization", "Bearer " + createToken(user, pwd));
+    } else {
+      putMethod.setRequestHeader("Authorization", "Bearer " + getToken());
     }
     httpClient.executeMethod(putMethod);
     LOG.info("{} - {}", putMethod.getStatusCode(), putMethod.getStatusText());
@@ -310,7 +339,9 @@ public abstract class AbstractSubmarineServerTest {
     DeleteMethod deleteMethod = new DeleteMethod(URL + path);
     deleteMethod.addRequestHeader("Origin", URL);
     if (userAndPasswordAreNotBlank(user, pwd)) {
-      deleteMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+      deleteMethod.setRequestHeader("Authorization", "Bearer " + createToken(user, pwd));
+    } else {
+      deleteMethod.setRequestHeader("Authorization", "Bearer " + getToken());
     }
     httpClient.executeMethod(deleteMethod);
     LOG.info("{} - {}", deleteMethod.getStatusCode(), deleteMethod.getStatusText());
@@ -331,6 +362,13 @@ public abstract class AbstractSubmarineServerTest {
     HttpClient httpClient = new HttpClient();
     GetMethod getMethod = new GetMethod(URL + path);
     getMethod.addRequestHeader("Origin", URL);
+
+    if (userAndPasswordAreNotBlank(user, pwd)) {
+      getMethod.setRequestHeader("Authorization", "Bearer " + createToken(user, pwd));
+    } else {
+      getMethod.setRequestHeader("Authorization", "Bearer " + getToken());
+    }
+
     httpClient.executeMethod(getMethod);
     LOG.info("{} - {}", getMethod.getStatusCode(), getMethod.getStatusText());
     return getMethod;

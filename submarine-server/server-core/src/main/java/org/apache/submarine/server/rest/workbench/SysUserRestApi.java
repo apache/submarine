@@ -198,6 +198,9 @@ public class SysUserRestApi {
               .role(createDefaultRole()).build();
         }
       }
+    } else {
+      // If no authentication configuration is performed, we retain the default user for the time being
+      userInfo = createDefaultUser();
     }
     if (userInfo == null) { // user not found
       return new JsonResponse.Builder<>(Response.Status.OK).

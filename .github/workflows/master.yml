@@ -19,7 +19,7 @@ name: Submarine
 on: [push, pull_request]
 
 env:
-  VERSION: "0.8.0-SNAPSHOT"
+  VERSION: "0.9.0-SNAPSHOT"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
 jobs:
@@ -27,11 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-    # Version updates for k8s can be found at https://kubernetes.io/releases/patch-releases/
+    # Version updates for k8s can be found at https://kubernetes.io/releases/patch-releases/ or
+    # https://kubernetes.io/releases/
+    # We mainly support the last 3-4 releases of kubernetes
     steps:
       - id: set-matrix
         run: |
-          echo "::set-output name=matrix::[\"v1.19.16\", \"v1.20.15\", \"v1.21.14\"]"
+          echo "::set-output name=matrix::[\"v1.22.17\", \"v1.23.17\", \"v1.24.12\", \"v1.25.3\"]"
   submarine-operator-verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -69,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 50
+          fetch-depth: 1
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
@@ -97,10 +99,10 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
-      - name: Download Istio 1.13.0
+      - name: Download Istio 1.17.1
         run: |
-          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
-          cd istio-1.13.0
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 sh -
+          cd istio-1.17.1
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
         run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
@@ -112,7 +114,8 @@ jobs:
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
       - name: Build Image locally
-        run: .github/scripts/build-image-locally-v3.sh
+        run: |
+          .github/scripts/build-image-locally-v3.sh
       - name: Install Golang Dependencies
         working-directory: submarine-cloud-v3
         run: go mod vendor
@@ -124,7 +127,7 @@ jobs:
         # Running commands manually instead.
         run: |
           cd config/manager
-          kustomize edit set image controller=apache/submarine:operator-0.8.0-SNAPSHOT
+          kustomize edit set image controller=apache/submarine:operator-0.9.0-SNAPSHOT
           kustomize build ../default | kubectl apply -f -
       - name: Install Helm Dependencies
         run: |
@@ -211,7 +214,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 50
+          fetch-depth: 1
+      - name: Free Disk Space
+        run: bash ./.github/scripts/free-disk-space.sh
       - name: Cache jacoco.exec
         uses: actions/cache@v2
         with:
@@ -239,10 +244,10 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
-      - name: Download Istio 1.13.0
+      - name: Download Istio 1.17.1
         run: |
-          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
-          cd istio-1.13.0
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 sh -
+          cd istio-1.17.1
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
         run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
@@ -258,7 +263,9 @@ jobs:
           echo ">>> mvn ${BUILD_FLAG} -B"
           mvn ${BUILD_FLAG} -B
       - name: Build Image locally
-        run: .github/scripts/build-image-locally.sh
+        run: |
+          .github/scripts/build-image-locally-v3.sh
+          sh .github/scripts/build-image-experiment-prehandler.sh
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Test
@@ -425,7 +432,7 @@ jobs:
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
-      - name: Build submarine-server-database
+      - name: Build submarine-server-core
         env:
           MODULES: "-pl :submarine-server-core"
         run: |
@@ -434,9 +441,12 @@ jobs:
       - name: Test submarine-server-core
         env:
           TEST_MODULES: "-pl :submarine-server-core"
+        # TODO(cdmikechen) There are some databases that are hardcoded to cause data judgement anomalies,
+        #                  here is a temporary fix for this issue.
+        #                  This variable should be removed when SUBMARINE-1297 is resolved.
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-          export SUBMARINE_S3_ENDPOINT=http://localhost:9000
+          export SUBMARINE_S3_ENDPOINT=http://localhost:9000 && export JDBC_URL="jdbc:mysql://127.0.0.1:3306/submarine_test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"
           mvn $TEST_FLAG $TEST_MODULES -B
       - name: Build submarine-serve
         env:
@@ -537,14 +547,14 @@ jobs:
           java -version
       - name: Build
         env:
-          MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s,:submarine-k8s-agent"
+          MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s,:submarine-k8s-agent,:submarine-k8s-utils"
         run: |
           echo ">>> mvn $BUILD_FLAG $MODULES -B"
           mvn $BUILD_FLAG $MODULES -B
       - name: Test
         env:
           # There are some `submitter-k8s` packages under the `submarine-server-submitter` that also needs to be tested
-          TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s,:submarine-k8s-agent"
+          TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s,:submarine-k8s-agent,:submarine-k8s-utils"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           export SUBMARINE_UID="dfea05c4-dbf2-43cc-833c-62ff329566a5"

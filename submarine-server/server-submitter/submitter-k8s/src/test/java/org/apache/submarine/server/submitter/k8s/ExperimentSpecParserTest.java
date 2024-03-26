@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Volume;
 
-import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -63,6 +62,9 @@ import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION;
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION;
+
 
 public class ExperimentSpecParserTest extends SpecBuilder {
 
@@ -88,7 +90,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   public void testValidLabel() throws IOException, URISyntaxException {
     ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     String label = MLJobFactory.getJobLabelSelector(experimentSpec);
-    Assert.assertEquals("job-name=" + experimentSpec.getMeta().getExperimentId(), label);
+    Assert.assertEquals("training.kubeflow.org/job-name="
+        + experimentSpec.getMeta().getExperimentId(), label);
   }
 
   @Test
@@ -230,17 +233,17 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(K8sUtils.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(expectedMeta.getFramework().toLowerCase(), actualFramework);
   }
-  
+
   private void validateExperimentHandlerMetadata(ExperimentSpec experimentSpec,
       MLJob mlJob) {
-    
-    if (experimentSpec.getExperimentHandlerSpec() == null || 
+
+    if (experimentSpec.getExperimentHandlerSpec() == null ||
         experimentSpec.getExperimentHandlerSpec().isEmpty()) {
       return;
     }
-      
+
     V1Container initContainer = null;
-    
+
     MLJobReplicaSpec mlJobReplicaSpec = null;
     if (mlJob instanceof PyTorchJob) {
       mlJobReplicaSpec = ((PyTorchJob) mlJob).getSpec()
@@ -265,9 +268,9 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         , varMap.get("HDFS_SOURCE"));
     Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("ENABLE_KERBEROS")
         , varMap.get("ENABLE_KERBEROS"));
-    Assert.assertEquals(mlJob.getExperimentId(), varMap.get("EXPERIMENT_ID")); 
+    Assert.assertEquals(mlJob.getExperimentId(), varMap.get("EXPERIMENT_ID"));
   }
-  
+
   private void validateReplicaSpec(ExperimentSpec experimentSpec,
       MLJob mlJob, MLJobReplicaType type) {
     MLJobReplicaSpec mlJobReplicaSpec = null;
@@ -358,11 +361,11 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     String minVersion = "minVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+            ENVIRONMENT_CONDA_MIN_VERSION)
         + "\";";
     String maxVersion = "maxVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+            ENVIRONMENT_CONDA_MAX_VERSION)
         + "\";";
     String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
     Assert.assertEquals(
@@ -370,8 +373,10 @@ public class ExperimentSpecParserTest extends SpecBuilder {
             + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
                + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
                     + "!= \"$currentVersion\" ]; then echo \"Conda version " +
-                    "should be between minVersion=\"4.0.1\"; " +
-                    "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
+                    "should be between minVersion=\""
+                    + ENVIRONMENT_CONDA_MIN_VERSION.getStringValue() + "\"; "
+                    + "and maxVersion=\"" + ENVIRONMENT_CONDA_MAX_VERSION.getStringValue()
+                    + "\";\"; exit 1; else echo "
                     + "\"Conda current version is " + currentVersion + ". "
                         + "Moving forward with env creation and activation.\"; "
                         + "fi && " +

@@ -16,15 +16,14 @@
 # limitations under the License.
 #
 
-SUBMARINE_VERSION="0.8.0-SNAPSHOT"
-FOLDER_LIST=("database" "mlflow" "submarine" "operator-v3" "agent" "experiment-prehandler")
+SUBMARINE_VERSION="0.9.0-SNAPSHOT"
+FOLDER_LIST=("database" "mlflow" "submarine" "operator-v3" "agent")
 IMAGE_LIST=(
   "apache/submarine:database-${SUBMARINE_VERSION}"
   "apache/submarine:mlflow-${SUBMARINE_VERSION}"
   "apache/submarine:server-${SUBMARINE_VERSION}"
   "apache/submarine:operator-${SUBMARINE_VERSION}"
   "apache/submarine:agent-${SUBMARINE_VERSION}"
-  "apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}"
 )
 
 for i in "${!IMAGE_LIST[@]}"
@@ -33,5 +32,7 @@ do
   echo "Execute ./dev-support/docker-images/${FOLDER_LIST[i]}/build.sh"
   ./dev-support/docker-images/"${FOLDER_LIST[i]}"/build.sh
   kind load docker-image "${IMAGE_LIST[i]}"
+  # remove docker image to reduce current space
+  docker rmi "${IMAGE_LIST[i]}"
 done
 

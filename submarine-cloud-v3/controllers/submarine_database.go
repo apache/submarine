@@ -28,12 +28,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
+func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := util.ParsePersistentVolumeClaimYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
@@ -47,7 +47,7 @@ func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx cont
 }
 
 // newSubmarineDatabaseSecret is a function to create database secret which stores mysql root password
-func (r *SubmarineReconciler) newSubmarineDatabaseSecret(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Secret {
+func (r *SubmarineReconciler) newSubmarineDatabaseSecret(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Secret {
 	secret, err := util.ParseSecretYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseSecretYaml")
@@ -60,7 +60,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseSecret(ctx context.Context, su
 	return secret
 }
 
-func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *appsv1.StatefulSet {
+func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *appsv1.StatefulSet {
 	statefulset, err := util.ParseStatefulSetYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseStatefulSetYaml")
@@ -100,7 +100,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 	return statefulset
 }
 
-func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.Service {
+func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, submarine *submarineapacheorgv1.Submarine) *corev1.Service {
 	service, err := util.ParseServiceYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceYaml")
@@ -115,7 +115,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, s
 
 // createSubmarineDatabase is a function to create submarine-database.
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/submarine-database.yaml
-func (r *SubmarineReconciler) createSubmarineDatabase(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarineDatabase(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	r.Log.Info("Enter createSubmarineDatabase")
 
 	// Step 1: Create PersistentVolumeClaim

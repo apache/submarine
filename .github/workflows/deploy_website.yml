@@ -19,6 +19,7 @@ name: Deploy Submarine documentation
 on:
   pull_request:
   push:
+    branches: [master]
     paths:
       - 'website/**'
 
@@ -29,7 +30,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
       - name: Test Build
         working-directory: ./website
         run: |
@@ -42,7 +43,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
       - name: Add key to allow access to repository
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock

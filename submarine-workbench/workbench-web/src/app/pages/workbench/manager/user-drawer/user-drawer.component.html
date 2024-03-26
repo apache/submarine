@@ -29,26 +29,26 @@
     <!-- User Name-->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan" nzRequired>
-        User Name
+        {{ 'User Name' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" nzHasFeedback [nzErrorTip]="usernameErrorTpl">
         <input
           type="text"
           nz-input
           formControlName="userName"
-          placeholder="User's name"
+          placeholder="{{ 'User\'s name' | translate }}"
           [readOnly]="sysUser?.id"
         />
 
         <ng-template #usernameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            Please input user's name!
+            {{ 'Please input user\'s name!' | translate }}
           </ng-container>
           <ng-container *ngIf="control.hasError('duplicated')">
-            User name already exist!
+            {{ 'User name already exist!' | translate }}
           </ng-container>
           <ng-container *ngIf="control.hasError('error')">
-            Error
+            {{ 'Error' | translate }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -57,7 +57,7 @@
     <!-- Password -->
     <nz-form-item *ngIf="!sysUser?.id">
       <nz-form-label [nzSpan]="labelSpan" nzRequired>
-        Password
+        {{ 'Password' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="passwordErrorTpl">
         <input
@@ -65,15 +65,15 @@
           nz-input
           formControlName="password"
           (ngModelChange)="validateConfirmPassword()"
-          placeholder="Users's account password"
+          placeholder=" {{ 'Users\'s account password' | translate }}"
         />
 
         <ng-template #passwordErrorTpl let-control>
           <ng-container *ngIf="control.hasError('pattern')">
-            The password consists of 8 digits, uppercase and lowercase letters and special symbols!
+            {{ 'The password consists of at least 8 digits, upper or lowercase letters and special symbols!' | translate }}
           </ng-container>
           <ng-container *ngIf="control.hasError('required')">
-            Pleas input account's password!
+            {{ 'Please input account\'s password!' | translate }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -82,17 +82,17 @@
     <!-- Confirm -->
     <nz-form-item *ngIf="!sysUser?.id">
       <nz-form-label [nzSpan]="labelSpan" nzRequired>
-        Confirm
+        {{ 'Confirm Password' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="confirmErrorTpl">
-        <input type="password" nz-input formControlName="confirm" placeholder="Please confirm password" />
+        <input type="password" nz-input formControlName="confirm" placeholder="{{ 'Please confirm password' | translate }}" />
 
         <ng-template #confirmErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            Please confirm your password!
+            {{ 'Please confirm your password!' | translate }}
           </ng-container>
           <ng-container *ngIf="control.hasError('confirm')">
-            Password is inconsistent!
+            {{ 'Password is inconsistent!' | translate }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -101,24 +101,24 @@
     <!-- Real Name -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan" nzRequired>
-        Real Name
+        {{ 'Real Name' | translate }}
       </nz-form-label>
-      <nz-form-control [nzSpan]="controlSpan" nzErrorTip="Please input account's real name">
-        <input type="text" nz-input formControlName="realName" placeholder="User's real name" [readOnly]="readonly" />
+      <nz-form-control [nzSpan]="controlSpan" nzErrorTip="{{ 'Please input account\'s real name' | translate }}">
+        <input type="text" nz-input formControlName="realName" placeholder="{{ 'User\'s real name' | translate }}" [readOnly]="readonly" />
       </nz-form-control>
     </nz-form-item>
 
     <!-- Department -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        Department
+        {{ 'Department' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan">
         <nz-tree-select
           nzAllowClear
           nzDefaultExpandAll
           nzShowSearch
-          nzPlaceHolder="Please select"
+          nzPlaceHolder="{{ 'Please select' | translate }}"
           formControlName="deptCode"
           [nzNodes]="sysDeptTreeList"
         ></nz-tree-select>
@@ -128,7 +128,7 @@
     <!-- Birthday -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        Birthday
+        {{ 'Birthday' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan">
         <nz-date-picker formControlName="birthday"></nz-date-picker>
@@ -138,10 +138,10 @@
     <!-- Sex -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        Sex
+        {{ 'Sex' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan">
-        <nz-select formControlName="sex" nzPlaceHolder="Please Select">
+        <nz-select formControlName="sex" nzPlaceHolder="{{ 'Please select' | translate }}">
           <nz-option [nzValue]="item.itemCode" [nzLabel]="item.itemName" *ngFor="let item of sexDictSelect"></nz-option>
         </nz-select>
       </nz-form-control>
@@ -150,17 +150,17 @@
     <!-- email -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        email
+        {{ 'Email' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="emailErrorTip">
         <input type="email" nz-input formControlName="email" [readOnly]="readonly" />
 
         <ng-template #emailErrorTip let-control>
           <ng-container *ngIf="control.hasError('email')">
-            Email is incorrect!
+            {{ 'Email is incorrect!' | translate }}
           </ng-container>
           <ng-container *ngIf="control.hasError('duplicated')">
-            Email name already exist!
+            {{ 'Email name already exist!' | translate }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -169,14 +169,14 @@
     <!-- Phone -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        Phone
+        {{ 'Phone' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="phoneErrorTip">
         <input type="text" nz-input formControlName="phone" [readOnly]="readonly" />
 
         <ng-template #phoneErrorTip let-control>
           <ng-container *ngIf="control.hasError('duplicated')">
-            Phone already exist!
+            {{ 'Phone already exist!' | translate }}
           </ng-container>
         </ng-template>
       </nz-form-control>
@@ -185,10 +185,10 @@
     <!-- Status -->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan">
-        Status
+        {{ 'Status' | translate }}
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan">
-        <nz-select formControlName="status" nzPlaceHolder="Please Select">
+        <nz-select formControlName="status" nzPlaceHolder="{{ 'Please select' | translate }}">
           <nz-option
             [nzValue]="item.itemCode"
             [nzLabel]="item.itemName"
@@ -200,7 +200,7 @@
   </form>
 
   <div class="footer" *ngIf="!readonly">
-    <button type="button" (click)="onClose()" class="ant-btn" style="margin-right: 8px;"><span>Cancel</span></button>
-    <button type="button" (click)="onSubmit()" class="ant-btn ant-btn-primary"><span>Submit</span></button>
+    <button type="button" (click)="onClose()" class="ant-btn" style="margin-right: 8px;"><span>{{ 'Cancel' | translate }}</span></button>
+    <button type="button" (click)="onSubmit()" class="ant-btn ant-btn-primary"><span>{{ 'Submit' | translate }}</span></button>
   </div>
 </nz-drawer>

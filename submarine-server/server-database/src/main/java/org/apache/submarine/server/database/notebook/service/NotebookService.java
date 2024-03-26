@@ -22,6 +22,8 @@ package org.apache.submarine.server.database.notebook.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -31,6 +33,7 @@ import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.notebook.entity.NotebookEntity;
 import org.apache.submarine.server.database.notebook.mappers.NotebookMapper;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,13 +164,17 @@ public class NotebookService {
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
       notebook.setStatus(entity.getNotebookStatus());
-      notebook.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
+      notebook.setCreatedTime(K8sUtils.castOffsetDatetimeToString(
+          OffsetDateTime.ofInstant(entity.getCreateTime().toInstant(), ZoneId.systemDefault()))
+      );
       notebook.setUrl(entity.getNotebookUrl());
       notebook.setReason(entity.getReason());
       if (entity.getDeletedTime() != null) {
-        notebook.setDeletedTime(new DateTime(entity.getDeletedTime()).toString());
+        notebook.setDeletedTime(K8sUtils.castOffsetDatetimeToString(
+            OffsetDateTime.ofInstant(entity.getDeletedTime().toInstant(), ZoneId.systemDefault()))
+        );
       }
-      
+
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException("Unable to build notebook from entity");

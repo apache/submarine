@@ -21,7 +21,7 @@
     <submarine-model-tag *ngFor="let tag of tags" [tag]="tag" [type]="'editable'" [deleteTag]="deleteTag"></submarine-model-tag>
     <span class="addTag" *ngIf="!inputVisible" (click)="showInput()">
       <i nz-icon nzType="plus"></i>
-      add tag
+      {{ 'add tag' | translate }}
     </span>
     <span class="addTagInput">
     <input

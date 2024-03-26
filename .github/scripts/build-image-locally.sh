@@ -16,15 +16,14 @@
 # limitations under the License.
 #
 
-SUBMARINE_VERSION="0.8.0-SNAPSHOT"
-FOLDER_LIST=("database" "mlflow" "submarine" "operator" "agent" "experiment-prehandler")
+SUBMARINE_VERSION="0.9.0-SNAPSHOT"
+FOLDER_LIST=("database" "mlflow" "submarine" "operator" "agent")
 IMAGE_LIST=(
   "apache/submarine:database-${SUBMARINE_VERSION}"
   "apache/submarine:mlflow-${SUBMARINE_VERSION}"
   "apache/submarine:server-${SUBMARINE_VERSION}"
   "apache/submarine:operator-${SUBMARINE_VERSION}"
   "apache/submarine:agent-${SUBMARINE_VERSION}"
-  "apache/submarine:experiment-prehandler-${SUBMARINE_VERSION}"
 )
 
 for i in "${!IMAGE_LIST[@]}"

@@ -129,7 +129,7 @@ export class ExperimentHomeComponent implements OnInit {
         }
         // Delete redundant rows
         if (currentListSize > newListSize) {
-          this.experimentList = this.experimentList.splice(0, newListSize - currentListSize);
+          this.experimentList = this.experimentList.slice(0, newListSize);
         }
 
         if (!isAutoReload) {

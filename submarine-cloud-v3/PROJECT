@@ -30,6 +30,6 @@ resources:
   controller: true
   domain: submarine.apache.org
   kind: Submarine
-  path: github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1
-  version: v1alpha1
+  path: github.com/apache/submarine/submarine-cloud-v3/api/v1
+  version: v1
 version: "3"

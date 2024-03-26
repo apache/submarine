@@ -1,27 +1,48 @@
-export function humanizeTime(time: string){
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import {TranslateService} from "@ngx-translate/core";
+
+export function humanizeTime(time: string, translate: TranslateService) {
     let time_ = time.split(/[\s-:]+/).map(Number);
-    let date = new Date(time_[0], time_[1]-1, time_[2], time_[3], time_[4], time_[5]);
+    let date = new Date(time_[0], time_[1] - 1, time_[2], time_[3], time_[4], time_[5]);
     let now = new Date;
     let seconds = (now.getTime() - date.getTime()) / 1000;
     if (seconds <= 0) {
-        return 0 + "second ago"
+      return 0 + translate.instant("second ago")
     }
-    var numyears = Math.floor(seconds / 31536000);
+    const numyears = Math.floor(seconds / 31536000);
     if (numyears !== 0) {
-        return numyears===1 ? numyears + "year ago" : numyears + "years ago";
+      return numyears + translate.instant(numyears === 1 ? "year ago" : "years ago");
     }
-    var numdays = Math.floor((seconds % 31536000) / 86400);
+    const numdays = Math.floor((seconds % 31536000) / 86400);
     if (numdays !== 0) {
-        return numdays===1 ? numdays + "day ago" : numdays + "days ago";
+      return numdays + translate.instant(numdays === 1 ? "day ago" : "days ago");
     }
-    var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+    const numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
     if (numhours !== 0) {
-        return numhours===1 ? numhours + "hour ago" : numhours + "hours ago";
+      return numhours + translate.instant(numhours === 1 ? "hour ago" : "hours ago");
     }
-    var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+    const numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
     if (numminutes !== 0) {
-        return numminutes===1 ? numminutes + "minute ago" : numminutes + "minutes ago";
+      return numminutes + translate.instant(numminutes === 1 ? "minute ago" : "minutes ago");
     }
-    var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
-    return numseconds===1 ? numseconds + "second ago" : numseconds + "seconds ago";
+    const numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
+    return numseconds + translate.instant(numseconds === 1 ? "second ago" : "seconds ago");
 }

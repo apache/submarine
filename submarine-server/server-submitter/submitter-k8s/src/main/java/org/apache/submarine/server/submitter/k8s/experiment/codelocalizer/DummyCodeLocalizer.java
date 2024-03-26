@@ -23,8 +23,7 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 
 public class DummyCodeLocalizer extends AbstractCodeLocalizer {
 
-  public DummyCodeLocalizer(String url) {
-    super(url);
+  public DummyCodeLocalizer() {
   }
 
   @Override

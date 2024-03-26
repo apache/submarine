@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM nvidia/cuda:10.2-base-ubuntu18.04
+FROM nvidia/cuda:11.0.3-base-ubuntu20.04
 
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
@@ -75,16 +75,17 @@ RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 # Install conda
 USER $NB_UID
 ARG PYTHON_VERSION=default
-# update conda version to 4.11.0
-ENV MINICONDA_VERSION=4.11.0 \
-    MINICONDA_MD5=7675bd23411179956bcc4692f16ef27d \
-    CONDA_VERSION=4.11.0
+# update conda version to 23.10.0-1
+ENV MINICONDA_VERSION=23.10.0-1 \
+    MINICONDA_SHA256=d0643508fa49105552c94a523529f4474f91730d3e0d1f168f1700c43ae67595 \
+    CONDA_VERSION=23.10.0
 
 WORKDIR /tmp
-RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "${MINICONDA_MD5} *Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
-    /bin/bash Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+# repo in https://repo.anaconda.com/miniconda/
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "${MINICONDA_SHA256} *Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh" | sha256sum -c - && \
+    /bin/bash Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-py311_${MINICONDA_VERSION}-Linux-x86_64.sh && \
     echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
@@ -92,9 +93,11 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda config --system --set channel_priority flexible && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --freeze-installed --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    # nodejs is used for jupyter lab build
-    conda install --freeze-installed -c conda-forge nodejs==14.20.1 jupyterlab==3.5.2 jupyterlab-git==0.41.0 && \
-    pip install cvxpy==1.2.2 && \
+    conda init bash && \
+    source ~/.bashrc && conda activate && \
+    # it is used for jupyter lab build
+    conda install --freeze-installed -c conda-forge nodejs jupyterlab==4.0.8 jupyterlab-git && \
+    conda install --freeze-installed -c conda-forge cvxpy && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
@@ -104,26 +107,25 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
     conda clean -a -y
 
-# Install latest stable qlib
-RUN pip --no-cache-dir install pyqlib==0.8.6
+### We removed the qlib dependency because the project currently does not have good support for python 3.9 and above. 
+### If you need this project, you can choose the py38 or py39 miniconda and rebuild the secondary image
+# RUN pip --no-cache-dir install pyqlib==0.9.3
+# RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.9.3/examples/workflow_by_code.ipynb -P $HOME
 
-# Install latest sumbarine python sdk and notebook
-RUN git clone --depth=1 https://github.com/apache/submarine && \
-    # replace numpy==1.19.2 to numpy>=1.20.0
-    sed -i "s/numpy==1.19.2/numpy>=1.20.0/" submarine/submarine-sdk/pysubmarine/setup.py && \
-    pip --no-cache-dir install setuptools==65.7.0 && \
-    pip --no-cache-dir install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
+# Install sumbarine python sdk and notebook
+RUN mkdir -p submarine/submarine-sdk/pysubmarine
+COPY submarine-sdk/pysubmarine/ submarine/submarine-sdk/pysubmarine
+RUN pip --no-cache-dir install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     # Add DeepFM example into notebook
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
-    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
-    rm submarine -rf
+    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME
 
-# Add qlib example in notebook
-RUN wget https://raw.githubusercontent.com/microsoft/qlib/v0.8.6/examples/workflow_by_code.ipynb -P $HOME
+ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
+ENV AWS_ACCESS_KEY_ID submarine_minio
+ENV AWS_SECRET_ACCESS_KEY submarine_minio
 
-
+COPY --chown=${NB_USER}:users dev-support/docker-images/jupyter/start-notebook.sh /usr/local/bin
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
-COPY --chown=${NB_USER}:users start-notebook.sh /usr/local/bin
 WORKDIR ${HOME}

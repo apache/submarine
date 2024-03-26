@@ -36,7 +36,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 )
 
 // Defines resource names and path to artifact yaml files
@@ -161,7 +161,7 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	r.Log.Info("Enter Reconcile", "req", req)
 
 	// Get the Submarine resource with the requested name/namespace
-	submarine := &submarineapacheorgv1alpha1.Submarine{}
+	submarine := &submarineapacheorgv1.Submarine{}
 	err := r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, submarine)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -197,37 +197,37 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	//|                                                +----------+     |
 	//+-----------------------------------------------------------------+
 	switch submarineCopy.Status.State {
-	case submarineapacheorgv1alpha1.NewState:
+	case submarineapacheorgv1.NewState:
 		r.recordSubmarineEvent(submarineCopy)
 		if err := r.validateSubmarine(submarineCopy); err != nil {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+			submarineCopy.Status.State = submarineapacheorgv1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
 			r.recordSubmarineEvent(submarineCopy)
 		} else {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.CreatingState
+			submarineCopy.Status.State = submarineapacheorgv1.CreatingState
 			r.recordSubmarineEvent(submarineCopy)
 		}
 	// If an event is performed in a failed state, we also need to process it
-	case submarineapacheorgv1alpha1.CreatingState, submarineapacheorgv1alpha1.FailedState:
+	case submarineapacheorgv1.CreatingState, submarineapacheorgv1.FailedState:
 		if err := r.createSubmarine(ctx, submarineCopy); err != nil {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+			submarineCopy.Status.State = submarineapacheorgv1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
 			r.recordSubmarineEvent(submarineCopy)
 		}
 		ok, err := r.checkSubmarineDependentsReady(ctx, submarineCopy)
 		if err != nil {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+			submarineCopy.Status.State = submarineapacheorgv1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
 			r.recordSubmarineEvent(submarineCopy)
 		}
 		if ok {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.RunningState
+			submarineCopy.Status.State = submarineapacheorgv1.RunningState
 			submarineCopy.Status.ErrorMessage = ""
 			r.recordSubmarineEvent(submarineCopy)
 		}
-	case submarineapacheorgv1alpha1.RunningState:
+	case submarineapacheorgv1.RunningState:
 		if err := r.createSubmarine(ctx, submarineCopy); err != nil {
-			submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+			submarineCopy.Status.State = submarineapacheorgv1.FailedState
 			submarineCopy.Status.ErrorMessage = err.Error()
 			r.recordSubmarineEvent(submarineCopy)
 		}
@@ -236,7 +236,7 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Update STATUS of Submarine
 	err = r.updateSubmarineStatus(ctx, submarine, submarineCopy)
 	if err != nil {
-		submarineCopy.Status.State = submarineapacheorgv1alpha1.FailedState
+		submarineCopy.Status.State = submarineapacheorgv1.FailedState
 		submarineCopy.Status.ErrorMessage = err.Error()
 		r.recordSubmarineEvent(submarineCopy)
 	}
@@ -247,7 +247,7 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return result, nil
 }
 
-func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submarine, submarineCopy *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submarine, submarineCopy *submarineapacheorgv1.Submarine) error {
 	// Update server replicas
 	serverDeployment := &appsv1.Deployment{}
 	err := r.Get(ctx, types.NamespacedName{Name: serverName, Namespace: submarine.Namespace}, serverDeployment)
@@ -287,7 +287,7 @@ func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submari
 	return nil
 }
 
-func (r *SubmarineReconciler) validateSubmarine(submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) validateSubmarine(submarine *submarineapacheorgv1.Submarine) error {
 	// Print out the spec of the Submarine resource
 	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 	fmt.Println(string(b))
@@ -301,7 +301,7 @@ func (r *SubmarineReconciler) validateSubmarine(submarine *submarineapacheorgv1a
 
 // Creates resources according to artifact yaml files
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/
-func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) error {
+func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *submarineapacheorgv1.Submarine) error {
 	var err error
 	// We create rbac first, this ensures that any dependency based on it will not go wrong
 	err = r.createSubmarineServerRBAC(ctx, submarine)
@@ -363,7 +363,7 @@ func (r *SubmarineReconciler) createSubmarine(ctx context.Context, submarine *su
 }
 
 // Checks the number of deployment and database replicas and if they are ready
-func (r *SubmarineReconciler) checkSubmarineDependentsReady(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) (bool, error) {
+func (r *SubmarineReconciler) checkSubmarineDependentsReady(ctx context.Context, submarine *submarineapacheorgv1.Submarine) (bool, error) {
 	// deployment dependents check
 	for _, name := range dependents {
 		// 1. Check if deployment exists
@@ -412,16 +412,16 @@ func (r *SubmarineReconciler) checkSubmarineDependentsReady(ctx context.Context,
 
 // Wraps r.Recorder.Eventf
 // Fill reason, message fields of Event according to state of Submarine
-func (r *SubmarineReconciler) recordSubmarineEvent(submarine *submarineapacheorgv1alpha1.Submarine) {
+func (r *SubmarineReconciler) recordSubmarineEvent(submarine *submarineapacheorgv1.Submarine) {
 	switch submarine.Status.State {
-	case submarineapacheorgv1alpha1.NewState:
+	case submarineapacheorgv1.NewState:
 		r.Recorder.Eventf(
 			submarine,
 			corev1.EventTypeNormal,
 			"SubmarineAdded",
 			"Submarine %s was added",
 			submarine.Name)
-	case submarineapacheorgv1alpha1.CreatingState:
+	case submarineapacheorgv1.CreatingState:
 		r.Recorder.Eventf(
 			submarine,
 			corev1.EventTypeNormal,
@@ -429,7 +429,7 @@ func (r *SubmarineReconciler) recordSubmarineEvent(submarine *submarineapacheorg
 			"Submarine %s was creating",
 			submarine.Name,
 		)
-	case submarineapacheorgv1alpha1.RunningState:
+	case submarineapacheorgv1.RunningState:
 		r.Recorder.Eventf(
 			submarine,
 			corev1.EventTypeNormal,
@@ -437,7 +437,7 @@ func (r *SubmarineReconciler) recordSubmarineEvent(submarine *submarineapacheorg
 			"Submarine %s was running",
 			submarine.Name,
 		)
-	case submarineapacheorgv1alpha1.FailedState:
+	case submarineapacheorgv1.FailedState:
 		r.Recorder.Eventf(
 			submarine,
 			corev1.EventTypeWarning,
@@ -452,7 +452,7 @@ func (r *SubmarineReconciler) recordSubmarineEvent(submarine *submarineapacheorg
 // SetupWithManager sets up the controller with the Manager.
 func (r *SubmarineReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&submarineapacheorgv1alpha1.Submarine{}).
+		For(&submarineapacheorgv1.Submarine{}).
 		Complete(r)
 }
 

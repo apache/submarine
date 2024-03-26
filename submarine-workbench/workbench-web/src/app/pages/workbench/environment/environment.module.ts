@@ -29,9 +29,20 @@ import { EnvironmentComponent } from './environment.component';
 import { EnvironmentListComponent } from './environment-home/environment-list/environment-list.component';
 import { EnvironmentFormComponent } from './environment-home/environment-form/environment-form.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   declarations: [EnvironmentComponent, EnvironmentHomeComponent, EnvironmentListComponent, EnvironmentFormComponent],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, NgZorroAntdModule, EnvironmentRoutingModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    NgZorroAntdModule,
+    EnvironmentRoutingModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
+  ],
   providers: [EnvironmentService],
   exports: [EnvironmentComponent],
 })

@@ -69,10 +69,14 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
                                                    Context<NotebookResource> context) {
     LOGGER.debug("Reconciling Notebook: {}", notebook);
     if (!notebook.hasOwnerReferenceFor(OwnerReferenceConfig.getSubmarineUid())) {
-      LOGGER.trace("OwnerReference is {}, Skip the processing of this notebook",
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("OwnerReference is {}, Skip the processing of this notebook",
           notebook.getMetadata().getOwnerReferences() == null ? "" :
-              notebook.getMetadata().getOwnerReferences().stream()
-                  .map(OwnerReference::getUid).findFirst().orElse(null));
+            notebook.getMetadata().getOwnerReferences().stream()
+              .map(OwnerReference::getUid)
+              .filter(Objects::nonNull)
+              .findFirst().orElse("''"));
+      }
     } else {
       triggerStatus(notebook);
     }
@@ -92,6 +96,7 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
     } else {
       /*
        * get conditions and update notebook, Here is an example yaml of a state
+       * in submarine 0.7.0 (notebook-controller 1.4.0)
        * status:
        *   conditions:
        *   - lastProbeTime: "2022-11-24T01:07:12Z"
@@ -109,11 +114,30 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
        *     running:
        *       startedAt: "2022-11-24T01:07:00Z"
        *   readyReplicas: 1
+       *
+       * Here is an example conditions in submarine 0.8.0 (notebook-controller 1.7.0)
+       *     - lastProbeTime: '2023-04-04T12:52:26Z'
+       *       lastTransitionTime: '2023-04-04T12:52:25Z'
+       *       status: 'True'
+       *       type: Initialized
+       *     - lastProbeTime: '2023-04-04T12:52:26Z'
+       *       lastTransitionTime: '2023-04-04T12:52:26Z'
+       *       status: 'True'
+       *       type: Ready
+       *     - lastProbeTime: '2023-04-04T12:52:26Z'
+       *       lastTransitionTime: '2023-04-04T12:52:26Z'
+       *       status: 'True'
+       *       type: ContainersReady
+       *     - lastProbeTime: '2023-04-04T12:52:26Z'
+       *       lastTransitionTime: '2023-04-04T12:52:23Z'
+       *       status: 'True'
+       *       type: PodScheduled
+       *
        */
       // get sorted latest status
       // Sometimes the status will be out of order after the notebook-controller restarts
       NotebookCondition lastCondition = conditions.stream()
-          .max((c1, c2) -> getLastProbeTime(c1).compareTo(getLastProbeTime(c2))).get();
+          .max((c1, c2) -> getLastTime(c1).compareTo(getLastTime(c2))).get();
       // The type value can refer to
       // https://github.com/kubeflow/kubeflow/blob/master/components/notebook-controller/api/v1/notebook_types.go#L48
       // Possible values are Running|Waiting|Terminated
@@ -123,7 +147,7 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
       // it may be optional
       String reason = getReason(lastCondition);
       // time
-      Date date = getLastProbeTime(lastCondition);
+      Date date = Date.from(getLastTime(lastCondition).toInstant());
       LOGGER.info("current type/status/reason of {} is {} / {} / {}",
           name, type, lastCondition.getStatus(), reason);
       String id = notebook.getMetadata().getLabels().get("notebook-id");
@@ -161,6 +185,9 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
     if (reason == null || reason.isEmpty()) {
       switch (condition.getType()) {
         case "Running":
+        // Added from notebook-controller 1.6.0
+        case "Ready":
+        case "ContainersReady":
           reason = "Started";
           break;
         case "Terminated":
@@ -175,11 +202,12 @@ public class NotebookReconciler implements Reconciler<NotebookResource> {
   }
 
   /**
-   * Get condition lastProbeTime with date type
+   * Get condition lastProbeTime/lastTransitionTime with date type
    */
-  private Date getLastProbeTime(NotebookCondition condition) {
-    ZonedDateTime zdt = ZonedDateTime.parse(condition.getLastProbeTime(), DTF);
-    return Date.from(zdt.toInstant());
+  private ZonedDateTime getLastTime(NotebookCondition condition) {
+    String lastTime = condition.getLastTransitionTime() != null ? condition.getLastTransitionTime()
+        : condition.getLastProbeTime();
+    return ZonedDateTime.parse(lastTime, DTF);
   }
 
   /**

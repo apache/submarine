@@ -36,7 +36,7 @@ import (
 
 	istioscheme "istio.io/client-go/pkg/clientset/versioned/scheme"
 
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -83,7 +83,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	err = istioscheme.AddToScheme(scheme)
 	Expect(err).NotTo(HaveOccurred())
-	err = submarineapacheorgv1alpha1.AddToScheme(scheme)
+	err = submarineapacheorgv1.AddToScheme(scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	//+kubebuilder:scaffold:scheme

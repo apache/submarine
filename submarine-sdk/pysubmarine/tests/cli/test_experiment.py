@@ -18,6 +18,7 @@ from click.testing import CliRunner
 
 import submarine
 from submarine.cli import main
+from submarine.client import GitCodeSpec
 from submarine.client.models.code_spec import CodeSpec
 from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.experiment_meta import ExperimentMeta
@@ -56,7 +57,7 @@ def test_all_experiment_e2e():
     worker_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
     ps_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
 
-    code_spec = CodeSpec(sync_mode="git", url="https://github.com/apache/submarine.git")
+    code_spec = CodeSpec(sync_mode="git", git=GitCodeSpec(url="https://github.com/apache/submarine.git"))
 
     experiment_spec = ExperimentSpec(
         meta=experiment_meta,

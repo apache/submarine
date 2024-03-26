@@ -83,8 +83,8 @@ public class SubmarineConfVars {
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
     SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
     SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", "submarine-server"),
-    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
-    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10"),
+    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "23.1.0"),
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "23.12.10"),
 
     /* cookie setting */
     SUBMARINE_COOKIE_HTTP_ONLY("submarine.cookie.http.only", false),
@@ -92,7 +92,7 @@ public class SubmarineConfVars {
     SUBMARINE_COOKIE_SAMESITE("submarine.cookie.samesite", ""),
 
     /* auth */
-    SUBMARINE_AUTH_TYPE("submarine.auth.type", "none"),
+    SUBMARINE_AUTH_TYPE("submarine.auth.type", "simple"),
     SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", "SUBMARINE_SECRET_12345678901234567890"),
     SUBMARINE_AUTH_MAX_AGE_ENV("submarine.auth.maxAge", 60 * 60 * 24);
 

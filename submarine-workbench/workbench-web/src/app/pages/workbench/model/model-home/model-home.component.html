@@ -21,14 +21,14 @@
   <div nz-row [nzGutter]="16">
     <div nz-col [nzSpan]="6">
       <nz-input-group style="width: 100%;" [nzPrefix]="preffixIcon">
-        <input type="text" nz-input placeholder="Search by model name..." (keyup)="searchModel($event)" />
+        <input type="text" nz-input placeholder="{{ 'Search by model name' | translate }}..." (keyup)="searchModel($event)" />
       </nz-input-group>
       <ng-template #preffixIcon>
         <i nz-icon nzType="search"></i>
       </ng-template>
     </div>
     <div nz-col [nzSpan]="6">
-      <nz-select nzMode="multiple" [nzCustomTemplate]="multipleTemplate" style="width: 100%;" nzPlaceHolder="Filter by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
+      <nz-select nzMode="multiple" [nzCustomTemplate]="multipleTemplate" style="width: 100%;" nzPlaceHolder="{{ 'Filter by tags' | translate }}" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
         <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
           <submarine-model-tag [tag]="option.label" [type]="'default'"></submarine-model-tag>
         </nz-option>
@@ -45,7 +45,7 @@
         (click)="form.initModal()"
       >
         <i nz-icon nzType="plus"></i>
-        Create model registry
+        {{ 'Create model registry' | translate }}
       </button>
     </div>
   </div>

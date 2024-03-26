@@ -30,6 +30,9 @@ import { TemplateComponent } from './template.component';
 import { TemplateInfoComponent } from './template-info/template-info.component';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 
+import { TranslateModule } from '@ngx-translate/core';
+import TRANSLATE_CONFIG from "@submarine/core/local-translate";
+
 @NgModule({
   declarations: [
     TemplateComponent,
@@ -46,6 +49,7 @@ import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
     RouterModule,
     TemplateRoutingModule,
     PipeSharedModule,
+    TranslateModule.forChild(TRANSLATE_CONFIG)
   ],
   providers: [],
   exports: [TemplateComponent],

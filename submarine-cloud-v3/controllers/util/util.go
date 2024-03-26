@@ -18,26 +18,26 @@
 package util
 
 import (
-	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
+	submarineapacheorgv1 "github.com/apache/submarine/submarine-cloud-v3/api/v1"
 	corev1 "k8s.io/api/core/v1"
 	"reflect"
 )
 
 // GetSubmarineCommon will get `spec.common` and initialize it if it is nil to prevent NPE
-func GetSubmarineCommon(submarine *submarineapacheorgv1alpha1.Submarine) *submarineapacheorgv1alpha1.SubmarineCommon {
+func GetSubmarineCommon(submarine *submarineapacheorgv1.Submarine) *submarineapacheorgv1.SubmarineCommon {
 	common := submarine.Spec.Common
 	if common == nil {
-		common = &submarineapacheorgv1alpha1.SubmarineCommon{}
+		common = &submarineapacheorgv1.SubmarineCommon{}
 	}
 	return common
 }
 
 // GetSubmarineCommonImage will get `spec.common.image` and initialize it if it is nil to prevent NPE
-func GetSubmarineCommonImage(submarine *submarineapacheorgv1alpha1.Submarine) *submarineapacheorgv1alpha1.CommonImage {
+func GetSubmarineCommonImage(submarine *submarineapacheorgv1.Submarine) *submarineapacheorgv1.CommonImage {
 	common := GetSubmarineCommon(submarine)
 	image := &common.Image
 	if image == nil {
-		image = &submarineapacheorgv1alpha1.CommonImage{}
+		image = &submarineapacheorgv1.CommonImage{}
 	}
 	return image
 }

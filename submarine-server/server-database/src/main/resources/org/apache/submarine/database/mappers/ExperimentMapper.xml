@@ -61,7 +61,7 @@
   <insert id="insert" parameterType="org.apache.submarine.server.database.experiment.entity.ExperimentEntity">
     insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time, uid)
     values (#{id,jdbcType=VARCHAR}, #{experimentSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{experimentStatus,jdbcType=VARCHAR},
+            #{createBy,jdbcType=VARCHAR}, #{acceptedTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, now(), #{experimentStatus,jdbcType=VARCHAR},
             #{acceptedTime,jdbcType=TIMESTAMP}, #{runningTime,jdbcType=TIMESTAMP}, #{finishedTime,jdbcType=TIMESTAMP}, #{uid,jdbcType=VARCHAR})
   </insert>
 
@@ -84,7 +84,7 @@
 
   <update id="create" >
     update experiment
-    set experiment_status='Created', accepted_time=#{acceptedTime,jdbcType=TIMESTAMP}, update_time=now()
+    set experiment_status='Created', update_time=now()
     where id = #{id,jdbcType=VARCHAR}
   </update>
 

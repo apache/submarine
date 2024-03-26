@@ -18,7 +18,7 @@
 # Developer Guide
 
 Golang version: `1.17`
-Kubernetes version: `1.21.0`
+Kubernetes version: `1.22` - `1.24`
 
 ## Prerequisites
 
@@ -60,7 +60,7 @@ make install
 make run
 
 # Step3: Deploy a submarine.
-kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
+kubectl apply -n submarine-user-test -f config/samples/_v1_submarine.yaml
 ```
 
 Ensure that submarine is ready.
@@ -153,7 +153,7 @@ make deploy
 kubectl get deployment -n submarine-cloud-v3-system
 
 # Step5: Deploy a submarine.
-kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
+kubectl apply -n submarine-user-test -f config/samples/_v1_submarine.yaml
 
 # We can now expose the service like before and connect to the submarine workbench
 
@@ -199,10 +199,10 @@ For `yaml` files, please use [prettier](https://prettier.io/) to format the code
 ## Generate API
 
 Steps to modify custom resource definition (CRD):
-1. Modify the Submarine type in `api/v1alpha1/submarine_types.go`.
-2. Run `make generate` to update `api/v1alpha1/zz_generated.deepcopy.go`.
+1. Modify the Submarine type in `api/v1/submarine_types.go`.
+2. Run `make generate` to update `api/v1/zz_generated.deepcopy.go`.
 3. Run `make manifests` to update crd file `config/crd/bases/submarine.apache.org_submarines.yaml`.
-4. Modify the sample submarine `config/samples/_v1alpha1_submarine`.
+4. Modify the sample submarine `config/samples/_v1_submarine`.
 
 One can add [marker comments](https://book.kubebuilder.io/reference/markers.html) in Go code to control the manifests generation.
 

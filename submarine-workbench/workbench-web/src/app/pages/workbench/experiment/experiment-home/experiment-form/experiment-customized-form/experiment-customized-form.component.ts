@@ -74,7 +74,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   framework = 'Tensorflow';
   currentSpecPage = 1;
 
-
   // About update
   @Input() targetId: string = null;
   @Input() targetSpec: ExperimentSpec = null;
@@ -95,13 +94,20 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')]),
-      gitRepo: new FormControl(null, [])
+      gitRepo: new FormControl(null, []),
+      gitBranch: new FormControl(null, []),
+      gitUsername: new FormControl(null, []),
+      gitPassword: new FormControl(null, [])
     });
 
+    // Initialise the list of image, the default values of image are from the current experiment list images
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
         list.forEach((item) => {
-          this.imageList.push(item.spec.environment.image);
+          const envImage = item.spec.environment.image;
+          if (this.imageList.indexOf(envImage) === -1) {
+            this.imageList.push(envImage)
+          }
         });
       },
       (error) => {
@@ -158,9 +164,14 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   }
 
   addItem(input: HTMLInputElement): void {
-    const value = input.value;
-    if (this.imageList.indexOf(value) === -1) {
-      this.imageList = [...this.imageList, input.value || `New item ${this.imageIndex++}`];
+    let value = input.value;
+    if (value === null || typeof value === "undefined") {
+      return;
+    } else {
+      value = value.replace(/\s+/g, "");
+      if (value !== "" && this.imageList.indexOf(value) === -1) {
+        this.imageList = [...this.imageList, value];
+      }
     }
   }
 
@@ -188,6 +199,15 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   }
   get gitRepo() {
     return this.experiment.get('gitRepo');
+  }
+  get gitBranch() {
+    return this.experiment.get('gitBranch');
+  }
+  get gitGitUsername() {
+    return this.experiment.get('gitUsername');
+  }
+  get gitGitPassword() {
+    return this.experiment.get('gitPassword');
   }
 
   /**
@@ -367,7 +387,12 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
     const code: CodeSpec = {
       syncMode: 'git',
-      url: this.gitRepo.value
+      git: {
+        url: this.gitRepo.value,
+        branch: this.gitBranch.value,
+        username: this.gitGitUsername.value,
+        password: this.gitGitPassword.value
+      }
     };
 
     const newExperimentSpec: ExperimentSpec = {
@@ -376,7 +401,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       spec: specs
     };
 
-    if (code.url !== null) {
+    if (code.git.url !== null) {
       newExperimentSpec.code = code;
     }
     return newExperimentSpec;

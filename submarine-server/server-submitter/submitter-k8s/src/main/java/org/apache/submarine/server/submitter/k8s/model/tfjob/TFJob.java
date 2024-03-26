@@ -40,7 +40,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.JsonUtils;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class TFJob extends MLJob {
     setGroup(CRD_TF_GROUP_V1);
     // set spec
     setSpec(parseTFJobSpec(experimentSpec));
-    
+
     V1Container initContainer = this.getExperimentHandlerContainer(experimentSpec);
     if (initContainer != null) {
       Map<TFJobReplicaType, MLJobReplicaSpec> replicaSet = this.getSpec().getReplicaSpecs();
@@ -183,7 +183,7 @@ public class TFJob extends MLJob {
               new V1Patch(JsonUtils.toJson(this)), patchOptions)
           .throwsApiException().getObject();
       return parseExperimentResponseObject(tfJob, TFJob.class);
-    }  catch (ApiException e) {
+    } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
@@ -198,10 +198,10 @@ public class TFJob extends MLJob {
       V1Status status = api.getTfJobClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(this))
-          .throwsApiException().getStatus();
+          .getStatus();
       return parseExperimentResponseStatus(status);
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 

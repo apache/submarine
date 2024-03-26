@@ -39,7 +39,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.JsonUtils;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.apache.submarine.server.utils.YamlUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,11 +81,11 @@ public class XGBoostJob extends MLJob {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = ExperimentSpecParser.parseTemplateSpec(taskSpec, experimentSpec);
-        
+
         if (initContainer != null && replicaType.equals("Master")) {
-          podTemplateSpec.getSpec().addInitContainersItem(initContainer);  
+          podTemplateSpec.getSpec().addInitContainersItem(initContainer);
         }
-        
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -186,10 +186,10 @@ public class XGBoostJob extends MLJob {
       V1Status status = api.getXGBoostJobClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(this))
-          .throwsApiException().getStatus();
+          .getStatus();
       return parseExperimentResponseStatus(status);
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
   }
 }

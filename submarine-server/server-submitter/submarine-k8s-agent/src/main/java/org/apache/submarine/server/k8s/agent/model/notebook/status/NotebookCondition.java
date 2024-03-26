@@ -32,11 +32,17 @@ import java.util.Objects;
         using = JsonDeserializer.None.class
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"lastProbeTime", "message", "reason", "status", "type"})
+@JsonPropertyOrder({"lastProbeTime", "lastTransitionTime", "message", "reason", "status", "type"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NotebookCondition implements KubernetesResource {
 
   private String lastProbeTime;
+
+  // Add from submarine 0.8.0
+  // From Notebook Controller 1.6.0, `NotebookCondition` add a new time variable `lastTransitionTime`
+  // https://github.com/kubeflow/kubeflow/blob/v1.6.0/components/notebook-controller/api/v1/notebook_types.go#L53
+  // When the lastProbeTime times are the same, we will follow this variable again for comparison.
+  private String lastTransitionTime;
 
   private String message;
 
@@ -52,6 +58,14 @@ public class NotebookCondition implements KubernetesResource {
 
   public void setLastProbeTime(String lastProbeTime) {
     this.lastProbeTime = lastProbeTime;
+  }
+
+  public String getLastTransitionTime() {
+    return lastTransitionTime;
+  }
+
+  public void setLastTransitionTime(String lastTransitionTime) {
+    this.lastTransitionTime = lastTransitionTime;
   }
 
   public String getMessage() {
@@ -90,6 +104,7 @@ public class NotebookCondition implements KubernetesResource {
   public String toString() {
     return "NotebookCondition{" +
             "lastProbeTime='" + lastProbeTime + '\'' +
+            ", lastTransitionTime='" + lastTransitionTime + '\'' +
             ", message='" + message + '\'' +
             ", reason='" + reason + '\'' +
             ", status='" + status + '\'' +
@@ -101,16 +116,17 @@ public class NotebookCondition implements KubernetesResource {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    NotebookCondition that = (NotebookCondition) o;
-    return Objects.equals(lastProbeTime, that.lastProbeTime)
-            && Objects.equals(message, that.message)
-            && Objects.equals(reason, that.reason)
-            && Objects.equals(status, that.status)
-            && Objects.equals(type, that.type);
+    NotebookCondition condition = (NotebookCondition) o;
+    return Objects.equals(lastProbeTime, condition.lastProbeTime)
+            && Objects.equals(lastTransitionTime, condition.lastTransitionTime)
+            && Objects.equals(message, condition.message)
+            && Objects.equals(reason, condition.reason)
+            && Objects.equals(status, condition.status)
+            && Objects.equals(type, condition.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(lastProbeTime, message, reason, status, type);
+    return Objects.hash(lastProbeTime, lastTransitionTime, message, reason, status, type);
   }
 }
