@@ -144,7 +144,7 @@
         },
         {
           "name": "function_cyclomatic_complexity_warning",
-          "value": 10
+          "value": 5
         },
         {
           "name": "function_embedded_content_lines_of_code_alert",
