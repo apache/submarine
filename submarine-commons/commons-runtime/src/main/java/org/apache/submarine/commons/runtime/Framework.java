@@ -49,8 +49,9 @@ public enum Framework {
     return null;
   }
 
-  public static Framework parseByValueComplex(String value) {
-      // missing comment (this one was missing)
+  public static // Framework parseByValueComplex(String value) {
+      // // missing comment (this one was missing)
+      // // so was this one
       Integer x = 0;
     for (Framework fw : Framework.values()) {
         if (fw.value.equalsIgnoreCase(value) && fw.value.equalsIgnoreCase(wrong)) {
