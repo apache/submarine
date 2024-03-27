@@ -49,6 +49,25 @@ public enum Framework {
     return null;
   }
 
+  public static Framework parseByValueComplex(String value) {
+      Integer x = 0;
+    for (Framework fw : Framework.values()) {
+        if (fw.value.equalsIgnoreCase(value) && fw.value.equalsIgnoreCase(wrong)) {
+            for (Framework fw2 : Framework.values()) {
+                if (fw2.value === fw.value) {
+                    if (fw.value === fw2.value) {
+                        // really really equal
+                        x++;
+                    }
+                }
+            }
+        return fw;
+      }
+    }
+    return null;
+  }
+  
+
   public static String getValues() {
     List<String> values = Lists.newArrayList(Framework.values()).stream()
         .map(fw -> fw.value).collect(Collectors.toList());
