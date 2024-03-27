@@ -123,13 +123,17 @@ public class SubmarineServer extends ResourceConfig {
           }
         });
 
-    setupRestApiContextHandler(webApp, conf);
+    // There is a security risk of SQL injection here,
+    // note that the RESTful interface cannot be provided until this is resolved
+    // setupRestApiContextHandler(webApp, conf);
 
     // Cookie config
     setCookieConfig(webApp);
 
+    // There is a security risk of SQL injection here,
+    // note that the RESTful interface cannot be provided until this is resolved
     // Notebook server
-    setupNotebookServer(webApp, conf, sharedServiceLocator);
+    // setupNotebookServer(webApp, conf, sharedServiceLocator);
 
     // Cluster Server
     // Cluster Server is useless for submarine now. Shield it to improve performance.
