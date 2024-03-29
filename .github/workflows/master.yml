@@ -22,6 +22,7 @@ env:
   VERSION: "0.9.0-SNAPSHOT"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
+  SUBMARINE_AUTH_SECRET: "SUBMARINE_SECRET_12345678901234567890"
 jobs:
   generate-k8s-versions-array:
     runs-on: ubuntu-latest
