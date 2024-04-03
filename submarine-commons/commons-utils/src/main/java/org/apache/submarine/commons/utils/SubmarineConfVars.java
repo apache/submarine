@@ -23,6 +23,19 @@ import org.slf4j.LoggerFactory;
 
 public class SubmarineConfVars {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfVars.class);
+  /**
+  * Retrieves the secret from the environment variable "SUBMARINE_AUTH_DEFAULT_SECRET".
+  * Throws runtimeException if the environment variable is not set or empty.
+  *
+  * @return The secret as a String
+  */
+  private static String getSecretFromEnv() {
+    String secret = System.getenv("SUBMARINE_AUTH_SECRET");
+    if (secret == null || secret.isEmpty()) {
+      secret = "";
+    }
+    return secret;
+  }
   public enum ConfVars {
     SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
@@ -93,7 +106,7 @@ public class SubmarineConfVars {
 
     /* auth */
     SUBMARINE_AUTH_TYPE("submarine.auth.type", "simple"),
-    SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", "SUBMARINE_SECRET_12345678901234567890"),
+    SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", getSecretFromEnv()),
     SUBMARINE_AUTH_MAX_AGE_ENV("submarine.auth.maxAge", 60 * 60 * 24);
 
     private String varName;
