@@ -33,8 +33,10 @@ jobs:
     # We mainly support the last 3-4 releases of kubernetes
     steps:
       - id: set-matrix
+        # We used kind as the test k8s environment software support, 
+        # its k8s support version can be referred to: https://github.com/kubernetes-sigs/kind/releases
         run: |
-          echo "::set-output name=matrix::[\"v1.22.17\", \"v1.23.17\", \"v1.24.12\", \"v1.25.3\"]"
+          echo "::set-output name=matrix::[\"v1.24.15\", \"v1.25.11\", \"v1.26.6\", \"v1.27.3\"]"
   submarine-operator-verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -45,10 +47,10 @@ jobs:
         with:
           fetch-depth: 0
           path: ${{ env.working-directory }}
-      - name: Setup Golang 1.17.2
-        uses: actions/setup-go@v2
+      - name: Setup Golang 1.19
+        uses: actions/setup-go@v4
         with:
-          go-version: "1.17.2"
+          go-version: "1.19"
       - name: Check golang version
         working-directory: ${{ env.working-directory }}/submarine-cloud-v3
         run: go version
@@ -81,10 +83,10 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3
-      - name: Setup Golang 1.17.2
-        uses: actions/setup-go@v2
+      - name: Setup Golang 1.19
+        uses: actions/setup-go@v4
         with:
-          go-version: "1.17.2"
+          go-version: "1.19"
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -583,10 +585,10 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3
-      - name: Setup Golang 1.16.2
-        uses: actions/setup-go@v2
+      - name: Setup Golang 1.19
+        uses: actions/setup-go@v4
         with:
-          go-version: "1.16.2"
+          go-version: "1.19"
       - uses: actions/setup-node@v3
         with:
           node-version: "14"
